@@ -11,6 +11,7 @@ Fast WoRMS name server for FathomNet use. Ingests a dump of the WoRMS database a
 5. `/tree/:name` - return a structure tree from the provided name on down through the tree. [Example](http://fathomnet.org:8888/tree/Atolla)
 6. `/query/startswith/:prefix` - returns all names that start with `:prefix`. [Example](http://fathomnet.org:8888/query/startswith/fish)
 7. `/query/contains/:glob` - returns all the names that contain `:glob`. [Example](http://fathomnet.org:8888/query/contains/crab)
+8. `/synonyms/:name` - returns alternative names for a term. [Example](http://fathomnet.org:8888/synonyms/Acanthonus%20armatus)
 
 ## Usage
 

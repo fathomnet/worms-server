@@ -102,6 +102,19 @@ class PhylogenyApi extends ScalatraServlet:
 
   }
 
+  get("/synonyms/:name") {
+    val name = params
+      .get("name")
+      .getOrElse(halt(BadRequest(ErrorMsg("Please provide a term to look up").stringify)))
+      
+    def search(data: Data): String = 
+      data.findNodeByName(name) match
+        case None       => halt(NotFound(ErrorMsg(s"Unable to find `$name`").stringify))
+        case Some(node) => (node.name +: node.alternateNames).sorted.stringify
+
+    runSearch(search)
+  }
+
   private def runSearch[A](search: Data => String) =
     State.data match
       case None       =>
