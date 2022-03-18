@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+    Logging Configuration.
+-->
+<configuration scan="false" debug="false">
+
+  <!-- <statusListener class="ch.qos.logback.core.status.NopStatusListener" /> -->
+
+  <variable name="LOGBACK_LEVEL" value="${LOGBACK_LEVEL:-INFO}" />
+
+  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+      <pattern>%gray(%d{yyyy-MM-dd HH:mm:ss}) [%green(%-32t)] %highlight(%-5p) %blue(%-50c{50}) | %m%n</pattern>
+    </encoder>
+  </appender>
+
+  <logger name="java.util.Date" level="WARN" />
+
+  <root level="${LOGBACK_LEVEL}">
+    <appender-ref ref="CONSOLE" />
+  </root>
+
+</configuration>
