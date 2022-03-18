@@ -11,9 +11,11 @@ import scala.collection.immutable.SortedMap
 
 /**
  * Wraps a Worms tree with untility methods for fast access.
- * @param rootNode The root node of the WoRMS phylogenetic tree.
- * 
- * @author Brian Schlining
+ * @param rootNode
+ *   The root node of the WoRMS phylogenetic tree.
+ *
+ * @author
+ *   Brian Schlining
  * @since 2022-03-17
  */
 final case class Data(rootNode: WormsNode):

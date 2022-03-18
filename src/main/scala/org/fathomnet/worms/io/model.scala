@@ -12,7 +12,7 @@ import scala.io.Source
 /*
  * This file contains code to read the 3 relevant files from the Worms
  * download.
- * 
+ *
  * @author Brian Schlining
  * @since 2022-03-17
  */

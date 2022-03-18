@@ -20,7 +20,8 @@ import org.fathomnet.worms.{ErrorMsg, WormsNode}
  * val someObj = ...
  * val json = someObj.stringify
  * }}}
- * @author Brian Schlining
+ * @author
+ *   Brian Schlining
  * @since 2022-03-17
  */
 object CirceCodecs:

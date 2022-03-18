@@ -24,7 +24,8 @@ object WormsLoader:
 
   /**
    * Loads the Worms download into memory from files in a directory
-   * @param wormsDir The directory containing the Worms download
+   * @param wormsDir
+   *   The directory containing the Worms download
    */
   def load(wormsDir: Path): Option[WormsNode] =
     val taxonPath          = wormsDir.resolve("taxon.txt")

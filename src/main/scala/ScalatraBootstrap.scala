@@ -11,7 +11,7 @@ import scala.concurrent.ExecutionContext
 import org.fathomnet.worms.etc.jdk.CustomExecutors
 import org.fathomnet.worms.etc.jdk.CustomExecutors.asScala
 import org.fathomnet.worms.api.PhylogenyApi
-import org.fathomnet.worms.etc.jdk.Logging.{given}
+import org.fathomnet.worms.etc.jdk.Logging.given
 
 /**
  * @author

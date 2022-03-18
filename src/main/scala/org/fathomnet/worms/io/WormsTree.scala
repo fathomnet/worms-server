@@ -14,8 +14,7 @@ case class WormsTreeNode(
 )
 
 /**
- * Organizes the flat wormsconceps read from the source files into 
- * a tree structure.
+ * Organizes the flat wormsconceps read from the source files into a tree structure.
  * @author
  *   Brian Schlining
  * @since 2022-03-17
@@ -26,10 +25,12 @@ object WormsTree:
     trimTree(buildTree(filterFlattenedTree(wormsConcepts)))
 
   /**
-   * Given a list of WormsConcep, organize them into a tree structure.
-   * and return the root node. THis is the FULL worms tree
-   * @param wormsConcepts WormsConcepts loaded from [[WormsLoader]]
-   * @return The root node of the tree
+   * Given a list of WormsConcep, organize them into a tree structure. and return the root node.
+   * THis is the FULL worms tree
+   * @param wormsConcepts
+   *   WormsConcepts loaded from [[WormsLoader]]
+   * @return
+   *   The root node of the tree
    */
   def buildTree(wormsConcepts: Seq[WormsConcept]): WormsTreeNode =
     val map = mutable.Map[Long, WormsTreeNode]()
@@ -44,8 +45,10 @@ object WormsTree:
 
   /**
    * Given the full tree, return only the animalia node
-   * @param rootNode the root node of the tree from [[buildTree]]
-   * @return the animalia node
+   * @param rootNode
+   *   the root node of the tree from [[buildTree]]
+   * @return
+   *   the animalia node
    */
   def trimTree(rootNode: WormsTreeNode): WormsTreeNode =
     def filter(children: Seq[WormsTreeNode]): Seq[WormsTreeNode] =
@@ -57,8 +60,10 @@ object WormsTree:
 
   /**
    * Prune off extinct species from the list of WormsConcepts
-   * @param rows the list of WormsConcepts
-   * @return the list of WormsConcepts with extinct species removed
+   * @param rows
+   *   the list of WormsConcepts
+   * @return
+   *   the list of WormsConcepts with extinct species removed
    */
   def filterFlattenedTree(rows: Seq[WormsConcept]): Seq[WormsConcept] =
     rows.filter(wc =>
@@ -67,19 +72,21 @@ object WormsTree:
       (!lr.contains("species") && !lr.contains("variety")) || (!wc.isExtinct)
     )
 
-  
   /**
-   * Squash the tree into a flat list of WormsConcepts. This is useful if you
-   * need to convert a tree into rows to load into a database.
-   * @param rootNode the root node of the tree or branch
-   * @return the list of WormsConcepts
+   * Squash the tree into a flat list of WormsConcepts. This is useful if you need to convert a tree
+   * into rows to load into a database.
+   * @param rootNode
+   *   the root node of the tree or branch
+   * @return
+   *   the list of WormsConcepts
    */
   def flattenTree(node: WormsTreeNode): Seq[WormsConcept] =
     node.concept +: node.children.toSeq.flatMap(flattenTree)
 
   /**
    * Given a node, print out an indented tree structure
-   * @param node the root node of the tree or branch
+   * @param node
+   *   the root node of the tree or branch
    */
   def printTree(node: WormsTreeNode, indent: Int = 0): Unit =
     println(s"${"  " * indent}${node.concept.names.map(_.name).mkString(", ")}")

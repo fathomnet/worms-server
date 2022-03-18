@@ -27,7 +27,7 @@ final case class WormsConcept(
 object WormsConcept:
 
   /**
-   * Combines the parsed info from the 3 different WorMS files into  WormsConcepts
+   * Combines the parsed info from the 3 different WorMS files into WormsConcepts
    */
   def build(
       taxons: Seq[Taxon],

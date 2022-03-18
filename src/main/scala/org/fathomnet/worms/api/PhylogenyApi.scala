@@ -24,7 +24,6 @@ import scala.util.control.NonFatal
  */
 class PhylogenyApi extends ScalatraServlet:
 
-
   get("/names") {
     def search(data: Data): String = data.names.stringify
     runSearch(search)
@@ -33,7 +32,7 @@ class PhylogenyApi extends ScalatraServlet:
   get("/query/startswith/:prefix") {
     val prefix = params("prefix").toLowerCase
 
-    def search(data: Data): String = 
+    def search(data: Data): String =
       data.names.filter(_.toLowerCase.startsWith(prefix)).stringify
 
     runSearch(search)
@@ -42,9 +41,9 @@ class PhylogenyApi extends ScalatraServlet:
   get("/query/contains/:glob") {
     val glob = params("glob").toLowerCase
 
-    def search(data: Data): String = 
+    def search(data: Data): String =
       data.names.filter(_.toLowerCase.contains(glob)).stringify
-    
+
     runSearch(search)
   }
 
@@ -53,8 +52,8 @@ class PhylogenyApi extends ScalatraServlet:
       .get("name")
       .getOrElse(halt(BadRequest(ErrorMsg("Please provide a term to look up").stringify)))
 
-    def search(data: Data): String = 
-      data.findNodeByName(name) match 
+    def search(data: Data): String =
+      data.findNodeByName(name) match
         case None       => halt(NotFound(ErrorMsg(s"Unable to find: `$name`").stringify))
         case Some(node) => node.stringify
 
@@ -66,7 +65,7 @@ class PhylogenyApi extends ScalatraServlet:
       .get("name")
       .getOrElse(halt(BadRequest(ErrorMsg("Please provide a term to look up").stringify)))
 
-    def search(data: Data): String = 
+    def search(data: Data): String =
       data.findNodeByName(name) match
         case None       => halt(NotFound(ErrorMsg(s"Unable to find `$name`").stringify))
         case Some(node) => node.descendantNames.sorted.stringify
@@ -80,11 +79,11 @@ class PhylogenyApi extends ScalatraServlet:
       .get("name")
       .getOrElse(halt(BadRequest(ErrorMsg("Please provide a term to look up").stringify)))
 
-    def search(data: Data): String = 
-      data.findNodeByName(name) match 
+    def search(data: Data): String =
+      data.findNodeByName(name) match
         case None       => halt(NotFound(ErrorMsg(s"Unable to find `$name`").stringify))
         case Some(node) => node.children.map(_.name).sorted.stringify
-      
+
     runSearch(search)
 
   }
@@ -93,18 +92,24 @@ class PhylogenyApi extends ScalatraServlet:
     val name = params
       .get("name")
       .getOrElse(halt(BadRequest(ErrorMsg("Please provide a term to look up").stringify)))
-    
-    def search(data: Data): String = 
-      data.findNodeByChildName(name) match 
+
+    def search(data: Data): String =
+      data.findNodeByChildName(name) match
         case None       => halt(NotFound(ErrorMsg(s"Unable to find `$name`").stringify))
         case Some(node) => node.name.stringify
 
     runSearch(search)
-        
+
   }
 
-  private def runSearch[A](search: Data => String) = 
+  private def runSearch[A](search: Data => String) =
     State.data match
-      case None => halt(NotFound(ErrorMsg("The WoRMS dataset is missing. If this continues, please report it to the FathomNet team.").stringify))
+      case None       =>
+        halt(
+          NotFound(
+            ErrorMsg(
+              "The WoRMS dataset is missing. If this continues, please report it to the FathomNet team."
+            ).stringify
+          )
+        )
       case Some(data) => search(data)
-

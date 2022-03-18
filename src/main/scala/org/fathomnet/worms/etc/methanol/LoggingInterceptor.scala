@@ -16,7 +16,8 @@ import java.util.stream.Collectors
 
 /**
  * Adds logging to Methanol, JDK HTTP Client
- * @author Brian Schlining
+ * @author
+ *   Brian Schlining
  * @since 2022-03-17
  */
 object LoggingInterceptor extends Methanol.Interceptor:
