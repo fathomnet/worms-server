@@ -4,13 +4,13 @@ Fast WoRMS name server for FathomNet use. Ingests a dump of the WoRMS database a
 
 ## Endpoints
 
-1. `/names` - returns all names 
-2. `/parent/:name` - return the name of the parent of `:name`
-3. `/children/:name` - return the primary names of the children
-4. `/descendants/:name` - return the primary names of all the descendants
-5. `/tree/:name` - return a structure tree from the provided name on down through the tree
-6. `/query/startswith/:prefix` - returns all names that start with `:prefix`
-7. `/query/contains/:glob` - returns all the names that contain `:glob`
+1. `/names` - returns all names ... there's a lot of names.
+2. `/parent/:name` - return the name of the parent of `:name`. [Example](http://fathomnet.org:8888/parent/Bathochordaeus)
+3. `/children/:name` - return the primary names of the children. [Example](http://fathomnet.org:8888/children/Bathochordaeus)
+4. `/descendants/:name` - return the primary names of all the descendants [Example](http://fathomnet.org:8888/descendants/Atolla)
+5. `/tree/:name` - return a structure tree from the provided name on down through the tree. [Example](http://fathomnet.org:8888/tree/Atolla)
+6. `/query/startswith/:prefix` - returns all names that start with `:prefix`. [Example](http://fathomnet.org:8888/query/startswith/fish)
+7. `/query/contains/:glob` - returns all the names that contain `:glob`. [Example](http://fathomnet.org:8888/query/contains/crab)
 
 ## Usage
 
