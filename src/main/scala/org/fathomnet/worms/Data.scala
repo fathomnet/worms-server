@@ -19,7 +19,7 @@ import scala.collection.immutable.SortedMap
 final case class Data(rootNode: WormsNode):
 
   /**
-   * Map of [nodeName: String, Node] for both the name and alternate name of the node.
+   * Map of [nodeName, Node] for both the name and alternate name of the node.
    */
   lazy val namesMap: SortedMap[String, WormsNode] =
     val map                        = SortedMap.newBuilder[String, WormsNode]
@@ -30,6 +30,9 @@ final case class Data(rootNode: WormsNode):
     add(rootNode)
     map.result()
 
+  /**
+   * All names used in WoRMS.
+   */
   lazy val names: Set[String] = namesMap.keySet
 
   /**

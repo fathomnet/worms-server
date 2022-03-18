@@ -10,10 +10,13 @@ ThisBuild / organizationName := "MBARI"
 ThisBuild / startYear        := Some(2021)
 ThisBuild / versionScheme    := Some("semver-spec")
 
+Docker / maintainer := "Brian Schlining <brian@mbari.org>"
+
 lazy val root = project
   .in(file("."))
   .enablePlugins(
     AutomateHeaderPlugin, 
+    DockerPlugin,
     GitBranchPrompt, 
     GitVersioning, 
     JavaAppPackaging, 
@@ -28,6 +31,11 @@ lazy val root = project
     },
     git.useGitDescribe := true,
     // sbt-header
+    dockerBaseImage := "openjdk:17",
+    dockerEntrypoint := Seq("/opt/docker/bin/worms-server", "/opt/worms"),
+    dockerExposedPorts := Seq(8080),
+    dockerExposedVolumes := Seq("/opt/worms"),
+    dockerRepository := Some("mbari"),
     headerLicense := Some(
       HeaderLicense.Custom(
         """Copyright (c) Monterey Bay Aquarium Research Institute 2022

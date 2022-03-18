@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+wget -0 worms.zip http://www.marinespecies.org/export/gbif/WoRMS_DwC-A.zip
+unzip worms.zip
