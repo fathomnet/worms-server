@@ -33,5 +33,4 @@ class ScalatraBootstrap extends LifeCycle:
 
     val executionContext = CustomExecutors.newFixedThreadPoolExecutor().asScala
 
-// context.mount(MediaApi(executionContext), "/media/demo")
     context.mount(PhylogenyApi(), "/")
