@@ -4,7 +4,6 @@ Global / onChangedBuildSource := ReloadOnSourceChanges
 Laika / sourceDirectories := Seq(baseDirectory.value / "docs")
 
 ThisBuild / scalaVersion     := "3.1.1"
-ThisBuild / version          := "0.0.1"
 ThisBuild / organization     := "org.fathomnet"
 ThisBuild / organizationName := "MBARI"
 ThisBuild / startYear        := Some(2021)
