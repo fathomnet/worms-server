@@ -47,4 +47,6 @@ final case class Data(rootNode: WormsNode):
     add(rootNode)
     map.result()
 
-  def findNode(name: String): Option[WormsNode] = namesMap.get(name)
+  def findNodeByName(name: String): Option[WormsNode] = namesMap.get(name)
+
+  def findNodeByChildName(name: String): Option[WormsNode] = parents.get(name)

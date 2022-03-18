@@ -12,6 +12,8 @@ import org.fathomnet.worms.etc.circe.CirceCodecs.{given, *}
 import org.scalatra.BadRequest
 import zio.ZScope.global
 import org.scalatra.NotFound
+import org.fathomnet.worms.Data
+import scala.util.control.NonFatal
 
 /**
  * REST API for the Worms Server.
@@ -22,51 +24,54 @@ import org.scalatra.NotFound
  */
 class PhylogenyApi extends ScalatraServlet:
 
+
   get("/names") {
-    State.data.map(_.names) match
-      case None        => halt(NotFound(ErrorMsg("No data loaded").stringify))
-      case Some(names) =>
-        names.stringify
+    def search(data: Data): String = data.names.stringify
+    runSearch(search)
   }
 
   get("/query/startswith/:prefix") {
     val prefix = params("prefix").toLowerCase
-    State.data.map(_.names) match
-      case None        => halt(NotFound(ErrorMsg("No data loaded").stringify))
-      case Some(names) =>
-        names.filter(_.toLowerCase.startsWith(prefix)).stringify
+
+    def search(data: Data): String = 
+      data.names.filter(_.toLowerCase.startsWith(prefix)).stringify
+
+    runSearch(search)
   }
 
   get("/query/contains/:glob") {
     val glob = params("glob").toLowerCase
-    State.data.map(_.names) match
-      case None        => halt(NotFound(ErrorMsg("No data loaded").stringify))
-      case Some(names) =>
-        names.filter(_.toLowerCase.contains(glob)).stringify
+
+    def search(data: Data): String = 
+      data.names.filter(_.toLowerCase.contains(glob)).stringify
+    
+    runSearch(search)
   }
 
   get("/tree/:name") {
     val name = params
       .get("name")
       .getOrElse(halt(BadRequest(ErrorMsg("Please provide a term to look up").stringify)))
-    State.data.map(_.findNode(name)) match
-      case None      => halt(NotFound(ErrorMsg("No data loaded")))
-      case Some(opt) =>
-        opt match
-          case None       => halt(NotFound(ErrorMsg(s"Unable to find: $name").stringify))
-          case Some(node) => node.stringify
+
+    def search(data: Data): String = 
+      data.findNodeByName(name) match 
+        case None       => halt(NotFound(ErrorMsg(s"Unable to find: `$name`").stringify))
+        case Some(node) => node.stringify
+
+    runSearch(search)
   }
 
   get("/descendants/:name") {
     val name = params
       .get("name")
       .getOrElse(halt(BadRequest(ErrorMsg("Please provide a term to look up").stringify)))
-    State.data.map(_.findNode(name)) match
-      case None      => halt(NotFound(ErrorMsg("No data loaded").stringify))
-      case Some(opt) =>
-        opt match
-          case None       => halt(NotFound(ErrorMsg(s"No match for: $name").stringify))
-          case Some(node) => node.descendantNames.sorted.stringify
+
+    def search(data: Data): String = 
+      data.findNodeByName(name) match
+        case None       => halt(NotFound(ErrorMsg(s"Unable to find `$name`").stringify))
+        case Some(node) => node.descendantNames.sorted.stringify
+
+    runSearch(search)
 
   }
 
@@ -74,20 +79,32 @@ class PhylogenyApi extends ScalatraServlet:
     val name = params
       .get("name")
       .getOrElse(halt(BadRequest(ErrorMsg("Please provide a term to look up").stringify)))
-    State.data.map(_.findNode(name)) match
-      case None      => halt(NotFound(ErrorMsg("No data loaded").stringify))
-      case Some(opt) =>
-        opt match
-          case None       => halt(NotFound(ErrorMsg(s"No match for: $name").stringify))
-          case Some(node) => node.children.map(_.name).sorted.stringify
+
+    def search(data: Data): String = 
+      data.findNodeByName(name) match 
+        case None       => halt(NotFound(ErrorMsg(s"Unable to find `$name`").stringify))
+        case Some(node) => node.children.map(_.name).sorted.stringify
+      
+    runSearch(search)
+
   }
 
   get("/parent/:name") {
     val name = params
       .get("name")
       .getOrElse(halt(BadRequest(ErrorMsg("Please provide a term to look up").stringify)))
-    State.data.map(_.parents(name)) match
-      case None       => halt(NotFound(ErrorMsg("No data loaded").stringify))
-      case Some(node) =>
-        node.name.stringify
+    
+    def search(data: Data): String = 
+      data.findNodeByChildName(name) match 
+        case None       => halt(NotFound(ErrorMsg(s"Unable to find `$name`").stringify))
+        case Some(node) => node.name.stringify
+
+    runSearch(search)
+        
   }
+
+  private def runSearch[A](search: Data => String) = 
+    State.data match
+      case None => halt(NotFound(ErrorMsg("The WoRMS dataset is missing. If this continues, please report it to the FathomNet team.").stringify))
+      case Some(data) => search(data)
+
