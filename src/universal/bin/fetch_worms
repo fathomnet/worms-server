@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
 
+# Run this on Eione as podman_user
 wget -0 worms.zip http://www.marinespecies.org/export/gbif/WoRMS_DwC-A.zip
 unzip worms.zip
