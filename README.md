@@ -2,7 +2,7 @@
 
 Fast WoRMS name server for FathomNet use. Ingests a dump of the WoRMS database and serves out names and tree structures. I'm still sorting out the filtering, for example, the branch with fish is getting filtered out :-(. The idea is to a: only include Animalia, and b drop all non-marine, extinct species and varieties
 
-## Endpoings
+## Endpoints
 
 1. `/names` - returns all names 
 2. `/parent/:name` - return the name of the parent of `:name`
