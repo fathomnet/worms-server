@@ -52,7 +52,7 @@ object Main:
     new CommandLine(new MainRunner()).execute(args: _*)
 
   def run(port: Int, wormsDir: Path): Unit =
-    log.atInfo.log("Starting up")
+    log.atInfo.log(s"Starting up ${AppConfig.Name} v${AppConfig.Version}")
 
     State.data = WormsLoader.load(wormsDir).map(n => Data(n))
 
