@@ -29,7 +29,7 @@ import org.fathomnet.worms.etc.jdk.Logging.given
 class MainRunner extends Callable[Int]:
 
   @Opt(names = Array("-p", "--port"), description = Array("A message"))
-  private var port: Int = 8080
+  private var port: Int = Option(System.getenv("WORMS_PORT")).map(_.toInt).getOrElse(8080)
 
   // "/Users/brian/Downloads/worms"
   @Parameters(index = "0", description = Array("Path to the WoRMS data file directory"))

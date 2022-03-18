@@ -13,3 +13,6 @@ sbt docker:stage \
         -t mbari/worms-server:latest \
         --push . \
     && docker pull mbari/worms-server:latest
+
+
+# podman run --name worms -p 8888:8080 -v "/home/podman_user/worms":"/opt/worms" mbari/worms-server
