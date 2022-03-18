@@ -56,7 +56,17 @@ class PhylogenyApi extends ScalatraServlet:
     State.data.flatMap(_.findNode(name)) match
       case None => halt(NotFound(ErrorMsg("No data loaded")))
       case Some(node) =>
-        node.descendantNames.stringify
+        node.descendantNames.sorted.stringify
+  }
+
+  get("/children/:name") {
+    val name = params
+      .get("name")
+      .getOrElse(halt(BadRequest(ErrorMsg("Please provide a term to look up").stringify)))
+    State.data.flatMap(_.findNode(name)) match
+      case None => halt(NotFound(ErrorMsg("No data loaded")))
+      case Some(node) =>
+        node.children.map(_.name).sorted.stringify
   }
 
   get("/parent/:name") {

@@ -37,6 +37,9 @@ final case class WormsNode(
       acc ++ child.descendantNames
     }
 
+  def names: Seq[String] = 
+    (this.name +: this.alternateNames).toSeq.sorted
+
 object WormsNodeBuilder:
 
   def from(node: WormsTreeNode): WormsNode =

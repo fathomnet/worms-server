@@ -1,6 +1,16 @@
 # worms-server
 
-MBARI sbt project compiled with Scala 3
+Fast WoRMS name server for FathomNet use. Ingests a dump of the WoRMS database and serves out names and tree structures. I'm still sorting out the filtering, for example, the branch with fish is getting filtered out :-(. The idea is to a: only include Animalia, and b drop all non-marine, extinct species and varieties
+
+## Endpoings
+
+1. `/names` - returns all names 
+2. `/parent/:name` - return the name of the parent of `:name`
+3. `/children/:name` - return the primary names of the children
+4. `/descendants/:name` - return the primary names of all the descendants
+5. `/tree/:name` - return a structure tree from the provided name on down through the tree
+6. `/query/startswith/:prefix` - returns all names that start with `:prefix`
+7. `/query/contains/:glob` - returns all the names that contain `:glob`
 
 ## Usage
 
