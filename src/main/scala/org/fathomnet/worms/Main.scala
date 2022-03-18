@@ -1,8 +1,7 @@
 /*
- * Copyright (c) Monterey Bay Aquarium Research Institute 2021
+ * Copyright (c) Monterey Bay Aquarium Research Institute 2022
  *
- * worms-server code is non-public software. Unauthorized copying of this file,
- * via any medium is strictly prohibited. Proprietary and confidential. 
+ * worms-server code is licensed under the MIT license.
  */
 
 package org.fathomnet.worms
@@ -19,6 +18,7 @@ import picocli.CommandLine.{Command, Option => Opt, Parameters}
 import org.fathomnet.worms.io.WormsLoader
 import java.nio.file.Path
 import java.nio.file.Paths
+import org.fathomnet.worms.etc.jdk.Logging.given
 
 @Command(
   description = Array("A Main app"),
@@ -39,12 +39,20 @@ class MainRunner extends Callable[Int]:
     Main.run(port, path)
     0
 
+/**
+ * @author
+ *   Brian Schlining
+ * @since 2022-03-17
+ */
 object Main:
+
+  private val log = System.getLogger(getClass.getName)
 
   def main(args: Array[String]): Unit =
     new CommandLine(new MainRunner()).execute(args: _*)
 
   def run(port: Int, wormsDir: Path): Unit =
+    log.atInfo.log("Starting up")
 
     State.data = WormsLoader.load(wormsDir).map(n => Data(n))
 
@@ -60,7 +68,7 @@ object Main:
       new HttpConnectionFactory(httpConfig)
     )
     connector.setPort(port)
-    println(s"Starting Scalatra on port $port")
+    log.atInfo.log(s"Starting Scalatra on port $port")
     connector.setIdleTimeout(90000)
     server.addConnector(connector)
 

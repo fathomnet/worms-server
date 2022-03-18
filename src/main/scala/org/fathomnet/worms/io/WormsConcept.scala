@@ -1,13 +1,17 @@
 /*
- * Copyright (c) Monterey Bay Aquarium Research Institute 2021
+ * Copyright (c) Monterey Bay Aquarium Research Institute 2022
  *
- * worms-server code is non-public software. Unauthorized copying of this file,
- * via any medium is strictly prohibited. Proprietary and confidential. 
+ * worms-server code is licensed under the MIT license.
  */
 
 package org.fathomnet.worms.io
 
 import scala.collection.mutable
+
+/*
+ * @author Brian Schlining
+ * @since 2022-03-17
+ */
 
 final case class WormsConceptName(name: String, isPrimary: Boolean = true)
 
@@ -22,6 +26,9 @@ final case class WormsConcept(
 
 object WormsConcept:
 
+  /**
+   * Combines the parsed info from the 3 different WorMS files into  WormsConcepts
+   */
   def build(
       taxons: Seq[Taxon],
       vernacularNames: Seq[VernacularName],

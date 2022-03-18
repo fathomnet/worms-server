@@ -1,8 +1,7 @@
 /*
- * Copyright (c) Monterey Bay Aquarium Research Institute 2021
+ * Copyright (c) Monterey Bay Aquarium Research Institute 2022
  *
- * worms-server code is non-public software. Unauthorized copying of this file,
- * via any medium is strictly prohibited. Proprietary and confidential. 
+ * worms-server code is licensed under the MIT license.
  */
 
 package org.fathomnet.worms.io
@@ -13,12 +12,21 @@ import scala.util.Try
 import org.fathomnet.worms.etc.jdk.Logging.given
 import org.fathomnet.worms.{WormsNode, WormsNodeBuilder}
 
+/**
+ * Loades a Worm download into memory
+ * @author
+ *   Brian Schlining
+ * @since 2022-03-17
+ */
 object WormsLoader:
 
   private val log = System.getLogger(getClass.getName)
 
+  /**
+   * Loads the Worms download into memory from files in a directory
+   * @param wormsDir The directory containing the Worms download
+   */
   def load(wormsDir: Path): Option[WormsNode] =
-    // def run(wormsDir: Path): Int =
     val taxonPath          = wormsDir.resolve("taxon.txt")
     val vernacularNamePath = wormsDir.resolve("vernacularname.txt")
     val speciesProfilePath = wormsDir.resolve("speciesprofile.txt")

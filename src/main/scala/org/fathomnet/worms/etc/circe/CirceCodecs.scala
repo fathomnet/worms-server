@@ -1,8 +1,7 @@
 /*
- * Copyright (c) Monterey Bay Aquarium Research Institute 2021
+ * Copyright (c) Monterey Bay Aquarium Research Institute 2022
  *
- * worms-server code is non-public software. Unauthorized copying of this file,
- * via any medium is strictly prohibited. Proprietary and confidential. 
+ * worms-server code is licensed under the MIT license.
  */
 
 package org.fathomnet.worms.etc.circe
@@ -14,6 +13,16 @@ import java.net.URL
 import org.fathomnet.worms.util.HexUtil
 import org.fathomnet.worms.{ErrorMsg, WormsNode}
 
+/**
+ * JSON codecs for use with Circe. Usage:
+ * {{{
+ * import org.fathomnet.worms.etc.circe.CirceCodecs.{given, *}
+ * val someObj = ...
+ * val json = someObj.stringify
+ * }}}
+ * @author Brian Schlining
+ * @since 2022-03-17
+ */
 object CirceCodecs:
 
   given byteArrayEncoder: Encoder[Array[Byte]] = new Encoder[Array[Byte]]:

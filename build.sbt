@@ -30,10 +30,9 @@ lazy val root = project
     // sbt-header
     headerLicense := Some(
       HeaderLicense.Custom(
-        """Copyright (c) Monterey Bay Aquarium Research Institute 2021
+        """Copyright (c) Monterey Bay Aquarium Research Institute 2022
         |
-        |worms-server code is non-public software. Unauthorized copying of this file,
-        |via any medium is strictly prohibited. Proprietary and confidential. 
+        |worms-server code is licensed under the MIT license.
         |""".stripMargin
       )
     ),
@@ -51,8 +50,8 @@ lazy val root = project
       circeGeneric,
       circeParser,
       jansi          % Runtime,
-      jsoniterCore,
-      jsoniterMacros %  "compile-internal",
+      // jsoniterCore,
+      // jsoniterMacros %  "compile-internal",
       jettyServer,
       jettyServlets,
       jettyWebapp,

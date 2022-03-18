@@ -1,8 +1,7 @@
 /*
- * Copyright (c) Monterey Bay Aquarium Research Institute 2021
+ * Copyright (c) Monterey Bay Aquarium Research Institute 2022
  *
- * worms-server code is non-public software. Unauthorized copying of this file,
- * via any medium is strictly prohibited. Proprietary and confidential. 
+ * worms-server code is licensed under the MIT license.
  */
 
 package org.fathomnet.worms.etc.jdk
@@ -15,12 +14,11 @@ import java.util.function.Supplier
  * Add fluent logging to System.Logger. Usage:
  * {{{
  * import org.fathomnet.support.etc.jdk.Logging.{given, *}
- * given log: Logger = Sytem.getLogger("my.logger")
+ * given log: Logger = System.getLogger("my.logger")
  *
  * log.atInfo.log("Hello World")
  * log.atInfo.withCause(new RuntimeException("Oops")).log("Hello World")
  *
- * 3.tapLog.atInfo.log(i => "Hello World " + i)
  * }}}
  * * @author Brian Schlining
  */
@@ -59,28 +57,3 @@ object Logging:
 
   given Conversion[Logger, LoggerBuilder] with
     def apply(logger: Logger): LoggerBuilder = LoggerBuilder(logger)
-
-  case class TapLogBuilder[T](
-      obj: T,
-      logger: Logger,
-      level: Level = Level.OFF,
-      throwable: Option[Throwable] = None
-  ) extends Builder:
-
-    def atTrace: TapLogBuilder[T] = copy(level = Level.TRACE)
-    def atDebug: TapLogBuilder[T] = copy(level = Level.DEBUG)
-    def atInfo: TapLogBuilder[T]  = copy(level = Level.INFO)
-    def atWarn: TapLogBuilder[T]  = copy(level = Level.WARNING)
-    def atError: TapLogBuilder[T] = copy(level = Level.ERROR)
-
-    def withCause(cause: Throwable): TapLogBuilder[T] = copy(throwable = Some(cause))
-
-    def log(fn: T => String): T =
-      if (logger.isLoggable(level))
-        throwable match
-          case Some(e) => logger.log(level, fn(obj), e)
-          case None    => logger.log(level, fn(obj))
-      obj
-
-  extension [T](obj: T)(using logger: Logger)
-    def tapLog: TapLogBuilder[T] = TapLogBuilder(obj, logger)

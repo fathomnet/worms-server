@@ -1,8 +1,7 @@
 /*
- * Copyright (c) Monterey Bay Aquarium Research Institute 2021
+ * Copyright (c) Monterey Bay Aquarium Research Institute 2022
  *
- * worms-server code is non-public software. Unauthorized copying of this file,
- * via any medium is strictly prohibited. Proprietary and confidential. 
+ * worms-server code is licensed under the MIT license.
  */
 
 import org.scalatra.LifeCycle
@@ -13,6 +12,11 @@ import org.fathomnet.worms.etc.jdk.CustomExecutors
 import org.fathomnet.worms.etc.jdk.CustomExecutors.asScala
 import org.fathomnet.worms.api.PhylogenyApi
 
+/**
+ * @author
+ *   Brian Schlining
+ * @since 2022-03-17
+ */
 class ScalatraBootstrap extends LifeCycle:
 
   override def init(context: ServletContext): Unit =

@@ -1,8 +1,7 @@
 /*
- * Copyright (c) Monterey Bay Aquarium Research Institute 2021
+ * Copyright (c) Monterey Bay Aquarium Research Institute 2022
  *
- * worms-server code is non-public software. Unauthorized copying of this file,
- * via any medium is strictly prohibited. Proprietary and confidential. 
+ * worms-server code is licensed under the MIT license.
  */
 
 package org.fathomnet.worms.ext.methanol
@@ -15,6 +14,11 @@ import java.time.{Duration, Instant}
 import java.util.concurrent.CompletableFuture
 import java.util.stream.Collectors
 
+/**
+ * Adds logging to Methanol, JDK HTTP Client
+ * @author Brian Schlining
+ * @since 2022-03-17
+ */
 object LoggingInterceptor extends Methanol.Interceptor:
 
   private val log = System.getLogger(getClass.getName)

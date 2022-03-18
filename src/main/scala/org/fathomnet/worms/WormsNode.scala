@@ -1,20 +1,20 @@
 /*
- * Copyright (c) Monterey Bay Aquarium Research Institute 2021
+ * Copyright (c) Monterey Bay Aquarium Research Institute 2022
  *
- * worms-server code is non-public software. Unauthorized copying of this file,
- * via any medium is strictly prohibited. Proprietary and confidential. 
+ * worms-server code is licensed under the MIT license.
  */
 
 package org.fathomnet.worms
 
 import org.fathomnet.worms.io.WormsTreeNode
 
-// import com.github.plokhotnyuk.jsoniter_scala.macros._
-// import com.github.plokhotnyuk.jsoniter_scala.core._
-
-// given codec: JsonValueCodec[WormsNode] = JsonCodecMaker.make
-
-// Immutable tree node
+/**
+ * Immutable tree node
+ *
+ * @author
+ *   Brian Schlining
+ * @since 2022-03-17
+ */
 final case class WormsNode(
     name: String,
     rank: String,
@@ -37,7 +37,7 @@ final case class WormsNode(
       acc ++ child.descendantNames
     }
 
-  def names: Seq[String] = 
+  def names: Seq[String] =
     (this.name +: this.alternateNames).toSeq.sorted
 
 object WormsNodeBuilder:
