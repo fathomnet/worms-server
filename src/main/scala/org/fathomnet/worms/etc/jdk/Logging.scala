@@ -24,11 +24,6 @@ import java.util.function.Supplier
  */
 object Logging:
 
-  trait Builder:
-    def logger: Logger
-    def level: Level
-    def throwable: Option[Throwable]
-
   case class LoggerBuilder(
       logger: Logger,
       level: Level = Level.OFF,
