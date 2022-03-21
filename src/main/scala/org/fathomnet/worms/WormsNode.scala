@@ -18,6 +18,7 @@ import org.fathomnet.worms.io.MutableWormsNode
 final case class WormsNode(
     name: String,
     rank: String,
+    aphiaId: Long,
     alternateNames: Seq[String],
     children: Seq[WormsNode]
 ):
@@ -43,6 +44,7 @@ final case class WormsNode(
   lazy val simple: SimpleWormsNode = SimpleWormsNode(
     name = this.name,
     rank = this.rank,
+    aphiaId = this.aphiaId,
     alternateNames = this.alternateNames
   )
 
@@ -60,6 +62,6 @@ object WormsNodeBuilder:
       .names
       .filter(_.isPrimary == false)
       .map(_.name)
-    WormsNode(name, node.concept.rank, alternateNames, node.children.map(from).toSeq)
+    WormsNode(name, node.concept.rank,  node.concept.id, alternateNames, node.children.map(from).toSeq)
 
-final case class SimpleWormsNode(name: String, rank: String, alternateNames: Seq[String])
+final case class SimpleWormsNode(name: String, rank: String, aphiaId: Long, alternateNames: Seq[String])
