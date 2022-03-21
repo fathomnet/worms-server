@@ -14,6 +14,7 @@ import zio.ZScope.global
 import org.scalatra.NotFound
 import org.fathomnet.worms.Data
 import scala.util.control.NonFatal
+import org.fathomnet.worms.Page
 
 /**
  * REST API for the Worms Server.
@@ -25,7 +26,16 @@ import scala.util.control.NonFatal
 class PhylogenyApi extends ScalatraServlet:
 
   get("/names") {
-    def search(data: Data): String = data.names.stringify
+    def limit = params.get("limit").map(_.toInt).getOrElse(100)
+    def offset = params.get("offset").map(_.toInt).getOrElse(0)
+    def search(data: Data): String =  //data.names.stringify
+      val names = data.names.slice(offset, offset + limit).toSeq
+      Page(names, offset, limit, data.names.size).stringify
+    runSearch(search)
+  }
+
+  get("/names/count") {
+    def search(data: Data): String = data.names.size.toString
     runSearch(search)
   }
 
@@ -56,6 +66,18 @@ class PhylogenyApi extends ScalatraServlet:
       data.findNodeByName(name) match
         case None       => halt(NotFound(ErrorMsg(s"Unable to find `$name`").stringify))
         case Some(node) => node.descendantNames.sorted.stringify
+
+    runSearch(search)
+
+  }
+
+  get("/ancestors/:name") {
+    val name = params
+      .get("name")
+      .getOrElse(halt(BadRequest(ErrorMsg("Please provide a term to look up").stringify)))
+
+    def search(data: Data): String =
+      data.buildParentPath(name).map(_.name).stringify
 
     runSearch(search)
 

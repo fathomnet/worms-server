@@ -52,3 +52,12 @@ final case class Data(rootNode: WormsNode):
   def findNodeByName(name: String): Option[WormsNode] = namesMap.get(name)
 
   def findNodeByChildName(name: String): Option[WormsNode] = parents.get(name)
+
+  def buildParentPath(name: String): List[WormsNode] =
+    def build(node: WormsNode): List[WormsNode] =
+      findNodeByChildName(node.name) match
+        case Some(parent) => parent :: build(parent)
+        case None         => List(node)
+    findNodeByName(name) match 
+      case None => List.empty
+      case Some(node) => build(node).reverse.tail :+ node

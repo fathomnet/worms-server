@@ -12,6 +12,7 @@ import scala.util.Try
 import java.net.URL
 import org.fathomnet.worms.util.HexUtil
 import org.fathomnet.worms.{ErrorMsg, SimpleWormsNode, WormsNode}
+import org.fathomnet.worms.Page
 
 /**
  * JSON codecs for use with Circe. Usage:
@@ -48,6 +49,9 @@ object CirceCodecs:
 
   given Decoder[ErrorMsg] = deriveDecoder
   given Encoder[ErrorMsg] = deriveEncoder
+
+  given Decoder[Page[String]] = deriveDecoder
+  given Encoder[Page[String]] = deriveEncoder
 
   private val printer = Printer.noSpaces.copy(dropNullValues = true)
 
