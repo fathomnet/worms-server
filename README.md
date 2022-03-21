@@ -24,7 +24,8 @@ WoRMS has its own [API](https://www.marinespecies.org/rest/) that is a fantastic
 - `/query/startswith/:prefix` - returns all names that start with `:prefix`. [Example](http://fathomnet.org:8888/query/startswith/fish)
 - `/query/contains/:glob` - returns all the names that contain `:glob`. [Example](http://fathomnet.org:8888/query/contains/crab)
 - `/taxa/parent/:name` - returns the name, alternateNames, and rank of the parent of the term. [Example](http://fathomnet.org:8888/taxa/parent/Atolla)
-- `/taxa/children/:name` - - returns the name, alternateNames, and rank of the children of the term. [Example](http://fathomnet.org:8888/taxa/children/Atolla)
+- `/taxa/children/:name` - returns the name, alternateNames, and rank of the children of the term. [Example](http://fathomnet.org:8888/taxa/children/Atolla)
+- `/taxa/ancestors/:name` - return a tree structure from the root of the taxonomic tree down to the given name. Note that the last node will have it's children trimmed off. [Example](http://fathomnet.org:8888/taxa/ancestors/Atolla)
 - `/taxa/descendants/:name` - return a tree structure of descendants from the provided name on down through the tree. [Example](http://fathomnet.org:8888/taxa/descendants/Atollidae)
 - `/taxa/info/:name` - returns the name, alternateNames, and rank of a term. [Example](http://fathomnet.org:8888/taxa/info/Atolla)
 

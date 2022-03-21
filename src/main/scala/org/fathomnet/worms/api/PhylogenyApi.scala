@@ -141,6 +141,19 @@ class PhylogenyApi extends ScalatraServlet with ContentEncodingSupport:
     runSearch(search)
   }
 
+  get("/taxa/ancestors/:name") {
+    val name = params
+      .get("name")
+      .getOrElse(halt(BadRequest(ErrorMsg("Please provide a term to look up").stringify)))
+
+    def search(data: Data): String =
+      data.buildParentTree(name) match
+        case None       => halt(NotFound(ErrorMsg(s"Unable to find: `$name`").stringify))
+        case Some(node) => node.stringify
+
+    runSearch(search)
+  }
+
   get("/taxa/info/:name") {
     val name = params
       .get("name")

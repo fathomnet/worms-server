@@ -60,3 +60,16 @@ final case class Data(rootNode: WormsNode):
     findNodeByName(name) match 
       case None => List.empty
       case Some(node) => build(node).reverse.tail :+ node
+
+  def buildParentTree(name: String): Option[WormsNode] =
+      val nodes = buildParentPath(name)
+      nodes.foldRight(Option.empty[WormsNode]) {
+        case (node, None) => Some(node.copy(children = Nil))
+        case (parent, Some(child)) =>
+          val newParent = parent.copy(children = Seq(child))
+          Some(newParent)
+      }
+
+        
+
+
