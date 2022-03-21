@@ -9,8 +9,10 @@ package org.fathomnet.worms.api
 import org.fathomnet.worms.{ErrorMsg, State}
 import org.fathomnet.worms.{Data, Page}
 import org.fathomnet.worms.etc.circe.CirceCodecs.{given, *}
+import org.fathomnet.worms.etc.jdk.Logging.{given}
 import org.scalatra.{BadRequest, ContentEncodingSupport, InternalServerError, NotFound, ScalatraServlet}
 import scala.util.control.NonFatal
+
 
 
 /**
@@ -207,6 +209,7 @@ class PhylogenyApi extends ScalatraServlet with ContentEncodingSupport:
           search(data)
         catch
           case NonFatal(e) =>
+            log.atWarn.withCause(e).log("Error while running a search")
             halt(
               InternalServerError(
                 ErrorMsg(
