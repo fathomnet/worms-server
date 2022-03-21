@@ -32,13 +32,13 @@ final case class WormsNode(
           case None       => child.find(name)
       }
 
-  def descendantNames: Seq[String] =
+  lazy val descendantNames: Seq[String] =
     this.children.foldLeft(Seq(this.name): Seq[String]) { (acc, child) =>
       acc ++ child.descendantNames
     }
 
-  def names: Seq[String] =
-    (this.name +: this.alternateNames).toSeq.sorted
+  lazy val names: Seq[String] =
+    (this.name +: this.alternateNames.sorted).toSeq
 
 object WormsNodeBuilder:
 

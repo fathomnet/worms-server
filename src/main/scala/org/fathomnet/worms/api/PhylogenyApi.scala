@@ -110,10 +110,11 @@ class PhylogenyApi extends ScalatraServlet:
     def search(data: Data): String = 
       data.findNodeByName(name) match
         case None       => halt(NotFound(ErrorMsg(s"Unable to find `$name`").stringify))
-        case Some(node) => (node.name +: node.alternateNames).sorted.stringify
+        case Some(node) => node.names.stringify
 
     runSearch(search)
   }
+
 
   private def runSearch[A](search: Data => String) =
     State.data match

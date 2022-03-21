@@ -32,6 +32,6 @@ class ScalatraBootstrap extends LifeCycle:
       "GET, POST, ORIGIN, HEAD, OPTIONS, PUT, DELETE, TRACE, CONNECT"
     )
 
-    val executionContext = CustomExecutors.newFixedThreadPoolExecutor().asScala
+    // val executionContext = CustomExecutors.newFixedThreadPoolExecutor().asScala
 
     context.mount(PhylogenyApi(), "/")
