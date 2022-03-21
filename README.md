@@ -27,7 +27,7 @@ WoRMS has its own [API](https://www.marinespecies.org/rest/) that is a fantastic
 - GET `/taxa/children/:name` - returns the name, alternateNames, and rank of the children of the term. [Example](http://fathomnet.org:8888/taxa/children/Atolla)
 - GET `/taxa/ancestors/:name` - return a tree structure from the root of the taxonomic tree down to the given name. Note that the last node will have it's children trimmed off. [Example](http://fathomnet.org:8888/taxa/ancestors/Atolla)
 - GET `/taxa/descendants/:name` - return a tree structure of descendants from the provided name on down through the tree. [Example](http://fathomnet.org:8888/taxa/descendants/Atollidae)
-- `/taxa/info/:name` - returns the name, alternateNames, and rank of a term. [Example](http://fathomnet.org:8888/taxa/info/Atolla)
+- GET `/taxa/info/:name` - returns the name, alternateNames, and rank of a term. [Example](http://fathomnet.org:8888/taxa/info/Atolla)
 
 ## Usage
 
