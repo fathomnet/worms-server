@@ -5,17 +5,17 @@ Fast [WoRMS](https://www.marinespecies.org) name server for FathomNet use. Inges
 ## Endpoints
 
 - `/names` - returns all names ... there's a lot of names. The results are paged using query params `limit` (default 100) and `offset` (default 0). [Example](http://fathomnet.org:8888/names). [Example with limit and offset](http://fathomnet.org:8888/names?limit=500&offset=500000)
-- `/names/count` - returns the total number of names available.
+- `/names/count` - returns the total number of names available. [Example](http://fathomnet.org:8888/names/count)
 - `/parent/:name` - return the name of the parent of `:name`. [Example](http://fathomnet.org:8888/parent/Bathochordaeus)
 - `/children/:name` - return the primary names of the direct children. [Example](http://fathomnet.org:8888/children/Bathochordaeus)
-- `/ancestors/:name` - return the primary names of all the descendants [Example](http://fathomnet.org:8888/ancestors/Atolla)
-- `/descendants/:name` - return the primary names of all the descendants [Example](http://fathomnet.org:8888/descendants/Atolla)
+- `/ancestors/:name` - return the primary names of all the ancestors in order from the top of the taxa tree down. [Example](http://fathomnet.org:8888/ancestors/Atolla)
+- `/descendants/:name` - return the primary names of the taxa and all its descendants in alphabetical order. [Example](http://fathomnet.org:8888/descendants/Atolla)
 - `/synonyms/:name` - returns alternative names for a term. The first term in the list is the primary/accepted name. [Example](http://fathomnet.org:8888/synonyms/Acanthonus%20armatus)
 - `/query/startswith/:prefix` - returns all names that start with `:prefix`. [Example](http://fathomnet.org:8888/query/startswith/fish)
 - `/query/contains/:glob` - returns all the names that contain `:glob`. [Example](http://fathomnet.org:8888/query/contains/crab)
 - `/taxa/parent/:name` - returns the name, alternateNames, and rank of the parent of the term. [Example](http://fathomnet.org:8888/taxa/parent/Atolla)
 - `/taxa/children/:name` - - returns the name, alternateNames, and rank of the children of the term. [Example](http://fathomnet.org:8888/taxa/children/Atolla)
-- `/taxa/descendants/:name` - return a tree structure of descendants from the provided name on down through the tree. [Example](http://fathomnet.org:8888/taxa/tree/Atolla)
+- `/taxa/descendants/:name` - return a tree structure of descendants from the provided name on down through the tree. [Example](http://fathomnet.org:8888/taxa/descendants/Atolla)
 - `/taxa/info/:name` - returns the name, alternateNames, and rank of a term. [Example](http://fathomnet.org:8888/taxa/info/Opisthoteuthis)
 
 ## Usage
