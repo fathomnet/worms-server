@@ -43,7 +43,7 @@ final case class WormsNode(
   lazy val simple: SimpleWormsNode = SimpleWormsNode(
     name = this.name,
     rank = this.rank,
-    alternateNames = this.alternateNames,
+    alternateNames = this.alternateNames
   )
 
 object WormsNodeBuilder:
@@ -62,6 +62,4 @@ object WormsNodeBuilder:
       .map(_.name)
     WormsNode(name, node.concept.rank, alternateNames, node.children.map(from).toSeq)
 
-final case class SimpleWormsNode(name: String,
-    rank: String,
-    alternateNames: Seq[String])
+final case class SimpleWormsNode(name: String, rank: String, alternateNames: Seq[String])

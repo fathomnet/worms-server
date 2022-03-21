@@ -52,4 +52,3 @@ final case class Data(rootNode: WormsNode):
   def findNodeByName(name: String): Option[WormsNode] = namesMap.get(name)
 
   def findNodeByChildName(name: String): Option[WormsNode] = parents.get(name)
-
