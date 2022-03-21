@@ -12,9 +12,9 @@ Fast [WoRMS](https://www.marinespecies.org) name server for FathomNet use. Inges
 6. `/query/contains/:glob` - returns all the names that contain `:glob`. [Example](http://fathomnet.org:8888/query/contains/crab)
 7. `/synonyms/:name` - returns alternative names for a term. THe first term in the list is the primary/accepted name. [Example](http://fathomnet.org:8888/synonyms/Acanthonus%20armatus)
 8. `/taxa/info/:name` - returns the name, alternateNames, and rank of a term. [Example](http://fathomnet.org:8888/info/Opistoteuthis)
-9. `/taxa/tree/:name` - return a structure tree from the provided name on down through the tree. [Example](http://fathomnet.org:8888/tree/Atolla)
-10. `/taxa/parent/:name` - returns the name, alternateNames, and rank of the parent of the term.
-11. `/taxa/children/:name` - - returns the name, alternateNames, and rank of the children of the term.
+9. `/taxa/tree/:name` - return a structure tree from the provided name on down through the tree. [Example](http://fathomnet.org:8888/taxa/tree/Atolla)
+10. `/taxa/parent/:name` - returns the name, alternateNames, and rank of the parent of the term. [Example](http://fathomnet.org:8888/taxa/parent/Atolla)
+11. `/taxa/children/:name` - - returns the name, alternateNames, and rank of the children of the term. [Example](http://fathomnet.org:8888/taxa/children/Atolla)
 
 ## Usage
 
