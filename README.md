@@ -2,6 +2,15 @@
 
 Fast [WoRMS](https://www.marinespecies.org) name server for FathomNet use. Ingests a dump of the WoRMS database and serves out names and tree structures. The WoRMS data is simplified on load so that only the "Animalia" branch is used and all extinct species are removed.
 
+## Why?
+
+WoRMS has its own [API](https://www.marinespecies.org/rest/) that is a fantastic resource if you're looking for information about a specific taxa. However, it has a few holes in its API that this project addresses. Most notably:
+
+- WoRMS has no endpoint to get the names that are actually in WoRMS. To use that API, you have to already know what you are looking for. For web-sites and machine learning applications, we need to be able to ask ["What do you already know about?"](http://fathomnet.org:8888/names).
+- WoRMS has methods to get the parent and children of a taxa, but lacks methods to get all the ancestors or descendants. This forces WoRMS API users to write their own recursive algorithms on top of the WoRMS API. This server provides simple methods to get a complete listing of all [ancestors](http://fathomnet.org:8888/ancestors/Atollidae) or [descendants](http://fathomnet.org:8888/descendants/Atollidae) of any taxa.
+- WoRMS places a heavy emphasis on scientific names, making the barrier of entry to using common names, also called vernacular names,  high. For machine learning applications, we want to enable non-marine scientists to more easily ask for things like "[what are all the types of shrimp](http://fathomnet.org:8888/descendants/shrimps) or "[What squids are found in WoRMS](http://fathomnet.org:8888/query/contains/squid)"
+- For the FathomNet website, we need the server responses to be fast. This server hold all data in memory for fast access and responses.
+
 ## Endpoints
 
 - `/names` - returns all names ... there's a lot of names. The results are paged using query params `limit` (default 100) and `offset` (default 0). [Example](http://fathomnet.org:8888/names). [Example with limit and offset](http://fathomnet.org:8888/names?limit=500&offset=500000)
