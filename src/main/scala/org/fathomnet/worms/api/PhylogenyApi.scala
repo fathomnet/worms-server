@@ -15,6 +15,7 @@ import org.scalatra.NotFound
 import org.fathomnet.worms.Data
 import scala.util.control.NonFatal
 import org.fathomnet.worms.Page
+import org.scalatra.ContentEncodingSupport
 
 /**
  * REST API for the Worms Server.
@@ -23,7 +24,11 @@ import org.fathomnet.worms.Page
  *   Brian Schlining
  * @since 2022-03-17
  */
-class PhylogenyApi extends ScalatraServlet:
+class PhylogenyApi extends ScalatraServlet with ContentEncodingSupport:
+
+  before() {
+    contentType = "application/json"
+  }
 
   get("/names") {
     def limit = params.get("limit").map(_.toInt).getOrElse(100)
