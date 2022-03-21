@@ -6,7 +6,7 @@
 
 package org.fathomnet.worms
 
-import org.fathomnet.worms.io.WormsTreeNode
+import org.fathomnet.worms.io.MutableWormsNode
 
 /**
  * Immutable tree node
@@ -48,7 +48,7 @@ final case class WormsNode(
 
 object WormsNodeBuilder:
 
-  def from(node: WormsTreeNode): WormsNode =
+  def from(node: MutableWormsNode): WormsNode =
     val name           = node
       .concept
       .names

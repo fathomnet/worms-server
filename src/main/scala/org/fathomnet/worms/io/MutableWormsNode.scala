@@ -8,9 +8,9 @@ package org.fathomnet.worms.io
 
 import scala.collection.mutable
 
-case class WormsTreeNode(
+case class MutableWormsNode(
     concept: WormsConcept,
-    children: mutable.ArrayBuffer[WormsTreeNode] = mutable.ArrayBuffer.empty
+    children: mutable.ArrayBuffer[MutableWormsNode] = mutable.ArrayBuffer.empty
 )
 
 /**
@@ -19,9 +19,9 @@ case class WormsTreeNode(
  *   Brian Schlining
  * @since 2022-03-17
  */
-object WormsTree:
+object MutableWormsNodeBuilder:
 
-  def fathomNetTree(wormsConcepts: Seq[WormsConcept]): WormsTreeNode =
+  def fathomNetTree(wormsConcepts: Seq[WormsConcept]): MutableWormsNode =
     trimTree(buildTree(filterFlattenedTree(wormsConcepts)))
 
   /**
@@ -32,9 +32,9 @@ object WormsTree:
    * @return
    *   The root node of the tree
    */
-  def buildTree(wormsConcepts: Seq[WormsConcept]): WormsTreeNode =
-    val map = mutable.Map[Long, WormsTreeNode]()
-    wormsConcepts.foreach(c => map.put(c.id, WormsTreeNode(c)))
+  def buildTree(wormsConcepts: Seq[WormsConcept]): MutableWormsNode =
+    val map = mutable.Map[Long, MutableWormsNode]()
+    wormsConcepts.foreach(c => map.put(c.id, MutableWormsNode(c)))
     for
       c           <- wormsConcepts
       conceptNode <- map.get(c.id)
@@ -50,13 +50,13 @@ object WormsTree:
    * @return
    *   the animalia node
    */
-  def trimTree(rootNode: WormsTreeNode): WormsTreeNode =
-    def filter(children: Seq[WormsTreeNode]): Seq[WormsTreeNode] =
+  def trimTree(rootNode: MutableWormsNode): MutableWormsNode =
+    def filter(children: Seq[MutableWormsNode]): Seq[MutableWormsNode] =
       children.filter(_.concept.names.map(_.name).exists(_.contains("Animalia")))
 
     val accepted = filter(rootNode.children.toSeq)
     if (accepted.isEmpty) rootNode
-    else WormsTreeNode(rootNode.concept, mutable.ArrayBuffer().appendAll(accepted))
+    else MutableWormsNode(rootNode.concept, mutable.ArrayBuffer().appendAll(accepted))
 
   /**
    * Prune off extinct species from the list of WormsConcepts
@@ -80,7 +80,7 @@ object WormsTree:
    * @return
    *   the list of WormsConcepts
    */
-  def flattenTree(node: WormsTreeNode): Seq[WormsConcept] =
+  def flattenTree(node: MutableWormsNode): Seq[WormsConcept] =
     node.concept +: node.children.toSeq.flatMap(flattenTree)
 
   /**
@@ -88,6 +88,6 @@ object WormsTree:
    * @param node
    *   the root node of the tree or branch
    */
-  def printTree(node: WormsTreeNode, indent: Int = 0): Unit =
+  def printTree(node: MutableWormsNode, indent: Int = 0): Unit =
     println(s"${"  " * indent}${node.concept.names.map(_.name).mkString(", ")}")
     node.children.foreach(printTree(_, indent + 1))

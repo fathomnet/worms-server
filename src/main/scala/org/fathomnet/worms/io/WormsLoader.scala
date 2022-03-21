@@ -39,10 +39,10 @@ object WormsLoader:
       speciesProfiles <- ZIO.fromTry(Try(SpeciesProfile.read(speciesProfilePath.toString)))
       wormsConcepts   <-
         ZIO.fromTry(Try(WormsConcept.build(taxons, vernacularNames, speciesProfiles).toList))
-      rootNode        <- ZIO.fromTry(Try(WormsTree.fathomNetTree(wormsConcepts)))
-      wormsNode       <- ZIO.fromTry(Try(WormsNodeBuilder.from(rootNode)))
+      mutableRoot     <- ZIO.fromTry(Try(MutableWormsNodeBuilder.fathomNetTree(wormsConcepts)))
+      root            <- ZIO.fromTry(Try(WormsNodeBuilder.from(mutableRoot)))
       _               <- ZIO.succeed(log.atInfo.log(s"Loaded WoRMS from $wormsDir"))
-    yield Some(wormsNode)
+    yield Some(root)
 
     val runtime = zio.Runtime.default
     runtime.unsafeRun(

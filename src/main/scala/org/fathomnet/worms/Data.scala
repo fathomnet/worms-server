@@ -6,7 +6,6 @@
 
 package org.fathomnet.worms
 
-import org.fathomnet.worms.io.WormsTreeNode
 import scala.collection.immutable.SortedMap
 
 /**
