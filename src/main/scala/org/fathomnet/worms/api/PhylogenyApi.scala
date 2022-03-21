@@ -47,18 +47,6 @@ class PhylogenyApi extends ScalatraServlet:
     runSearch(search)
   }
 
-  get("/tree/:name") {
-    val name = params
-      .get("name")
-      .getOrElse(halt(BadRequest(ErrorMsg("Please provide a term to look up").stringify)))
-
-    def search(data: Data): String =
-      data.findNodeByName(name) match
-        case None       => halt(NotFound(ErrorMsg(s"Unable to find: `$name`").stringify))
-        case Some(node) => node.stringify
-
-    runSearch(search)
-  }
 
   get("/descendants/:name") {
     val name = params
@@ -114,7 +102,20 @@ class PhylogenyApi extends ScalatraServlet:
     runSearch(search)
   }
 
-  get("/info/:name") {
+  get("/taxa/tree/:name") {
+    val name = params
+      .get("name")
+      .getOrElse(halt(BadRequest(ErrorMsg("Please provide a term to look up").stringify)))
+
+    def search(data: Data): String =
+      data.findNodeByName(name) match
+        case None       => halt(NotFound(ErrorMsg(s"Unable to find: `$name`").stringify))
+        case Some(node) => node.stringify
+
+    runSearch(search)
+  }
+
+  get("/taxa/info/:name") {
     val name = params
       .get("name")
       .getOrElse(halt(BadRequest(ErrorMsg("Please provide a term to look up").stringify)))
@@ -125,6 +126,33 @@ class PhylogenyApi extends ScalatraServlet:
         case Some(node) => node.simple.stringify
 
     runSearch(search)
+  }
+
+  get("/taxa/parent/:name") {
+    val name = params
+      .get("name")
+      .getOrElse(halt(BadRequest(ErrorMsg("Please provide a term to look up").stringify)))
+
+    def search(data: Data): String =
+      data.findNodeByChildName(name) match
+        case None       => halt(NotFound(ErrorMsg(s"Unable to find `$name`").stringify))
+        case Some(node) => node.simple.stringify
+
+    runSearch(search)
+  }
+
+  get("/taxa/children/:name") {
+    val name = params
+      .get("name")
+      .getOrElse(halt(BadRequest(ErrorMsg("Please provide a term to look up").stringify)))
+
+    def search(data: Data): String =
+      data.findNodeByName(name) match
+        case None       => halt(NotFound(ErrorMsg(s"Unable to find `$name`").stringify))
+        case Some(node) => node.children.map(_.simple).sortBy(_.name).stringify
+
+    runSearch(search)
+
   }
 
 

@@ -8,11 +8,13 @@ Fast [WoRMS](https://www.marinespecies.org) name server for FathomNet use. Inges
 2. `/parent/:name` - return the name of the parent of `:name`. [Example](http://fathomnet.org:8888/parent/Bathochordaeus)
 3. `/children/:name` - return the primary names of the children. [Example](http://fathomnet.org:8888/children/Bathochordaeus)
 4. `/descendants/:name` - return the primary names of all the descendants [Example](http://fathomnet.org:8888/descendants/Atolla)
-5. `/tree/:name` - return a structure tree from the provided name on down through the tree. [Example](http://fathomnet.org:8888/tree/Atolla)
-6. `/query/startswith/:prefix` - returns all names that start with `:prefix`. [Example](http://fathomnet.org:8888/query/startswith/fish)
-7. `/query/contains/:glob` - returns all the names that contain `:glob`. [Example](http://fathomnet.org:8888/query/contains/crab)
-8. `/synonyms/:name` - returns alternative names for a term. THe first term in the list is the primary/accepted name. [Example](http://fathomnet.org:8888/synonyms/Acanthonus%20armatus)
-9. `/info/:name` - returns the name, alternateNames, and rank of a term. [Example](http://fathomnet.org:8888/info/Opistoteuthis)
+5. `/query/startswith/:prefix` - returns all names that start with `:prefix`. [Example](http://fathomnet.org:8888/query/startswith/fish)
+6. `/query/contains/:glob` - returns all the names that contain `:glob`. [Example](http://fathomnet.org:8888/query/contains/crab)
+7. `/synonyms/:name` - returns alternative names for a term. THe first term in the list is the primary/accepted name. [Example](http://fathomnet.org:8888/synonyms/Acanthonus%20armatus)
+8. `/taxa/info/:name` - returns the name, alternateNames, and rank of a term. [Example](http://fathomnet.org:8888/info/Opistoteuthis)
+9. `/taxa/tree/:name` - return a structure tree from the provided name on down through the tree. [Example](http://fathomnet.org:8888/tree/Atolla)
+10. `/taxa/parent/:name` - returns the name, alternateNames, and rank of the parent of the term.
+11. `/taxa/children/:name` - - returns the name, alternateNames, and rank of the children of the term.
 
 ## Usage
 
