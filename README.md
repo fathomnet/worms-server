@@ -4,7 +4,7 @@ Fast [WoRMS](https://www.marinespecies.org) name server for FathomNet use. Inges
 
 ## Endpoints
 
-- `/names` - returns all names ... there's a lot of names.
+- `/names` - returns all names ... there's a lot of names. The results are paged using query params `limit` (default 100) and `offset` (default 0). [Example](http://fathomnet.org:8888/names). [Example with limit and offset](http://fathomnet.org:8888/names?limit=500&offset=500000)
 - `/names/count` - returns the total number of names available.
 - `/parent/:name` - return the name of the parent of `:name`. [Example](http://fathomnet.org:8888/parent/Bathochordaeus)
 - `/children/:name` - return the primary names of the direct children. [Example](http://fathomnet.org:8888/children/Bathochordaeus)

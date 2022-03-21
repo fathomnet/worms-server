@@ -30,7 +30,7 @@ class PhylogenyApi extends ScalatraServlet:
     def offset = params.get("offset").map(_.toInt).getOrElse(0)
     def search(data: Data): String =  //data.names.stringify
       val names = data.names.slice(offset, offset + limit).toSeq
-      Page(names, offset, limit, data.names.size).stringify
+      Page(names, limit, offset, data.names.size).stringify
     runSearch(search)
   }
 
@@ -123,7 +123,7 @@ class PhylogenyApi extends ScalatraServlet:
     runSearch(search)
   }
 
-  get("/taxa/tree/:name") {
+  get("/taxa/descendants/:name") {
     val name = params
       .get("name")
       .getOrElse(halt(BadRequest(ErrorMsg("Please provide a term to look up").stringify)))
