@@ -21,14 +21,14 @@ import java.nio.file.Paths
 import org.fathomnet.worms.etc.jdk.Logging.given
 
 @Command(
-  description = Array("A Main app"),
+  description = Array("The Worms Server"),
   name = "main",
   mixinStandardHelpOptions = true,
   version = Array("0.0.1")
 )
 class MainRunner extends Callable[Int]:
 
-  @Opt(names = Array("-p", "--port"), description = Array("A message"))
+  @Opt(names = Array("-p", "--port"), description = Array("The server port"))
   private var port: Int = Option(System.getenv("WORMS_PORT")).map(_.toInt).getOrElse(8080)
 
   // "/Users/brian/Downloads/worms"
