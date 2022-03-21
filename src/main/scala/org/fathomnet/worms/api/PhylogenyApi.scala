@@ -6,16 +6,12 @@
 
 package org.fathomnet.worms.api
 
-import org.scalatra.ScalatraServlet
 import org.fathomnet.worms.{ErrorMsg, State}
+import org.fathomnet.worms.{Data, Page}
 import org.fathomnet.worms.etc.circe.CirceCodecs.{given, *}
-import org.scalatra.BadRequest
-import zio.ZScope.global
-import org.scalatra.NotFound
-import org.fathomnet.worms.Data
+import org.scalatra.{BadRequest, ContentEncodingSupport, InternalServerError, NotFound, ScalatraServlet}
 import scala.util.control.NonFatal
-import org.fathomnet.worms.Page
-import org.scalatra.ContentEncodingSupport
+
 
 /**
  * REST API for the Worms Server.
@@ -25,6 +21,8 @@ import org.scalatra.ContentEncodingSupport
  * @since 2022-03-17
  */
 class PhylogenyApi extends ScalatraServlet with ContentEncodingSupport:
+
+  private val log = System.getLogger(getClass.getName)
 
   before() {
     contentType = "application/json"
@@ -204,4 +202,15 @@ class PhylogenyApi extends ScalatraServlet with ContentEncodingSupport:
             ).stringify
           )
         )
-      case Some(data) => search(data)
+      case Some(data) => 
+        try 
+          search(data)
+        catch
+          case NonFatal(e) =>
+            halt(
+              InternalServerError(
+                ErrorMsg(
+                  s"An unexpected error occurred: ${e.getMessage}. Did you ask for the entire WoRMS dataset in one request? Maybe don't do that."
+                ).stringify
+              )
+            )
