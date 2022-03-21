@@ -11,7 +11,7 @@ import io.circe.generic.semiauto._
 import scala.util.Try
 import java.net.URL
 import org.fathomnet.worms.util.HexUtil
-import org.fathomnet.worms.{ErrorMsg, WormsNode}
+import org.fathomnet.worms.{ErrorMsg, SimpleWormsNode, WormsNode}
 
 /**
  * JSON codecs for use with Circe. Usage:
@@ -42,6 +42,9 @@ object CirceCodecs:
 
   given Decoder[WormsNode] = deriveDecoder
   given Encoder[WormsNode] = deriveEncoder
+
+  given Decoder[SimpleWormsNode] = deriveDecoder
+  given Encoder[SimpleWormsNode] = deriveEncoder
 
   given Decoder[ErrorMsg] = deriveDecoder
   given Encoder[ErrorMsg] = deriveEncoder

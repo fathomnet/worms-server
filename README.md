@@ -12,6 +12,7 @@ Fast [WoRMS](https://www.marinespecies.org) name server for FathomNet use. Inges
 6. `/query/startswith/:prefix` - returns all names that start with `:prefix`. [Example](http://fathomnet.org:8888/query/startswith/fish)
 7. `/query/contains/:glob` - returns all the names that contain `:glob`. [Example](http://fathomnet.org:8888/query/contains/crab)
 8. `/synonyms/:name` - returns alternative names for a term. THe first term in the list is the primary/accepted name. [Example](http://fathomnet.org:8888/synonyms/Acanthonus%20armatus)
+9. `/info/:name` - returns the name, alternateNames, and rank of a term. [Example](http://fathomnet.org:8888/info/Opistoteuthis)
 
 ## Usage
 
