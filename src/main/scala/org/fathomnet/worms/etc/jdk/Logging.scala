@@ -14,7 +14,7 @@ import java.util.function.Supplier
  * Add fluent logging to System.Logger. Usage:
  * {{{
  * import org.fathomnet.support.etc.jdk.Logging.{given}
- * given log: Logger = System.getLogger("my.logger")
+ * val log = System.getLogger("my.logger")
  *
  * log.atInfo.log("Hello World")
  * log.atInfo.withCause(new RuntimeException("Oops")).log("Hello World")
