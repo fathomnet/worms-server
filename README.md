@@ -71,6 +71,12 @@ The following endpoints respond with a tree structure with each node like:
 
 This is a normal sbt project. You can compile code with `sbt compile`, run it with `sbt run`, and `sbt console` will start a Scala 3 REPL.
 
+### Prerequisites
+
+- [Java 17+](https://adoptium.net)
+- [sbt](https://www.scala-sbt.org/)
+- [Docker](https://www.docker.com/) - Optional
+
 ### Useful Commands
 
 1. `stage` - Build runnable project in `target/universal`
