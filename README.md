@@ -77,7 +77,7 @@ This is a normal sbt project. You can compile code with `sbt compile`, run it wi
 - [sbt](https://www.scala-sbt.org/)
 - [Docker](https://www.docker.com/) - Optional
 
-### Useful Commands
+### Useful SBT Commands
 
 1. `stage` - Build runnable project in `target/universal`
 2. `universal:packageBin` - Build zip files of runnable project in `target/universal`
