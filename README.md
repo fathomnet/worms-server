@@ -71,14 +71,14 @@ The following endpoints respond with a tree structure with each node like:
 
 This is a normal sbt project. You can compile code with `sbt compile`, run it with `sbt run`, and `sbt console` will start a Scala 3 REPL.
 
-## Useful Commands
+### Useful Commands
 
 1. `stage` - Build runnable project in `target/universal`
 2. `universal:packageBin` - Build zip files of runnable project in `target/universal`
 3. `laikaSite` - Build documentation, including API docs to `target/docs/site`
 4. `compile` then `scalafmtAll` - Will convert all syntax to new-style, indent based Scala 3.
 
-## Libraries
+### Libraries
 
 - [circe](https://circe.github.io/circe/) for JSON handling
 - [munit](https://github.com/scalameta/munit) for testing
@@ -86,7 +86,7 @@ This is a normal sbt project. You can compile code with `sbt compile`, run it wi
 - [slf4j](http://www.slf4j.org/) with [logback](http://logback.qos.ch/) for logging. Use [java.lang.System.Logger](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/System.Logger.html) with a [fluent decorator](src/main/scala/org/fathomnet/worms/etc/jdk/Logging.scala) in the code, it will act as a facade for slf4j.
 - [ZIO](https://zio.dev/) for effects
 
-## Deployment
+### Deployment
 
 This repo contains a `build.sh` script that can build and stage the application to [MBARI's docker hub](https://hub.docker.com/repository/docker/mbari/worms-server). To run this application, download and extract the WoRMS download on eione.mbari.org. Eione has permissions from WoRMS to fetch their dataset. The server can be run using:
 
@@ -96,6 +96,6 @@ docker run --name worms -p 8080:8080 -v "/local/path/to/worms/download/dir":"/op
 
 If you are an non-MBARI user and wish to run your own server, contact WoRMS for access to their database/text download. Once you have access, just download the worms zip file and extract it. You can easily run your own server with the above docker command. Your worms data dir must be mounted into the container as `/opt/worms`.
 
-## Notes
+### Notes
 
 Documentation can be added as markdown files in `docs` and will be included automatically when you run `laikaSite`.
