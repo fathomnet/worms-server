@@ -4,7 +4,7 @@ Fast [WoRMS](https://www.marinespecies.org) name server for FathomNet use. Inges
 
 ## Why?
 
-WoRMS has its own [API](https://www.marinespecies.org/rest/) that is a fantastic resource if you're looking for information about a specific taxa. However, it has a holes in its API that this project addresses. Most notably:
+WoRMS has its own [API](https://www.marinespecies.org/rest/) that is a fantastic resource if you're looking for information about a specific taxa. However, its API is missing features that this project addresses. Most notably:
 
 - WoRMS has no endpoint to get the taxonomic names that are actually in WoRMS. To use that API, you have to already know what you are looking for. For web-sites and machine learning applications, we need to be able to ask ["What do you already know about?"](http://fathomnet.org:8888/names).
 - WoRMS has methods to get the direct parent and children of a taxa, but lacks methods to get _all_ the ancestors or descendants. This forces WoRMS API users to write their own recursive algorithms on top of the WoRMS API. This server provides simple methods to get a complete listing of all [ancestors](http://fathomnet.org:8888/ancestors/Atollidae) or [descendants](http://fathomnet.org:8888/descendants/Atollidae) of any taxa. This feature is critical for aggregating machine learning datasets.
