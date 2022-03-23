@@ -100,7 +100,7 @@ This repo contains a `build.sh` script that can build and stage the application 
 docker run --name worms -p 8080:8080 -v "/local/path/to/worms/download/dir":"/opt/worms" mbari/worms-server
 ```
 
-If you are an non-MBARI user and wish to run your own server, contact WoRMS for access to their database/text download. Once you have access, just download the worms zip file and extract it. You can easily run your own server with the above docker command. Your worms data dir must be mounted into the container as `/opt/worms`.
+If you are an non-MBARI user and wish to run your own server, contact WoRMS for access to their database/text download. Once you have access, just download the worms zip file and extract it. You can easily run your own server with the above docker command. Your worms data dir, which contains the files `taxon.txt`, `vernacularname.txt`, and `speciesprofile.txt`, must be mounted into the container as `/opt/worms`.
 
 ### Notes
 

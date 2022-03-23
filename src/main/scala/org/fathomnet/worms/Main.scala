@@ -19,6 +19,9 @@ import org.fathomnet.worms.io.WormsLoader
 import java.nio.file.Path
 import java.nio.file.Paths
 import org.fathomnet.worms.etc.jdk.Logging.given
+import scala.concurrent.ExecutionContext
+import org.fathomnet.worms.etc.jdk.CustomExecutors
+import org.fathomnet.worms.etc.jdk.CustomExecutors.*
 
 @Command(
   description = Array("The Worms Server"),
@@ -54,7 +57,9 @@ object Main:
   def run(port: Int, wormsDir: Path): Unit =
     log.atInfo.log(s"Starting up ${AppConfig.Name} v${AppConfig.Version}")
 
-    State.data = WormsLoader.load(wormsDir).map(n => Data(n))
+    // Lood data off main thread
+    given executionContext: ExecutionContext = CustomExecutors.newFixedThreadPoolExecutor().asScala
+    executionContext.execute(() => State.data = WormsLoader.load(wormsDir).map(n => Data(n)))
 
     val server: Server = new Server
     server.setStopAtShutdown(true)

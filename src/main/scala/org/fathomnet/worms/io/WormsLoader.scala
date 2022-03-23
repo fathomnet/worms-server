@@ -11,6 +11,7 @@ import zio.ZIO
 import scala.util.Try
 import org.fathomnet.worms.etc.jdk.Logging.given
 import org.fathomnet.worms.{WormsNode, WormsNodeBuilder}
+import scala.concurrent.ExecutionContext
 
 /**
  * Loades a Worm download into memory
@@ -27,16 +28,16 @@ object WormsLoader:
    * @param wormsDir
    *   The directory containing the Worms download
    */
-  def load(wormsDir: Path): Option[WormsNode] =
+  def load(wormsDir: Path)(using ec: ExecutionContext): Option[WormsNode] =
     val taxonPath          = wormsDir.resolve("taxon.txt")
     val vernacularNamePath = wormsDir.resolve("vernacularname.txt")
     val speciesProfilePath = wormsDir.resolve("speciesprofile.txt")
 
     val app = for
       _               <- ZIO.succeed(log.atInfo.log(s"Loading WoRMS from $wormsDir"))
-      taxons          <- ZIO.fromTry(Try(Taxon.read(taxonPath.toString)))
-      vernacularNames <- ZIO.fromTry(Try(VernacularName.read(vernacularNamePath.toString)))
-      speciesProfiles <- ZIO.fromTry(Try(SpeciesProfile.read(speciesProfilePath.toString)))
+      taxons          <- ZIO.fromTry(Try(Taxon.read(taxonPath.toString))).on(ec)
+      vernacularNames <- ZIO.fromTry(Try(VernacularName.read(vernacularNamePath.toString))).on(ec)
+      speciesProfiles <- ZIO.fromTry(Try(SpeciesProfile.read(speciesProfilePath.toString))).on(ec)
       wormsConcepts   <-
         ZIO.fromTry(Try(WormsConcept.build(taxons, vernacularNames, speciesProfiles).toList))
       mutableRoot     <- ZIO.fromTry(Try(MutableWormsNodeBuilder.fathomNetTree(wormsConcepts)))

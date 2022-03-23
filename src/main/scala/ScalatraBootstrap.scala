@@ -9,9 +9,11 @@ import javax.servlet.ServletContext
 
 import scala.concurrent.ExecutionContext
 import org.fathomnet.worms.etc.jdk.CustomExecutors
-import org.fathomnet.worms.etc.jdk.CustomExecutors.asScala
+import org.fathomnet.worms.etc.jdk.CustomExecutors.{*}
 import org.fathomnet.worms.api.PhylogenyApi
 import org.fathomnet.worms.etc.jdk.Logging.given
+import org.fathomnet.worms.State
+import org.fathomnet.worms.io.WormsLoader
 
 /**
  * @author
@@ -31,7 +33,5 @@ class ScalatraBootstrap extends LifeCycle:
       "org.scalatra.cors.allowedMethods",
       "GET, POST, ORIGIN, HEAD, OPTIONS, PUT, DELETE, TRACE, CONNECT"
     )
-
-    // val executionContext = CustomExecutors.newFixedThreadPoolExecutor().asScala
 
     context.mount(PhylogenyApi(), "/")

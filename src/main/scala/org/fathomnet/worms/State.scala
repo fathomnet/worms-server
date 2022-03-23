@@ -6,11 +6,14 @@
 
 package org.fathomnet.worms
 
+import scala.concurrent.ExecutionContext
+
 /**
  * @author
  *   Brian Schlining
  * @since 2022-03-17
  */
 object State:
+
 
   var data: Option[Data] = None

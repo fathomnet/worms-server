@@ -200,7 +200,7 @@ class PhylogenyApi extends ScalatraServlet with ContentEncodingSupport:
         halt(
           NotFound(
             ErrorMsg(
-              "The WoRMS dataset is missing. If this continues, please report it to the FathomNet team."
+              "The WoRMS dataset is missing; this may happen for a few seconds when the server starts. If this continues, please report it to the FathomNet team."
             ).stringify
           )
         )
