@@ -94,10 +94,16 @@ This is a normal sbt project. You can compile code with `sbt compile`, run it wi
 
 ### Deployment
 
-This repo contains a `build.sh` script that can build and stage the application to [MBARI's docker hub](https://hub.docker.com/repository/docker/mbari/worms-server). To run this application, download and extract the WoRMS download on eione.mbari.org. Eione has permissions from WoRMS to fetch their dataset. The server can be run using:
+#### MBARI
+
+This repo contains a `build.sh` script that can build and stage the application to [MBARI's docker hub](https://hub.docker.com/repository/docker/mbari/worms-server). To run this application, download and extract the WoRMS download on eione.mbari.org. Eione has permissions from WoRMS to fetch their dataset. 
+
+#### Anywhere
+
+The server can be run using:
 
 ```bash
-docker run --name worms -p 8080:8080 -v "/local/path/to/worms/download/dir":"/opt/worms" mbari/worms-server
+docker run --name worms -d -p 8080:8080 -v "/local/path/to/worms/download/dir":"/opt/worms" mbari/worms-server
 ```
 
 If you are an non-MBARI user and wish to run your own server, contact WoRMS for access to their database/text download. Once you have access, just download the worms zip file and extract it. You can easily run your own server with the above docker command. Your worms data dir, which contains the files `taxon.txt`, `vernacularname.txt`, and `speciesprofile.txt`, must be mounted into the container as `/opt/worms`.
