@@ -1,10 +1,10 @@
 # worms-server
 
-Fast [WoRMS](https://www.marinespecies.org) name server for FathomNet use. Ingests a dump of the WoRMS database and serves out names and tree structures. The WoRMS data is simplified on load so that only the "Animalia" branch is used and all extinct species are removed.
+Fast [World Register of Marine Species (WoRMS)](https://www.marinespecies.org) name server for [FathomNet](http://fathomnet.org) use. Ingests a dump of the WoRMS database and serves out names and tree structures. The WoRMS data is simplified on load so that only the "Animalia" branch is used and all extinct species are removed.
 
 ## Why?
 
-WoRMS has its own [API](https://www.marinespecies.org/rest/) that is a fantastic resource if you're looking for information about a specific taxa. However, its API is missing features that this project addresses. Most notably:
+WoRMS has its own [API](https://www.marinespecies.org/rest/) that is a fantastic resource if you're looking for information about a specific taxa. However, FathomNet requires some features that are not available in the WoRMS API. Most notably:
 
 - WoRMS has no endpoint to get the taxonomic names that are actually in WoRMS. To use that API, you have to already know what you are looking for. For web-sites and machine learning applications, we need to be able to ask ["What do you already know about?"](http://fathomnet.org:8888/names).
 - WoRMS has methods to get the direct parent and children of a taxa, but lacks methods to get _all_ the ancestors or descendants. This forces WoRMS API users to write their own recursive algorithms on top of the WoRMS API. This server provides simple methods to get a complete listing of all [ancestors](http://fathomnet.org:8888/ancestors/Atollidae) or [descendants](http://fathomnet.org:8888/descendants/Atollidae) of any taxa. This feature is critical for aggregating machine learning datasets.
@@ -94,10 +94,16 @@ This is a normal sbt project. You can compile code with `sbt compile`, run it wi
 
 ### Deployment
 
-This repo contains a `build.sh` script that can build and stage the application to [MBARI's docker hub](https://hub.docker.com/repository/docker/mbari/worms-server). To run this application, download and extract the WoRMS download on eione.mbari.org. Eione has permissions from WoRMS to fetch their dataset. The server can be run using:
+#### MBARI
+
+This repo contains a `build.sh` script that can build and stage the application to [MBARI's docker hub](https://hub.docker.com/repository/docker/mbari/worms-server). To run this application, download and extract the WoRMS download on eione.mbari.org. Eione has permissions from WoRMS to fetch their dataset. 
+
+#### Anywhere
+
+The server can be run using:
 
 ```bash
-docker run --name worms -p 8080:8080 -v "/local/path/to/worms/download/dir":"/opt/worms" mbari/worms-server
+docker run --name worms -d -p 8080:8080 -v "/local/path/to/worms/download/dir":"/opt/worms" mbari/worms-server
 ```
 
 If you are an non-MBARI user and wish to run your own server, contact WoRMS for access to their database/text download. Once you have access, just download the worms zip file and extract it. You can easily run your own server with the above docker command. Your worms data dir, which contains the files `taxon.txt`, `vernacularname.txt`, and `speciesprofile.txt`, must be mounted into the container as `/opt/worms`.
