@@ -7,7 +7,8 @@
 package org.fathomnet.worms
 
 /**
- * @author Brian Schlining
+ * @author
+ *   Brian Schlining
  * @since 2022-03-21
  */
 final case class Page[A](items: Seq[A], limit: Int, offset: Int, total: Int)

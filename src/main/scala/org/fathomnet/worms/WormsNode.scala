@@ -62,6 +62,17 @@ object WormsNodeBuilder:
       .names
       .filter(_.isPrimary == false)
       .map(_.name)
-    WormsNode(name, node.concept.rank,  node.concept.id, alternateNames, node.children.map(from).toSeq)
+    WormsNode(
+      name,
+      node.concept.rank,
+      node.concept.id,
+      alternateNames,
+      node.children.map(from).toSeq
+    )
 
-final case class SimpleWormsNode(name: String, rank: String, aphiaId: Long, alternateNames: Seq[String])
+final case class SimpleWormsNode(
+    name: String,
+    rank: String,
+    aphiaId: Long,
+    alternateNames: Seq[String]
+)

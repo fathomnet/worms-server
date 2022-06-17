@@ -9,10 +9,6 @@ package org.fathomnet.worms
 import java.{util => ju}
 import java.util.ArrayList
 import java.util.concurrent.Callable
-import org.eclipse.jetty.server._
-import org.eclipse.jetty.servlet.FilterHolder
-import org.eclipse.jetty.webapp.WebAppContext
-import org.scalatra.servlet.ScalatraListener
 import picocli.CommandLine
 import picocli.CommandLine.{Command, Option => Opt, Parameters}
 import org.fathomnet.worms.io.WormsLoader
@@ -20,8 +16,15 @@ import java.nio.file.Path
 import java.nio.file.Paths
 import org.fathomnet.worms.etc.jdk.Logging.given
 import scala.concurrent.ExecutionContext
+import org.fathomnet.worms.api.{NameEndpoints, SwaggerEndpoints, TaxaEndpoints}
 import org.fathomnet.worms.etc.jdk.CustomExecutors
 import org.fathomnet.worms.etc.jdk.CustomExecutors.*
+import sttp.tapir.server.netty.NettyFutureServer
+
+import scala.io.StdIn
+import scala.concurrent.Await
+import scala.concurrent.duration.Duration
+import scala.concurrent.Future
 
 @Command(
   description = Array("The Worms Server"),
@@ -58,30 +61,25 @@ object Main:
     log.atInfo.log(s"Starting up ${AppConfig.Name} v${AppConfig.Version}")
 
     // Lood data off main thread
-    given executionContext: ExecutionContext = CustomExecutors.newFixedThreadPoolExecutor().asScala
+    given executionContext: ExecutionContext =
+      CustomExecutors.newFixedThreadPoolExecutor(20).asScala
     executionContext.execute(() => State.data = WormsLoader.load(wormsDir).map(n => Data(n)))
 
-    val server: Server = new Server
-    server.setStopAtShutdown(true)
+    val nameEndpoints    = NameEndpoints()
+    val taxaEndpoints    = TaxaEndpoints()
+    val swaggerEndpoints = SwaggerEndpoints(nameEndpoints, taxaEndpoints)
+    val allEndpoints     = nameEndpoints.all ++ taxaEndpoints.all ++ swaggerEndpoints.all
 
-    val httpConfig = new HttpConfiguration()
-    httpConfig.setSendDateHeader(true)
-    httpConfig.setSendServerVersion(false)
+    val program = for
+      binding <- NettyFutureServer()
+                   .port(port)
+                   .addEndpoints(allEndpoints)
+                   .start()
+      _       <- Future {
+                   println("Go to http://localhost:8080/docs to open SwaggerUI. Press any key to exit.")
+                   StdIn.readLine()
+                 }
+      stop    <- binding.stop()
+    yield stop
 
-    val connector = new NetworkTrafficServerConnector(
-      server,
-      new HttpConnectionFactory(httpConfig)
-    )
-    connector.setPort(port)
-    log.atInfo.log(s"Starting Scalatra on port $port")
-    connector.setIdleTimeout(90000)
-    server.addConnector(connector)
-
-    val webApp = new WebAppContext
-    webApp.setContextPath("/")
-    webApp.setResourceBase("webapp")
-    webApp.setEventListeners(Array(new ScalatraListener))
-
-    server.setHandler(webApp)
-
-    server.start()
+    Await.result(program, Duration.Inf)
