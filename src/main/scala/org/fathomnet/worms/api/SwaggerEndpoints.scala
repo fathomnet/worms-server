@@ -23,6 +23,8 @@ case class SwaggerEndpoints(nameEndpoints: NameEndpoints, taxaEndpoints: TaxaEnd
           nameEndpoints.descendantsEndpoint,
           nameEndpoints.parentEndpoint,
           nameEndpoints.childrenEndpoint,
+          nameEndpoints.queryStartswithEndpoint,
+          nameEndpoints.queryContainsEndpoint,
           taxaEndpoints.taxaAncestors,
           taxaEndpoints.taxaDescendants,
           taxaEndpoints.taxaParent,

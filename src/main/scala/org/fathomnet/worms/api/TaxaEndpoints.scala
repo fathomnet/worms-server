@@ -39,6 +39,7 @@ class TaxaEndpoints(using ec: ExecutionContext) extends Endpoints:
     .in("taxa" / "descendants")
     .in(path[String]("name"))
     .out(jsonBody[WormsNode])
+    .description("Return a tree structure of descendants from the provided name on down through the tree.")
 
   val taxaDescendantsServerEndpoint: ServerEndpoint[Any, Future] =
     taxaDescendants.serverLogic((name: String) =>
@@ -55,6 +56,7 @@ class TaxaEndpoints(using ec: ExecutionContext) extends Endpoints:
     .in("taxa" / "ancestors")
     .in(path[String]("name"))
     .out(jsonBody[WormsNode])
+    .description("return a tree structure from the root of the taxonomic tree down to the given name. Note that the last node will have it's children trimmed off.")
 
   val taxaAncestorsServerEndpoint: ServerEndpoint[Any, Future] =
     taxaAncestors.serverLogic((name: String) =>
@@ -70,6 +72,7 @@ class TaxaEndpoints(using ec: ExecutionContext) extends Endpoints:
     .in("taxa" / "info")
     .in(path[String]("name"))
     .out(jsonBody[SimpleWormsNode])
+    .description("Returns the name, alternateNames, aphiaId, and rank of a term.")
 
   val taxaInfoServerEndpoint: ServerEndpoint[Any, Future] =
     taxaInfo.serverLogic((name: String) =>
@@ -85,6 +88,7 @@ class TaxaEndpoints(using ec: ExecutionContext) extends Endpoints:
     .in("taxa" / "parent")
     .in(path[String]("name"))
     .out(jsonBody[SimpleWormsNode])
+    .description("Returns the name, alternateNames, aphiaId, and rank of the parent of the term.")
 
   val taxaParentServerEndpoint: ServerEndpoint[Any, Future] =
     taxaParent.serverLogic((name: String) =>
@@ -100,6 +104,7 @@ class TaxaEndpoints(using ec: ExecutionContext) extends Endpoints:
     .in("taxa" / "children")
     .in(path[String]("name"))
     .out(jsonBody[List[SimpleWormsNode]])
+    .description("Returns the name, alternateNames, aphiaId, and rank of the children of the term.")
 
   val taxaChildrenServerEndpoint: ServerEndpoint[Any, Future] =
     taxaChildren.serverLogic((name: String) =>
