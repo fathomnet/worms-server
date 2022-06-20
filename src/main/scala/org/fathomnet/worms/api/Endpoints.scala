@@ -32,23 +32,3 @@ trait Endpoints:
       oneOfVariant(statusCode(StatusCode.InternalServerError).and(jsonBody[ServerError]))
     )
   )
-
-  def runSearch[A](search: Data => A): Either[ErrorMsg, A] =
-    State.data match
-      case None       =>
-        Left(
-          NotFound(
-            "The WoRMS dataset is missing; this may happen for a few seconds when the server starts. If this continues, please report it to the FathomNet team."
-          )
-        )
-      case Some(data) =>
-        try Right(search(data))
-        catch
-          case NonFatal(e) =>
-            log.atWarn.withCause(e).log("Error while running a search")
-
-            Left(
-              ServerError(
-                s"An unexpected error occurred: ${e.getMessage}. Did you ask for the entire WoRMS dataset in one request? Maybe don't do that."
-              )
-            )

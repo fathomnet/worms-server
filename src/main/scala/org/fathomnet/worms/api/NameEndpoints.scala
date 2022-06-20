@@ -31,13 +31,15 @@ class NameEndpoints(using ec: ExecutionContext) extends Endpoints:
       .in(query[Option[Int]]("limit"))
       .in(query[Option[Int]]("offset"))
       .out(jsonBody[Page[String]])
-      .description("Returns all names ... there's a lot of names. The results are paged using query params limit (default 100) and offset (default 0).")
+      .description(
+        "Returns all names ... there's a lot of names. The results are paged using query params limit (default 100) and offset (default 0)."
+      )
 
   val namesServerEndpoint: ServerEndpoint[Any, Future] =
     namesEndpoint.serverLogic((limitOpt, offsetOpt) =>
       Future {
-        val limit                            = limitOpt.getOrElse(100)
-        val offset                           = offsetOpt.getOrElse(0)
+        val limit  = limitOpt.getOrElse(100)
+        val offset = offsetOpt.getOrElse(0)
         StateController.findAllNames(limit, offset)
       }
     )
@@ -74,9 +76,7 @@ class NameEndpoints(using ec: ExecutionContext) extends Endpoints:
     .description("Returns all names that contain the given string (glob).")
 
   val queryContainsServerEndpoint: ServerEndpoint[Any, Future] =
-    queryContainsEndpoint.serverLogic(glob =>
-      Future(StateController.queryNamesContaining(glob))
-    )
+    queryContainsEndpoint.serverLogic(glob => Future(StateController.queryNamesContaining(glob)))
 
   // -- /descendants/:name
   val descendantsEndpoint: PublicEndpoint[String, ErrorMsg, List[String], Any] = baseEndpoint
@@ -84,12 +84,12 @@ class NameEndpoints(using ec: ExecutionContext) extends Endpoints:
     .in("descendants")
     .in(path[String]("name"))
     .out(jsonBody[List[String]])
-    .description("Return the primary names of the taxa and all its descendants in alphabetical order.")
+    .description(
+      "Return the primary names of the taxa and all its descendants in alphabetical order."
+    )
 
   val descendantsServerEndpoint: ServerEndpoint[Any, Future] =
-    descendantsEndpoint.serverLogic(name =>
-      Future(StateController.descendantNames(name))
-    )
+    descendantsEndpoint.serverLogic(name => Future(StateController.descendantNames(name)))
 
   // -- /ancestors/:name
   val ancestorsEndpoint: PublicEndpoint[String, ErrorMsg, List[String], Any] = baseEndpoint
@@ -97,12 +97,12 @@ class NameEndpoints(using ec: ExecutionContext) extends Endpoints:
     .in("ancestors")
     .in(path[String]("name"))
     .out(jsonBody[List[String]])
-    .description("Return the primary names of all the ancestors in order from the top of the taxa tree down.")
+    .description(
+      "Return the primary names of all the ancestors in order from the top of the taxa tree down."
+    )
 
   val ancestorsServerEndpoint: ServerEndpoint[Any, Future] =
-    ancestorsEndpoint.serverLogic(name =>
-      Future(StateController.ancestorNames(name))
-    )
+    ancestorsEndpoint.serverLogic(name => Future(StateController.ancestorNames(name)))
 
   // -- /children/:name
   val childrenEndpoint: PublicEndpoint[String, ErrorMsg, List[String], Any] = baseEndpoint
@@ -113,9 +113,7 @@ class NameEndpoints(using ec: ExecutionContext) extends Endpoints:
     .description("Return the primary names of the direct children.")
 
   val childrenServerEndpoint: ServerEndpoint[Any, Future] =
-    childrenEndpoint.serverLogic(name =>
-      Future(StateController.childNames(name))
-    )
+    childrenEndpoint.serverLogic(name => Future(StateController.childNames(name)))
 
   // -- /parent/:name
   val parentEndpoint: PublicEndpoint[String, ErrorMsg, String, Any] = baseEndpoint
@@ -126,9 +124,7 @@ class NameEndpoints(using ec: ExecutionContext) extends Endpoints:
     .description("Return the name of the parent of {name}.")
 
   val parentServerEndpoint: ServerEndpoint[Any, Future] =
-    parentEndpoint.serverLogic(name =>
-      Future(StateController.parentName(name))
-    )
+    parentEndpoint.serverLogic(name => Future(StateController.parentName(name)))
 
   // -- /synonyms/:name
   val synonymsEndpoint: PublicEndpoint[String, ErrorMsg, List[String], Any] = baseEndpoint
@@ -136,12 +132,12 @@ class NameEndpoints(using ec: ExecutionContext) extends Endpoints:
     .in("synonyms")
     .in(path[String]("name"))
     .out(jsonBody[List[String]])
-    .description("Returns alternative names for a term. The first term in the list is the primary/accepted name.")
+    .description(
+      "Returns alternative names for a term. The first term in the list is the primary/accepted name."
+    )
 
   val synonymsServerEndpoint: ServerEndpoint[Any, Future] =
-    synonymsEndpoint.serverLogic(name =>
-      Future(StateController.synonyms(name))
-    )
+    synonymsEndpoint.serverLogic(name => Future(StateController.synonyms(name)))
 
   override val all: List[ServerEndpoint[Any, Future]] = List(
     namesServerEndpoint,
