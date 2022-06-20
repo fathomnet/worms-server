@@ -19,6 +19,7 @@ import scala.util.control.NonFatal
 import org.fathomnet.worms.etc.jdk.Logging.given
 import scala.concurrent.ExecutionContext
 import sttp.model.StatusCode
+import org.fathomnet.worms.StateController
 
 class NameEndpoints(using ec: ExecutionContext) extends Endpoints:
 
@@ -37,11 +38,7 @@ class NameEndpoints(using ec: ExecutionContext) extends Endpoints:
       Future {
         val limit                            = limitOpt.getOrElse(100)
         val offset                           = offsetOpt.getOrElse(0)
-        def search(data: Data): Page[String] = //data.names.stringify
-          val names = data.names.slice(offset, offset + limit).toSeq
-          Page(names, limit, offset, data.names.size)
-
-        runSearch(search)
+        StateController.findAllNames(limit, offset)
       }
     )
 
@@ -53,7 +50,7 @@ class NameEndpoints(using ec: ExecutionContext) extends Endpoints:
     .description("Returns the total number of names available.")
 
   val namesCountServerEndpoint: ServerEndpoint[Any, Future] =
-    namesCountEndpoint.serverLogic(Unit => Future.successful(runSearch(data => data.names.size)))
+    namesCountEndpoint.serverLogic(Unit => Future.successful(StateController.countAllNames()))
 
   // --/query/startswith/:prefix
   val queryStartswithEndpoint: PublicEndpoint[String, ErrorMsg, List[String], Any] = baseEndpoint
@@ -65,11 +62,7 @@ class NameEndpoints(using ec: ExecutionContext) extends Endpoints:
 
   val queryStartswithServerEndpoint: ServerEndpoint[Any, Future] =
     queryStartswithEndpoint.serverLogic(prefix =>
-      Future {
-        def search(data: Data): List[String] =
-          data.names.filter(_.toLowerCase.startsWith(prefix)).toList
-        runSearch(search)
-      }
+      Future(StateController.queryNamesStartingWith(prefix))
     )
 
   // --/query/contains/:glob
@@ -82,11 +75,7 @@ class NameEndpoints(using ec: ExecutionContext) extends Endpoints:
 
   val queryContainsServerEndpoint: ServerEndpoint[Any, Future] =
     queryContainsEndpoint.serverLogic(glob =>
-      Future {
-        def search(data: Data): List[String] =
-          data.names.filter(_.toLowerCase.contains(glob)).toList
-        runSearch(search)
-      }
+      Future(StateController.queryNamesContaining(glob))
     )
 
   // -- /descendants/:name
@@ -99,19 +88,7 @@ class NameEndpoints(using ec: ExecutionContext) extends Endpoints:
 
   val descendantsServerEndpoint: ServerEndpoint[Any, Future] =
     descendantsEndpoint.serverLogic(name =>
-      Future {
-        def search(data: Data): List[String] =
-          data.findNodeByName(name) match
-            case None       => Nil
-            case Some(node) => node.descendantNames.sorted.toList
-        runSearch(search).fold(
-          e => Left(e),
-          v =>
-            v match
-              case Nil => Left(NotFound(s"Unable to find `$name`"))
-              case _   => Right(v)
-        )
-      }
+      Future(StateController.descendantNames(name))
     )
 
   // -- /ancestors/:name
@@ -124,11 +101,7 @@ class NameEndpoints(using ec: ExecutionContext) extends Endpoints:
 
   val ancestorsServerEndpoint: ServerEndpoint[Any, Future] =
     ancestorsEndpoint.serverLogic(name =>
-      Future {
-        def search(data: Data): List[String] =
-          data.buildParentPath(name).map(_.name)
-        runSearch(search)
-      }
+      Future(StateController.ancestorNames(name))
     )
 
   // -- /children/:name
@@ -141,16 +114,7 @@ class NameEndpoints(using ec: ExecutionContext) extends Endpoints:
 
   val childrenServerEndpoint: ServerEndpoint[Any, Future] =
     childrenEndpoint.serverLogic(name =>
-      Future {
-        def search(data: Data): List[String] =
-          data.findNodeByName(name) match
-            case None       => Nil
-            case Some(node) => node.children.map(_.name).sorted.toList
-        runSearch(search).fold(
-          e => Left(e),
-          v => if (v.isEmpty) Left(NotFound(s"Unable to find `$name`")) else Right(v)
-        )
-      }
+      Future(StateController.childNames(name))
     )
 
   // -- /parent/:name
@@ -163,17 +127,7 @@ class NameEndpoints(using ec: ExecutionContext) extends Endpoints:
 
   val parentServerEndpoint: ServerEndpoint[Any, Future] =
     parentEndpoint.serverLogic(name =>
-      Future {
-        def search(data: Data): Option[String] =
-          data.findNodeByChildName(name).map(_.name)
-        runSearch(search).fold(
-          e => Left(e),
-          v =>
-            v match
-              case None    => Left(NotFound(s"Unable to find `$name`"))
-              case Some(p) => Right(p)
-        )
-      }
+      Future(StateController.parentName(name))
     )
 
   // -- /synonyms/:name
@@ -186,17 +140,7 @@ class NameEndpoints(using ec: ExecutionContext) extends Endpoints:
 
   val synonymsServerEndpoint: ServerEndpoint[Any, Future] =
     synonymsEndpoint.serverLogic(name =>
-      Future {
-        def search(data: Data): List[String] =
-          data.findNodeByName(name) match
-            case None       => Nil
-            case Some(node) => node.names.toList
-
-        runSearch(search).fold(
-          e => Left(e),
-          v => if (v.isEmpty) Left(NotFound(s"Unable to find `$name`")) else Right(v)
-        )
-      }
+      Future(StateController.synonyms(name))
     )
 
   override val all: List[ServerEndpoint[Any, Future]] = List(

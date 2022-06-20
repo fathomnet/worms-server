@@ -23,6 +23,7 @@ import org.fathomnet.worms.WormsNode
 import sttp.tapir.Schema.annotations.format
 import org.fathomnet.worms.SimpleWormsNode
 import org.fathomnet.worms.etc.circe.CirceCodecs.given
+import org.fathomnet.worms.StateController
 
 class TaxaEndpoints(using ec: ExecutionContext) extends Endpoints:
 
@@ -43,12 +44,7 @@ class TaxaEndpoints(using ec: ExecutionContext) extends Endpoints:
 
   val taxaDescendantsServerEndpoint: ServerEndpoint[Any, Future] =
     taxaDescendants.serverLogic((name: String) =>
-      Future {
-        def search(data: Data): Option[WormsNode] =
-          data.findNodeByName(name)
-
-        runNodeSearch(search, s"Unable to find `$name`")
-      }
+      Future(StateController.descendantTaxa(name))
     )
 
   val taxaAncestors: PublicEndpoint[String, ErrorMsg, WormsNode, Any] = baseEndpoint
@@ -60,11 +56,7 @@ class TaxaEndpoints(using ec: ExecutionContext) extends Endpoints:
 
   val taxaAncestorsServerEndpoint: ServerEndpoint[Any, Future] =
     taxaAncestors.serverLogic((name: String) =>
-      Future {
-        def search(data: Data): Option[WormsNode] =
-          data.buildParentTree(name)
-        runNodeSearch(search, s"Unable to find `$name`")
-      }
+      Future(StateController.ancestorTaxa(name))
     )
 
   val taxaInfo: PublicEndpoint[String, ErrorMsg, SimpleWormsNode, Any] = baseEndpoint
@@ -76,11 +68,7 @@ class TaxaEndpoints(using ec: ExecutionContext) extends Endpoints:
 
   val taxaInfoServerEndpoint: ServerEndpoint[Any, Future] =
     taxaInfo.serverLogic((name: String) =>
-      Future {
-        def search(data: Data): Option[SimpleWormsNode] =
-          data.findNodeByName(name).map(_.simple)
-        runNodeSearch(search, s"Unable to find `$name`")
-      }
+      Future(StateController.taxaInfo(name))
     )
 
   val taxaParent: PublicEndpoint[String, ErrorMsg, SimpleWormsNode, Any] = baseEndpoint
@@ -92,11 +80,7 @@ class TaxaEndpoints(using ec: ExecutionContext) extends Endpoints:
 
   val taxaParentServerEndpoint: ServerEndpoint[Any, Future] =
     taxaParent.serverLogic((name: String) =>
-      Future {
-        def search(data: Data): Option[SimpleWormsNode] =
-          data.findNodeByChildName(name).map(_.simple)
-        runNodeSearch(search, s"Unable to find `$name`")
-      }
+      Future(StateController.parentTaxa(name))
     )
 
   val taxaChildren: PublicEndpoint[String, ErrorMsg, List[SimpleWormsNode], Any] = baseEndpoint
@@ -108,14 +92,7 @@ class TaxaEndpoints(using ec: ExecutionContext) extends Endpoints:
 
   val taxaChildrenServerEndpoint: ServerEndpoint[Any, Future] =
     taxaChildren.serverLogic((name: String) =>
-      Future {
-        def search(data: Data): Option[WormsNode] =
-          data.findNodeByName(name)
-
-        runNodeSearch(search, s"Unable to find `$name`")
-          .map(_.children.map(_.simple).sortBy(_.name).toList)
-
-      }
+      Future(StateController.childTaxa(name))
     )
 
   val all: List[ServerEndpoint[Any, Future]] = List(
@@ -125,12 +102,3 @@ class TaxaEndpoints(using ec: ExecutionContext) extends Endpoints:
     taxaParentServerEndpoint,
     taxaChildrenServerEndpoint
   )
-
-  private def runNodeSearch[A](search: Data => Option[A], errorMsg: String): Either[ErrorMsg, A] =
-    runSearch(search).fold(
-      e => Left(e),
-      node =>
-        node match
-          case Some(n) => Right(n)
-          case None    => Left(NotFound(errorMsg))
-    )
