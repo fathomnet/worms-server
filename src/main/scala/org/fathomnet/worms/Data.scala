@@ -44,6 +44,7 @@ final case class Data(rootNode: WormsNode):
     val map                        = SortedMap.newBuilder[String, WormsNode]
     def add(node: WormsNode): Unit =
       node.children.foreach(n => map += n.name -> node)
+      node.children.foreach(n => n.alternateNames.foreach(n => map += n -> node))
       node.children.foreach(add)
     add(rootNode)
     map.result()
