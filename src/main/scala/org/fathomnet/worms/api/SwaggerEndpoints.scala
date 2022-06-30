@@ -17,19 +17,20 @@ case class SwaggerEndpoints(nameEndpoints: NameEndpoints, taxaEndpoints: TaxaEnd
     SwaggerInterpreter()
       .fromEndpoints[Future](
         List(
-          nameEndpoints.namesEndpoint,
           nameEndpoints.namesCountEndpoint,
+          nameEndpoints.namesEndpoint,
           nameEndpoints.ancestorsEndpoint,
+          nameEndpoints.childrenEndpoint,
           nameEndpoints.descendantsEndpoint,
           nameEndpoints.parentEndpoint,
-          nameEndpoints.childrenEndpoint,
-          nameEndpoints.queryStartswithEndpoint,
           nameEndpoints.queryContainsEndpoint,
+          nameEndpoints.queryStartswithEndpoint,
+          nameEndpoints.synonymsEndpoint,
           taxaEndpoints.taxaAncestors,
-          taxaEndpoints.taxaDescendants,
-          taxaEndpoints.taxaParent,
           taxaEndpoints.taxaChildren,
-          taxaEndpoints.taxaInfo
+          taxaEndpoints.taxaDescendants,
+          taxaEndpoints.taxaInfo,
+          taxaEndpoints.taxaParent
         ),
         AppConfig.Name,
         AppConfig.Version
