@@ -76,7 +76,7 @@ object Main:
                    .addEndpoints(allEndpoints)
                    .start()
       _       <- Future {
-                   println("Go to http://localhost:8080/docs to open SwaggerUI. Press any key to exit.")
+                   println(s"Go to http://localhost:${port}/docs to open SwaggerUI. [ctrl]-C to exit.")
                    StdIn.readLine()
                  }
       stop    <- binding.stop()
