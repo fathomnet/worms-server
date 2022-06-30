@@ -29,12 +29,13 @@ object Dependencies {
 
   lazy val slf4jJdk     = "org.slf4j"      % "slf4j-jdk-platform-logging"   % "2.0.0-alpha7"
 
-  private val tapirVersion  = "1.0.0"
+  private val tapirVersion  = "1.0.1"
   lazy val tapirStubServer  = "com.softwaremill.sttp.tapir" %% "tapir-sttp-stub-server" % tapirVersion
   lazy val tapirSwagger     = "com.softwaremill.sttp.tapir" %% "tapir-swagger-ui-bundle" % tapirVersion
   lazy val tapirCirce       = "com.softwaremill.sttp.tapir" %% "tapir-json-circe" % tapirVersion
   lazy val tapirCirceClient = "com.softwaremill.sttp.client3" %% "circe" % "3.6.2"
   lazy val tapirNetty       = "com.softwaremill.sttp.tapir" %% "tapir-netty-server" % tapirVersion
+  lazy val tapirVertx       = "com.softwaremill.sttp.tapir" %% "tapir-vertx-server" % tapirVersion
       // "com.typesafe.scala-logging" %% "scala-logging" % "3.9.4",
       // "ch.qos.logback" % "logback-classic" % "1.2.11",
   

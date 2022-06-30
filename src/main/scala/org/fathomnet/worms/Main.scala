@@ -25,6 +25,10 @@ import scala.io.StdIn
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 import scala.concurrent.Future
+import _root_.io.vertx.core.Vertx
+import _root_.io.vertx.ext.web.Router
+import sttp.tapir.server.vertx.VertxFutureServerInterpreter
+import sttp.tapir.server.vertx.VertxFutureServerInterpreter.*
 
 @Command(
   description = Array("The Worms Server"),
@@ -57,8 +61,32 @@ object Main:
   def main(args: Array[String]): Unit =
     new CommandLine(new MainRunner()).execute(args: _*)
 
+  // def run(port: Int, wormsDir: Path): Unit =
+  //   log.atInfo.log(s"Starting up ${AppConfig.Name} v${AppConfig.Version}")
+
+  //   // Lood data off main thread
+  //   given executionContext: ExecutionContext =
+  //     CustomExecutors.newFixedThreadPoolExecutor(20).asScala
+  //   executionContext.execute(() => State.data = WormsLoader.load(wormsDir).map(n => Data(n)))
+
+  //   val nameEndpoints    = NameEndpoints()
+  //   val taxaEndpoints    = TaxaEndpoints()
+  //   val swaggerEndpoints = SwaggerEndpoints(nameEndpoints, taxaEndpoints)
+  //   val allEndpoints     = nameEndpoints.all ++ taxaEndpoints.all ++ swaggerEndpoints.all
+
+  //   val program = for
+  //     binding <- NettyFutureServer()
+  //                  .port(port)
+  //                  .addEndpoints(allEndpoints)
+  //                  .start()
+  //     stop    <- binding.stop()
+  //   yield stop
+
+
+  //   Await.result(program, Duration.Inf)
+
   def run(port: Int, wormsDir: Path): Unit =
-    log.atInfo.log(s"Starting up ${AppConfig.Name} v${AppConfig.Version}")
+    log.atInfo.log(s"Starting up ${AppConfig.Name} v${AppConfig.Version} on port $port")
 
     // Lood data off main thread
     given executionContext: ExecutionContext =
@@ -70,16 +98,15 @@ object Main:
     val swaggerEndpoints = SwaggerEndpoints(nameEndpoints, taxaEndpoints)
     val allEndpoints     = nameEndpoints.all ++ taxaEndpoints.all ++ swaggerEndpoints.all
 
-    val program = for
-      binding <- NettyFutureServer()
-                   .port(port)
-                   .addEndpoints(allEndpoints)
-                   .start()
-      _       <- Future {
-                   println(s"Go to http://localhost:${port}/docs to open SwaggerUI. [ctrl]-C to exit.")
-                   StdIn.readLine()
-                 }
-      stop    <- binding.stop()
-    yield stop
+    val vertx = Vertx.vertx()
+    val server = vertx.createHttpServer()
+    val router = Router.router(vertx)
 
-    Await.result(program, Duration.Inf)
+    for 
+      endpoint <- allEndpoints
+    do 
+      val attach = VertxFutureServerInterpreter().route(endpoint)
+      attach(router)
+
+    Await.result(server.requestHandler(router).listen(port).asScala, Duration.Inf)
+    

@@ -73,6 +73,7 @@ lazy val root = project
       tapirCirce,
       tapirCirceClient % Test,
       tapirNetty,
+      tapirVertx,
       typesafeConfig,
       zio
     ),
