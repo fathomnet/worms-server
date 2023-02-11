@@ -41,12 +41,23 @@ final case class WormsNode(
   lazy val names: Seq[String] =
     (this.name +: this.alternateNames.sorted).toSeq
 
+  /**
+    * A version of this node with no children
+    */
   lazy val simple: SimpleWormsNode = SimpleWormsNode(
     name = this.name,
     rank = this.rank,
     aphiaId = this.aphiaId,
     alternateNames = this.alternateNames
   )
+
+  /**
+   * The maximum Aphia ID of this node and all its descendants
+   */
+  lazy val maxAphiaId: Long =
+    this.children.foldLeft(this.aphiaId) { (acc, child) =>
+      acc.max(child.maxAphiaId)
+    }
 
 object WormsNodeBuilder:
 
