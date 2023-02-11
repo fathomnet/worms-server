@@ -4,7 +4,7 @@ import java.nio.file.Paths
 
 class ExtendedLoaderSuite extends munit.FunSuite:
 
-  private val sample = getClass.getResource("/extended_tree_sample.csv").getPath
+  private val sample = getClass.getResource("/extended_tree_sample1.csv").getPath
   
   test("from") {
     val a = "1,2,foo;bar;baz bot"
