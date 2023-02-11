@@ -2,7 +2,7 @@ import sbt._
 
 object Dependencies {
 
-  private val circeVersion = "0.14.2"
+  private val circeVersion = "0.14.4"
   lazy val circeCore       = "io.circe" %% "circe-core"    % circeVersion
   lazy val circeGeneric    = "io.circe" %% "circe-generic" % circeVersion
   lazy val circeParser     = "io.circe" %% "circe-parser"  % circeVersion
@@ -18,18 +18,18 @@ object Dependencies {
   lazy val jsoniterCore =  "com.github.plokhotnyuk.jsoniter-scala" %% "jsoniter-scala-core"   % jsoniterVersion
   lazy val jsoniterMacros = "com.github.plokhotnyuk.jsoniter-scala" %% "jsoniter-scala-macros" % jsoniterVersion
 
-  lazy val logback  = "ch.qos.logback"               % "logback-classic" % "1.3.0-alpha16"
+  lazy val logback  = "ch.qos.logback"               % "logback-classic" % "1.4.5"
   lazy val methanol = "com.github.mizosoft.methanol" % "methanol"        % "1.7.0"
-  lazy val munit    = "org.scalameta"               %% "munit"           % "1.0.0-M5"
-  lazy val picocli  = "info.picocli"                 % "picocli"         % "4.6.3"
+  lazy val munit    = "org.scalameta"               %% "munit"           % "1.0.0-M7"
+  lazy val picocli  = "info.picocli"                 % "picocli"         % "4.7.1"
 
   private val scalatraVersion = "2.8.2"
   lazy val scalatra           = ("org.scalatra" %% "scalatra"      % scalatraVersion).cross(CrossVersion.for3Use2_13)
   lazy val scalatraJson       = ("org.scalatra" %% "scalatra-json" % scalatraVersion).cross(CrossVersion.for3Use2_13)
 
-  lazy val slf4jJdk     = "org.slf4j"      % "slf4j-jdk-platform-logging"   % "2.0.0-alpha7"
+  lazy val slf4jJdk     = "org.slf4j"      % "slf4j-jdk-platform-logging"   % "2.0.6"
 
-  private val tapirVersion  = "1.0.1"
+  private val tapirVersion  = "1.2.8"
   lazy val tapirStubServer  = "com.softwaremill.sttp.tapir" %% "tapir-sttp-stub-server" % tapirVersion
   lazy val tapirSwagger     = "com.softwaremill.sttp.tapir" %% "tapir-swagger-ui-bundle" % tapirVersion
   lazy val tapirCirce       = "com.softwaremill.sttp.tapir" %% "tapir-json-circe" % tapirVersion
@@ -43,6 +43,6 @@ object Dependencies {
       
 
   lazy val typesafeConfig = "com.typesafe"   % "config"          % "1.4.2"
-  lazy val zio            = "dev.zio"       %% "zio"             % "1.0.15"
+  lazy val zio            = "dev.zio"       %% "zio"             % "2.0.6"
 
 }

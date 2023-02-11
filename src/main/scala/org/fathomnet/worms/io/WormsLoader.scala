@@ -10,6 +10,7 @@ import java.nio.file.Path
 import zio.ZIO
 import scala.util.Try
 import org.fathomnet.worms.etc.jdk.Logging.given
+import org.fathomnet.worms.etc.zio.ZioUtil
 import org.fathomnet.worms.{WormsNode, WormsNodeBuilder}
 import scala.concurrent.ExecutionContext
 
@@ -35,9 +36,9 @@ object WormsLoader:
 
     val app = for
       _               <- ZIO.succeed(log.atInfo.log(s"Loading WoRMS from $wormsDir"))
-      taxons          <- ZIO.fromTry(Try(Taxon.read(taxonPath.toString))).on(ec)
-      vernacularNames <- ZIO.fromTry(Try(VernacularName.read(vernacularNamePath.toString))).on(ec)
-      speciesProfiles <- ZIO.fromTry(Try(SpeciesProfile.read(speciesProfilePath.toString))).on(ec)
+      taxons          <- ZIO.fromTry(Try(Taxon.read(taxonPath.toString)))
+      vernacularNames <- ZIO.fromTry(Try(VernacularName.read(vernacularNamePath.toString)))
+      speciesProfiles <- ZIO.fromTry(Try(SpeciesProfile.read(speciesProfilePath.toString)))
       wormsConcepts   <-
         ZIO.fromTry(Try(WormsConcept.build(taxons, vernacularNames, speciesProfiles).toList))
       mutableRoot     <- ZIO.fromTry(Try(MutableWormsNodeBuilder.fathomNetTree(wormsConcepts)))
@@ -45,12 +46,6 @@ object WormsLoader:
       _               <- ZIO.succeed(log.atInfo.log(s"Loaded WoRMS from $wormsDir"))
     yield Some(root)
 
-    val runtime = zio.Runtime.default
-    runtime.unsafeRun(
-      app.catchAll(t =>
-        ZIO.succeed {
-          log.atError.withCause(t).log(t.getMessage)
-          None
-        }
-      )
-    )
+    ZioUtil.safeRun(app).getOrElse(None)
+
+ 
