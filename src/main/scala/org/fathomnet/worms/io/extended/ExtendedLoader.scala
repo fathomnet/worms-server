@@ -35,21 +35,14 @@ object ExtendedLoader:
    * @param ec
    * @return
    */
-  def load(extendedFile: Path): Option[WormsNode] = 
+  def load(extendedFile: Path): Option[WormsNode] =
     val wormsConcepts = read(extendedFile.toString)
-    val tree = MutableWormsNodeBuilder.buildTree(wormsConcepts)
+    val tree          = MutableWormsNodeBuilder.buildTree(wormsConcepts)
     Option(WormsNodeBuilder.from(tree))
 
-
   def read(file: String): Seq[WormsConcept] =
-    // Skip the header row
     val t = Using(scala.io.Source.fromFile(file)) { source =>
-      val nodes = for
-        row <- source.getLines()
-        concept <- from(row)
-      yield concept
-      // println(nodes.toSeq)
-      nodes.toSeq
+      source.getLines().flatMap(from).toSeq
     }
     t match
       case scala.util.Success(s) => s
@@ -67,7 +60,7 @@ object ExtendedLoader:
       val conceptNames =
         WormsConceptName(names.head, true) +: names.tail.map(WormsConceptName(_, false))
       Some(WormsConcept(cols(0).toInt, parentId, conceptNames.toIndexedSeq, ""))
-    catch 
-      case NonFatal(e) => 
+    catch
+      case NonFatal(e) =>
         log.atWarn.withCause(e).log(s"Failed to parse row: $row")
         None
