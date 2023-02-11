@@ -47,4 +47,5 @@ class CombinedTreesSuite extends munit.FunSuite:
     assert(b0.isDefined)
     assert(b1.isDefined)
     assertEquals(b1.get.aphiaId, b0.get.aphiaId + node1.maxAphiaId)
+    println(combined)
   }
