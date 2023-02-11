@@ -47,5 +47,3 @@ object WormsLoader:
     yield Some(root)
 
     ZioUtil.safeRun(app).getOrElse(None)
-
- 

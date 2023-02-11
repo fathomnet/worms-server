@@ -82,7 +82,6 @@ object Main:
   //     stop    <- binding.stop()
   //   yield stop
 
-
   //   Await.result(program, Duration.Inf)
 
   def run(port: Int, wormsDir: Path): Unit =
@@ -98,15 +97,12 @@ object Main:
     val swaggerEndpoints = SwaggerEndpoints(nameEndpoints, taxaEndpoints)
     val allEndpoints     = nameEndpoints.all ++ taxaEndpoints.all ++ swaggerEndpoints.all
 
-    val vertx = Vertx.vertx()
+    val vertx  = Vertx.vertx()
     val server = vertx.createHttpServer()
     val router = Router.router(vertx)
 
-    for 
-      endpoint <- allEndpoints
-    do 
+    for endpoint <- allEndpoints do
       val attach = VertxFutureServerInterpreter().route(endpoint)
       attach(router)
 
     Await.result(server.requestHandler(router).listen(port).asScala, Duration.Inf)
-    
