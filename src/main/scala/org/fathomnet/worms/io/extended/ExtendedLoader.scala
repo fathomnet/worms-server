@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) Monterey Bay Aquarium Research Institute 2022
+ *
+ * worms-server code is licensed under the MIT license.
+ */
+
 package org.fathomnet.worms.io.extended
 
 import scala.concurrent.ExecutionContext
@@ -52,7 +58,7 @@ object ExtendedLoader:
 
   def from(row: String): Option[WormsConcept] =
     try
-      val cols         = row.split(",")
+      val cols         = row.split(",").map(_.trim)
       val parentId     = if cols(1).isBlank() then None else Some(cols(1).toLong)
       val names        = cols(2)
         .split(";")

@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) Monterey Bay Aquarium Research Institute 2022
+ *
+ * worms-server code is licensed under the MIT license.
+ */
+
 package org.fathomnet.worms.io.extended
 
 import org.fathomnet.worms.WormsNode
@@ -22,30 +28,37 @@ class CombinedTreesSuite extends munit.FunSuite:
   }
 
   test("combine") {
+    
+    val root = WormsNode("object", "", 1L, Nil, Nil)
+    
     val sample1 = getClass.getResource("/extended_tree_sample1.csv").getPath
-    val sample2 = getClass.getResource("/extended_tree_sample2.csv").getPath
     val opt1 = ExtendedLoader.load(Paths.get(sample1))
-    val opt2 = ExtendedLoader.load(Paths.get(sample2))
     assert(opt1.isDefined)
-    assert(opt2.isDefined)
     val node1 = opt1.get
+    
+    val sample2 = getClass.getResource("/extended_tree_sample2.csv").getPath
+    val opt2 = ExtendedLoader.load(Paths.get(sample2))
+    assert(opt2.isDefined)
     val node2 = opt2.get
 
-    val root = WormsNode("object", "", 0L, Nil, Nil)
-    val combined = CombineTrees.combine(root, Seq(node1, node2))
-    assertEquals(combined.aphiaId, 0L)
+    val combined = CombineTrees.combine(root, Seq(node1, node2), root.maxAphiaId)
+    assertEquals(combined.aphiaId, 1L)
     assertEquals(combined.children.size, 2)
     
     val a0 = node1.find("Odor Pump")
     val a1 = combined.find("Odor Pump")
     assert(a0.isDefined)
     assert(a1.isDefined)
-    assertEquals(a1.get.aphiaId, a0.get.aphiaId)
+    // The first tree added. It's keys are incremented by the maxAphiaId of the root node.
+    val a0id = -(a0.get.aphiaId + root.maxAphiaId)
+    assertEquals(a1.get.aphiaId, a0id)
 
     val b0 = node2.find("Gonatus")
     val b1 = combined.find("Gonatus")
     assert(b0.isDefined)
     assert(b1.isDefined)
-    assertEquals(b1.get.aphiaId, b0.get.aphiaId + node1.maxAphiaId)
+    // The second tree added. It's keys are incremented by the maxAphiaId of the root node + the maxAphiaId of the first tree.
+    val b0id = -(b0.get.aphiaId + node1.maxAphiaId + root.maxAphiaId)
+    assertEquals(b1.get.aphiaId, b0id)
     // println(combined)
   }
