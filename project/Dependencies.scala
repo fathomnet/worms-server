@@ -2,7 +2,7 @@ import sbt._
 
 object Dependencies {
 
-  private val circeVersion = "0.14.4"
+  private val circeVersion = "0.14.1"
   lazy val circeCore       = "io.circe" %% "circe-core"    % circeVersion
   lazy val circeGeneric    = "io.circe" %% "circe-generic" % circeVersion
   lazy val circeParser     = "io.circe" %% "circe-parser"  % circeVersion

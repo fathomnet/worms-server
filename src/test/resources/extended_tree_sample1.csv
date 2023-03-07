@@ -1,0 +1,11 @@
+id,parentId,names
+1000,,equipment
+1001,1000,platform
+1002,1000,Clathrate Bucket
+1003,1000,Benthic Instrument Node;BIN
+1004,1000,TPC;temperature, pressure, conductivity sensor
+1005,1000,Wax corer
+1006,1000,site marker
+1007,1000,Dissolution Ball
+1008,1001,Odor Pump
+1009,1006,Remote Instrument Node;RIN

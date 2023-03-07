@@ -1,0 +1,86 @@
+id,parentId,names
+1000,,Teuthoidea;squid;Teuthida;Theudoidea
+1001,1000,Myopsida
+1002,1001,Loliginidae
+1003,1002,Doryteuthis;Loligo
+1004,1002,Doryteuthis (Amerigo)
+1005,1004,Doryteuthis (Amerigo) opalescens;Loligo opalescens;Doryteuthis opalescens;California market squid
+1006,1000,Pholidoteuthidae
+1007,1006,Pholidoteuthis
+1008,1007,Pholidoteuthis boschmai
+1009,1000,Oegopsida
+1010,1009,Octopoteuthidae;octopus-squid family
+1011,1010,Octopoteuthis
+1012,1011,Octopoteuthis deletron;octopus squid
+1013,1010,Taningia
+1014,1013,Taningia danae
+1015,1009,Onychoteuthidae
+1016,1015,Onychoteuthis
+1017,1016,Onychoteuthis borealijaponica;boreal clubhook squid
+1018,1015,Onykia;Moroteuthis
+1019,1018,Onykia robusta;Moroteuthis robusta;robust clubhook squid
+1020,1009,Histioteuthidae
+1021,1020,Histioteuthis
+1022,1021,Histioteuthis heteropsis;cockeyed squid
+1023,1020,Stigmatoteuthis
+1024,1023,Stigmatoteuthis dofleini
+1025,1009,Gonatidae
+1026,1025,Berryteuthis
+1027,1026,Berryteuthis anonychus
+1028,1025,Gonatus
+1029,1028,Gonatus onyx;black eyed squid;clawed armhook squid
+1030,1028,Gonatus berryi
+1031,1028,Gonatus pyros
+1032,1025,Gonatopsis
+1033,1032,Gonatopsis borealis
+1034,1032,Gonatopsis octopedatus
+1035,1009,Cranchiidae;lightbulb squid;cockatoo squid
+1036,1035,Taoniinae
+1037,1036,Teuthowenia
+1038,1037,Teuthowenia megalops;Cranchia megalops
+1039,1036,Galiteuthis
+1040,1039,Galiteuthis phyllura
+1041,1039,Galiteuthis pacifica
+1042,1036,Helicocranchia;Piglet squid
+1043,1036,Belonella
+1044,1043,Belonella borealis
+1045,1036,Taonius
+1046,1045,Taonius pavo
+1047,1045,Taonius borealis
+1048,1035,Cranchia
+1049,1048,Cranchia scabra
+1050,1035,Leachia
+1051,1050,Leachia danae
+1052,1035,Liocranchia
+1053,1009,Chiroteuthidae
+1054,1053,Chiroteuthis;lance squid;swordfish squid
+1055,1054,Chiroteuthis calyx
+1056,1053,Planctoteuthis
+1057,1056,Planctoteuthis oligobessa
+1058,1056,Planctoteuthis danae
+1059,1053,Grimalditeuthis
+1060,1059,Grimalditeuthis bonplandi
+1061,1009,Bathyteuthidae
+1062,1061,Bathyteuthis
+1063,1062,Bathyteuthis berryi
+1064,1062,Bathyteuthis abyssicola;Benthoteuthis
+1065,1009,Ommastrephidae
+1066,1065,Dosidicus
+1067,1066,Dosidicus gigas;Humboldt squid
+1068,1065,Nototodarus
+1069,1068,Nototodarus hawaiiensis;Hawaiian flying squid
+1070,1009,Magnapinnidae
+1071,1070,Magnapinna
+1072,1071,Magnapinna pacifica;Pacific bigfin squid;luria alada del Pacífico
+1073,1009,Enoploteuthidae
+1074,1073,Abraliopsis
+1075,1074,Abraliopsis (Boreabraliopsis) felis;Abraliopsis felis
+1076,1009,Ancistrocheiridae
+1077,1076,Ancistrocheirus
+1078,1077,Ancistrocheirus lesueurii
+1079,1009,Mastigoteuthidae
+1080,1079,Mastigoteuthis
+1081,1079,Mastigotragus;Mastigoteuthis pyrodes
+1082,1009,Pyroteuthidae;fire squid
+1083,1082,Pterygioteuthis
+1084,1083,Pterygioteuthis hoylei

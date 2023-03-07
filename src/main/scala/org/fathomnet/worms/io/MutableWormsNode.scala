@@ -41,7 +41,9 @@ object MutableWormsNodeBuilder:
       parentId    <- c.parentId
       parentNode  <- map.get(parentId)
     do parentNode.children.append(conceptNode)
-    map.get(1L).get
+    // In worms, the root node has an aphiaId of 1
+    val minAphiaId = wormsConcepts.map(_.id).min
+    map.get(minAphiaId).get
 
   /**
    * Given the full tree, return only the animalia node
