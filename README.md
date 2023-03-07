@@ -94,10 +94,6 @@ This is a normal sbt project. You can compile code with `sbt compile`, run it wi
 
 ### Deployment
 
-#### MBARI
-
-This repo contains a `build.sh` script that can build and stage the application to [MBARI's docker hub](https://hub.docker.com/repository/docker/mbari/worms-server). To run this application, download and extract the WoRMS download on eione.mbari.org. Eione has permissions from WoRMS to fetch their dataset. 
-
 #### Anywhere
 
 The server can be run using:
@@ -107,6 +103,43 @@ docker run --name worms -d -p 8080:8080 -v "/local/path/to/worms/download/dir":"
 ```
 
 If you are an non-MBARI user and wish to run your own server, contact WoRMS for access to their database/text download. Once you have access, just download the worms zip file and extract it. You can easily run your own server with the above docker command. Your worms data dir, which contains the files `taxon.txt`, `vernacularname.txt`, and `speciesprofile.txt`, must be mounted into the container as `/opt/worms`.
+
+#### MBARI
+
+This repo contains a `build.sh` script that can build and stage the application to [MBARI's docker hub](https://hub.docker.com/repository/docker/mbari/worms-server). To run this application, download and extract the WoRMS download on eione.mbari.org. Eione has permissions from WoRMS to fetch their dataset.
+
+In addition, we are merging in the `equipment` and `geological features` branches of the VARS Knowledgebase with the WoRMS tree. Internally, you can fetch the data in the correct format using:
+
+```bash
+docker run mbari/fathomnet-support kb-branch-to-worms-format \
+  "http://dsg.mbari.org/kb/v1/phylogeny/down/equipment" 1000 > /path/to/worms/kb_equipment.csv
+
+docker run mbari/fathomnet-support kb-branch-to-worms-format "http://dsg.mbari.org/kb/v1/phylogeny/down/geological%20feature" 10000 > /path/to/worms/kb_geological_feature.csv
+```
+
+With those new CSV files in hand, the easiest way to include them is to drop them in the same directory as the worms files. Then launch the server like so:
+
+```bash
+docker run --name worms -d -p 8080:8080 -v "/local/path/to/worms/download/dir":"/opt/worms" mbari/worms-server /opt/worms/kb_equipment.csv /opt/worms/kb_geological_feature.csv
+```
+
+The format of the CSV files is:
+
+```csv
+id,parentId,names
+1000,,equipment
+1001,1000,platform
+1002,1000,Clathrate Bucket
+1003,1000,Benthic Instrument Node;BIN
+1004,1000,TPC;temperature, pressure, conductivity sensor
+1005,1000,Wax corer
+1006,1000,site marker
+1007,1000,Dissolution Ball
+1008,1001,Odor Pump
+1009,1006,Remote Instrument Node;RIN
+```
+
+The values of the id aren't particularly important. On load they will be incremented so that they don't clash with any ids in worms or other trees. Once the trees are merged, all non-worms ids will be set to negative values to indicate they are not valid aphiaIds.
 
 ### Notes
 
