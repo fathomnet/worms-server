@@ -114,13 +114,17 @@ In addition, we are merging in the `equipment` and `geological features` branche
 docker run mbari/fathomnet-support kb-branch-to-worms-format \
   "http://dsg.mbari.org/kb/v1/phylogeny/down/equipment" 1000 > /path/to/worms/kb_equipment.csv
 
-docker run mbari/fathomnet-support kb-branch-to-worms-format "http://dsg.mbari.org/kb/v1/phylogeny/down/geological%20feature" 10000 > /path/to/worms/kb_geological_feature.csv
+docker run mbari/fathomnet-support kb-branch-to-worms-format \
+  "http://dsg.mbari.org/kb/v1/phylogeny/down/geological%20feature" 10000 > /path/to/worms/kb_geological_feature.csv
 ```
 
 With those new CSV files in hand, the easiest way to include them is to drop them in the same directory as the worms files. Then launch the server like so:
 
 ```bash
-docker run --name worms -d -p 8080:8080 -v "/local/path/to/worms/download/dir":"/opt/worms" mbari/worms-server /opt/worms/kb_equipment.csv /opt/worms/kb_geological_feature.csv
+docker run --name worms -d \
+  -p 8080:8080 \
+  -v "/local/path/to/worms/download/dir":"/opt/worms" \
+  mbari/worms-server /opt/worms/kb_equipment.csv /opt/worms/kb_geological_feature.csv
 ```
 
 The format of the CSV files is:
