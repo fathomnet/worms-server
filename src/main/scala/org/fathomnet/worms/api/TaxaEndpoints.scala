@@ -89,10 +89,21 @@ class TaxaEndpoints(using ec: ExecutionContext) extends Endpoints:
   val taxaChildrenServerEndpoint: ServerEndpoint[Any, Future] =
     taxaChildren.serverLogic((name: String) => Future(StateController.childTaxa(name)))
 
+  val taxaQueryStartswith: PublicEndpoint[String, ErrorMsg, List[SimpleWormsNode], Any] = baseEndpoint
+    .get
+    .in("taxa" / "query" / "startswith")
+    .in(path[String]("prefix"))
+    .out(jsonBody[List[SimpleWormsNode]])
+    .description("Returns a list of taxa that start with the given prefix.")
+
+  val taxaQueryStartswithEndpoint: ServerEndpoint[Any, Future] =
+    taxaQueryStartswith.serverLogic((prefix: String) => Future(StateController.taxaByNameStartingWith(prefix)))
+
   val all: List[ServerEndpoint[Any, Future]] = List(
     taxaDescendantsServerEndpoint,
     taxaAncestorsServerEndpoint,
     taxaInfoServerEndpoint,
     taxaParentServerEndpoint,
-    taxaChildrenServerEndpoint
+    taxaChildrenServerEndpoint,
+    taxaQueryStartswithEndpoint
   )

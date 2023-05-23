@@ -126,7 +126,7 @@ object Main:
         val newRoot = WormsNode("object", "", 0L, Nil, Nil)                
         val newBranches = treeFiles.flatMap(ExtendedLoader.load(_)).toSeq
         val trees = root +: newBranches
-        val combinedRoot = CombineTrees.combine(newRoot, trees, root.aphiaId)
+        val combinedRoot = CombineTrees.combine(newRoot, trees, root.maxAphiaId)
         // We need to reset the aphiaId to -1 so that it's obivious that the root is not a real aphiaId
         combinedRoot.copy(aphiaId = -1L)
 

@@ -138,4 +138,13 @@ object StateController:
     runNodeSearch(search, s"Unable to find `$name`")
       .map(_.children.map(_.simple).sortBy(_.name).toList)
 
+  def taxaByNameStartingWith(prefix: String): Either[ErrorMsg, List[SimpleWormsNode]] =
+    def search(data: Data): List[SimpleWormsNode] =
+      data.names
+        .filter(_.toLowerCase.startsWith(prefix.toLowerCase))
+        .flatMap(data.findNodeByName)
+        .map(_.simple)
+        .toList
+    runSearch(search)
+
 

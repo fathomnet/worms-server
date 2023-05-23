@@ -30,7 +30,8 @@ case class SwaggerEndpoints(nameEndpoints: NameEndpoints, taxaEndpoints: TaxaEnd
           taxaEndpoints.taxaChildren,
           taxaEndpoints.taxaDescendants,
           taxaEndpoints.taxaInfo,
-          taxaEndpoints.taxaParent
+          taxaEndpoints.taxaParent,
+          taxaEndpoints.taxaQueryStartswith
         ),
         AppConfig.Name,
         AppConfig.Version

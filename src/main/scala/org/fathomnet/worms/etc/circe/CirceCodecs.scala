@@ -13,6 +13,7 @@ import java.net.URL
 import org.fathomnet.worms.util.HexUtil
 import org.fathomnet.worms.{ErrorMsg, SimpleWormsNode, WormsNode}
 import org.fathomnet.worms.Page
+import java.net.URI
 
 /**
  * JSON codecs for use with Circe. Usage:
@@ -36,7 +37,7 @@ object CirceCodecs:
 
   given urlDecoder: Decoder[URL] = Decoder
     .decodeString
-    .emapTry(str => Try(new URL(str)))
+    .emapTry(str => Try(URI.create(str).toURL()))
   given urlEncoder: Encoder[URL] = Encoder
     .encodeString
     .contramap(_.toString)
