@@ -33,7 +33,6 @@ import org.fathomnet.worms.io.extended.CombineTrees.combine
 import org.fathomnet.worms.io.extended.CombineTrees
 import org.fathomnet.worms.io.extended.ExtendedLoader
 
-
 @Command(
   description = Array("The Worms Server"),
   name = "main",
@@ -42,19 +41,24 @@ import org.fathomnet.worms.io.extended.ExtendedLoader
 )
 class MainRunner extends Callable[Int]:
 
-  @Opt(names = Array("-p", "--port"), description = Array("The server port. Default is ${DEFAULT-VALUE}"))
+  @Opt(
+    names = Array("-p", "--port"),
+    description = Array("The server port. Default is ${DEFAULT-VALUE}")
+  )
   private var port: Int = Option(System.getenv("WORMS_PORT")).map(_.toInt).getOrElse(8080)
 
   // "/Users/brian/Downloads/worms"
   @Parameters(index = "0", description = Array("Path to the WoRMS data file directory"))
   var path: Path = _
 
-  @Parameters(index = "1..*", 
+  @Parameters(
+    index = "1..*",
     description = Array(
       "Paths to extra tree files (CSV with 3 columns: id, parentId, names).  [Optional]",
       "These will becombined with the main WoRMS tree. This will create a new root (object)",
       "All the nodes from these files will have synthetic aphiaIds with negative values."
-      ))
+    )
+  )
   var treeFiles: Array[Path] = Array.empty[Path]
 
   override def call(): Int =
@@ -123,15 +127,11 @@ object Main:
     WormsLoader.load(wormsDir).map { root =>
       if (treeFiles.nonEmpty)
         // Our new base. We use 0 as aphiaId so that the real aphiaIds are not incremented when the trees are combined
-        val newRoot = WormsNode("object", "", 0L, Nil, Nil)                
-        val newBranches = treeFiles.flatMap(ExtendedLoader.load(_)).toSeq
-        val trees = root +: newBranches
+        val newRoot      = WormsNode("object", "", 0L, Nil, Nil)
+        val newBranches  = treeFiles.flatMap(ExtendedLoader.load(_)).toSeq
+        val trees        = root +: newBranches
         val combinedRoot = CombineTrees.combine(newRoot, trees, root.maxAphiaId)
         // We need to reset the aphiaId to -1 so that it's obivious that the root is not a real aphiaId
         combinedRoot.copy(aphiaId = -1L)
-
-      else
-        root
+      else root
     }
-
-

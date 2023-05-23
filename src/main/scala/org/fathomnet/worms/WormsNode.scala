@@ -42,8 +42,8 @@ final case class WormsNode(
     (this.name +: this.alternateNames.sorted).toSeq
 
   /**
-    * A version of this node with no children
-    */
+   * A version of this node with no children
+   */
   lazy val simple: SimpleWormsNode = SimpleWormsNode(
     name = this.name,
     rank = this.rank,

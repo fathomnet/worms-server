@@ -140,11 +140,10 @@ object StateController:
 
   def taxaByNameStartingWith(prefix: String): Either[ErrorMsg, List[SimpleWormsNode]] =
     def search(data: Data): List[SimpleWormsNode] =
-      data.names
+      data
+        .names
         .filter(_.toLowerCase.startsWith(prefix.toLowerCase))
         .flatMap(data.findNodeByName)
         .map(_.simple)
         .toList
     runSearch(search)
-
-
