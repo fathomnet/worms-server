@@ -101,7 +101,7 @@ class TaxaEndpoints(using ec: ExecutionContext) extends Endpoints:
 
   val taxaQueryStartswithEndpoint: ServerEndpoint[Any, Future] =
     taxaQueryStartswith.serverLogic((prefix: String, rank: Option[String], parent: Option[String]) =>
-      Future(StateController.taxaByNameStartingWith(prefix))
+      Future(StateController.taxaByNameStartingWith(prefix, rank, parent))
     )
 
   val all: List[ServerEndpoint[Any, Future]] = List(
