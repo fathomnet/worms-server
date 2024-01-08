@@ -25,7 +25,7 @@ object MutableWormsNodeBuilder:
     trimTree(buildTree(filterFlattenedTree(wormsConcepts)))
 
   /**
-   * Given a list of WormsConcep, organize them into a tree structure. and return the root node.
+   * Given a list of WormsConcepts, organize them into a tree structure. and return the root node.
    * THis is the FULL worms tree
    * @param wormsConcepts
    *   WormsConcepts loaded from [[WormsLoader]]

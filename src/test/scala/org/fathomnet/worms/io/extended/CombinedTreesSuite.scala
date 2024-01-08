@@ -11,13 +11,12 @@ import java.nio.file.Paths
 
 class CombinedTreesSuite extends munit.FunSuite:
 
-  test("incrementAphiaId") {
+  test("incrementAphiaId"):
     val node = WormsNode("foo", "", 1000, Nil, Nil)
     val n = CombineTrees.incrementAphiaId(node, 1000)
     assertEquals(n.aphiaId, 2000L)
-  }
 
-  test("add") {
+  test("add"):
     val node1 = WormsNode("foo", "", 1000, Nil, Nil)
     val node2 = WormsNode("bar", "", 2000, Nil, Nil)
     val n = CombineTrees.add(node1, node2, 1000)
@@ -25,7 +24,6 @@ class CombinedTreesSuite extends munit.FunSuite:
     assertEquals(n.children.size, 1)
     assertEquals(n.children(0).aphiaId, 3000L)
     assertEquals(n.children(0).name, "bar")
-  }
 
   test("combine") {
     

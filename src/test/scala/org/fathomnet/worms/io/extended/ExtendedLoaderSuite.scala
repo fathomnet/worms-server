@@ -12,7 +12,7 @@ class ExtendedLoaderSuite extends munit.FunSuite:
 
   private val sample = getClass.getResource("/extended_tree_sample1.csv").getPath
   
-  test("from") {
+  test("from"):
     val a = "1,2,foo;bar;baz bot"
     val opt = ExtendedLoader.from(a)
     assert(opt.isDefined)
@@ -26,14 +26,12 @@ class ExtendedLoaderSuite extends munit.FunSuite:
     assertEquals(e.names(1).isPrimary, false)
     assertEquals(e.names(2).name, "baz bot")
     assertEquals(e.names(2).isPrimary, false)
-  }
 
-  test("read") {
+  test("read"):
     val wormsConcepts = ExtendedLoader.read(sample)
     assertEquals(wormsConcepts.size, 10)
-  }
 
-  test("load") {
+  test("load"):
     val opt = ExtendedLoader.load(Paths.get(sample))
     assert(opt.isDefined)
     val worms = opt.get
@@ -43,4 +41,3 @@ class ExtendedLoaderSuite extends munit.FunSuite:
     assertEquals(worms.children.size, 7)
     println(worms.descendantNames)
     assertEquals(worms.descendantNames.size, 10)
-  }

@@ -138,12 +138,28 @@ object StateController:
     runNodeSearch(search, s"Unable to find `$name`")
       .map(_.children.map(_.simple).sortBy(_.name).toList)
 
-  def taxaByNameStartingWith(prefix: String): Either[ErrorMsg, List[SimpleWormsNode]] =
+  def taxaByNameStartingWith(prefix: String, rank: Option[String] = None, parent:Option[String] = None): Either[ErrorMsg, List[SimpleWormsNode]] =
+
     def search(data: Data): List[SimpleWormsNode] =
-      data
-        .names
-        .filter(_.toLowerCase.startsWith(prefix.toLowerCase))
-        .flatMap(data.findNodeByName)
-        .map(_.simple)
-        .toList
+      val rawNames = parent match
+        case None => Right(data.names.toList)
+        case Some(value) => descendantNames(value)
+
+      rawNames match
+        case Left(e) => throw new RuntimeException(e.message)
+        case Right(names) =>
+          names.filter(_.toLowerCase.startsWith(prefix.toLowerCase))
+            .flatMap(data.findNodeByName)
+            .map(_.simple)
+            .filter(node => rank match {
+              case None => true
+              case Some(value) => node.rank == value
+            })
+
+      // data
+      //   .names
+      //   .filter(_.toLowerCase.startsWith(prefix.toLowerCase))
+      //   .flatMap(data.findNodeByName)
+      //   .map(_.simple)
+      //   .toList
     runSearch(search)
