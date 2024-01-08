@@ -138,26 +138,35 @@ object StateController:
     runNodeSearch(search, s"Unable to find `$name`")
       .map(_.children.map(_.simple).sortBy(_.name).toList)
 
-  def taxaByNameStartingWith(prefix: String, rank: Option[String] = None, parent:Option[String] = None): Either[ErrorMsg, List[SimpleWormsNode]] =
+  def taxaByNameStartingWith(prefix: String, rankOpt: Option[String] = None, parentOpt:Option[String] = None): Either[ErrorMsg, List[SimpleWormsNode]] =
 
     def search(data: Data): List[SimpleWormsNode] =
-      val rawNames = parent match
-        case None => Right(data.names.toList)
-        case Some(value) => descendantNames(value)
 
-      val lowerCaseRank = rank.map(_.toLowerCase)
-
-      rawNames match
-        case Left(e) => throw new RuntimeException(e.message)
-        case Right(names) =>
-          names.filter(_.toLowerCase.startsWith(prefix.toLowerCase))
+      val candidateNodes = parentOpt match
+        case None => 
+          // Fast path
+          data
+            .names
+            .filter(_.toLowerCase.startsWith(prefix.toLowerCase))
             .flatMap(data.findNodeByName)
             .map(_.simple)
-            .filter(node => lowerCaseRank match {
-              case None => true
-              case Some(value) => node.rank.toLowerCase == value
-            })
+            .toList
+        case Some(parent) =>
+          data.findNodeByName(parent) match
+            case None => Nil
+            case Some(parentNode) =>
+              parentNode.descendants
+                .filter(node => node.names.map(_.toLowerCase).exists(_.startsWith(prefix.toLowerCase)))
+                .map(_.simple)
+                .toList
 
+        rankOpt match
+            case None => candidateNodes
+            case Some(rank) => 
+              val lowerCaseRank = rank.toLowerCase
+              candidateNodes.filter(_.rank.toLowerCase == lowerCaseRank)
+              
+      // ORIGINAL CODE
       // data
       //   .names
       //   .filter(_.toLowerCase.startsWith(prefix.toLowerCase))

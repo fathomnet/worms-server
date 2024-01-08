@@ -38,6 +38,16 @@ final case class WormsNode(
       acc ++ child.descendantNames
     }
 
+  lazy val descendants: Seq[WormsNode] =
+    this.children.foldLeft(Seq(this): Seq[WormsNode]) { (acc, child) =>
+      acc ++ child.descendants
+    }
+
+  // lazy val descendantNamesWithVernacular: Seq[String] =
+  //   this.children.foldLeft(this.names: Seq[String]) { (acc, child) =>
+  //     acc ++ child.descendantNamesWithVernacular
+  //   }
+
   lazy val names: Seq[String] =
     (this.name +: this.alternateNames.sorted).toSeq
 
