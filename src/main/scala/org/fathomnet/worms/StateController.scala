@@ -145,15 +145,17 @@ object StateController:
         case None => Right(data.names.toList)
         case Some(value) => descendantNames(value)
 
+      val lowerCaseRank = rank.map(_.toLowerCase)
+
       rawNames match
         case Left(e) => throw new RuntimeException(e.message)
         case Right(names) =>
           names.filter(_.toLowerCase.startsWith(prefix.toLowerCase))
             .flatMap(data.findNodeByName)
             .map(_.simple)
-            .filter(node => rank match {
+            .filter(node => lowerCaseRank match {
               case None => true
-              case Some(value) => node.rank == value
+              case Some(value) => node.rank.toLowerCase == value
             })
 
       // data
