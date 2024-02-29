@@ -17,11 +17,12 @@ final case class WormsConceptName(name: String, isPrimary: Boolean = true)
 
 final case class WormsConcept(
     id: Long,
+    acceptedId: Long,
     parentId: Option[Long],
     names: Seq[WormsConceptName],
     rank: String,
     isMarine: Boolean = false,
-    isExtinct: Boolean = false
+    isExtinct: Boolean = false,
 )
 
 object WormsConcept:
@@ -36,7 +37,8 @@ object WormsConcept:
   ): Seq[WormsConcept] =
     val concepts = mutable.Map[Long, WormsConcept]()
     for t <- taxons do
-      val wc = WormsConcept(t.id, t.parentId, Seq(WormsConceptName(t.scientificName)), t.rank)
+      val acceptedId = t.acceptedId.getOrElse(t.id)
+      val wc = WormsConcept(t.id, acceptedId, t.parentId, Seq(WormsConceptName(t.scientificName)), t.rank)
       concepts(t.id) = wc
 
     for v <- vernacularNames do

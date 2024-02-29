@@ -65,7 +65,8 @@ object ExtendedLoader:
         .map(_.trim)
       val conceptNames =
         WormsConceptName(names.head, true) +: names.tail.map(WormsConceptName(_, false))
-      Some(WormsConcept(cols(0).toInt, parentId, conceptNames.toIndexedSeq, ""))
+      val aphiaId = cols(0).toLong
+      Some(WormsConcept(aphiaId, aphiaId, parentId, conceptNames.toIndexedSeq, ""))
     catch
       case NonFatal(e) =>
         log.atWarn.withCause(e).log(s"Failed to parse row: $row")

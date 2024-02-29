@@ -127,7 +127,7 @@ object Main:
     WormsLoader.load(wormsDir).map { root =>
       if (treeFiles.nonEmpty)
         // Our new base. We use 0 as aphiaId so that the real aphiaIds are not incremented when the trees are combined
-        val newRoot      = WormsNode("object", "", 0L, Nil, Nil)
+        val newRoot      = WormsNode("object", "", 0L, 0L, Nil, Nil)
         val newBranches  = treeFiles.flatMap(ExtendedLoader.load(_)).toSeq
         val trees        = root +: newBranches
         val combinedRoot = CombineTrees.combine(newRoot, trees, root.maxAphiaId)

@@ -9,6 +9,7 @@ package org.fathomnet.worms
 import scala.util.control.NonFatal
 import org.fathomnet.worms.etc.jdk.Logging.given
 import scala.collection.mutable.ListMap
+import cats.conversions.all
 
 object StateController:
 
@@ -61,6 +62,25 @@ object StateController:
     def search(data: Data): List[String] =
       data.names.filter(_.toLowerCase.contains(glob.toLowerCase)).toList
     runSearch(search)
+
+  def findNamesByAphiaId(aphiaId: Long): Either[ErrorMsg, Names] =
+    def search(data: Data): Option[Names] =
+      val allNodes = data.namesMap.values
+      val existing = allNodes.find(n => n.aphiaId == aphiaId)
+      existing match
+        case None => None
+        case Some(node) =>
+          val accepted = if (node.aphiaId == node.acceptedAphiaId) 
+            Some(node)
+          else 
+            allNodes.find(n => n.aphiaId == node.acceptedAphiaId)
+          val names = accepted match
+            case None => Names(node.aphiaId, node.name, node.name, node.alternateNames)
+            case Some(value) => Names(node.aphiaId, node.name, value.name, node.alternateNames ++ value.alternateNames)
+
+          Option(names)
+
+    runNodeSearch(search, s"Unable to find a name with aphiaId: $aphiaId")
 
   def descendantNames(name: String): Either[ErrorMsg, List[String]] =
     def search(data: Data): List[String] =

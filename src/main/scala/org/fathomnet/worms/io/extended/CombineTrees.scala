@@ -38,8 +38,9 @@ object CombineTrees:
     rootNode.copy(children = children)
 
   def incrementAphiaId(node: WormsNode, maxAphiaId: Long): WormsNode =
+    val newAphiaId = node.aphiaId + maxAphiaId
     node.copy(
-      aphiaId = node.aphiaId + maxAphiaId,
+      aphiaId = newAphiaId,
       children = node.children.map(incrementAphiaId(_, maxAphiaId))
     )
 
@@ -55,7 +56,10 @@ object CombineTrees:
    *   A new tree with fake aphiaId's flipped to negative
    */
   def flipFakeAphiaId(node: WormsNode, maxAphiaId: Long): WormsNode =
+    val newAphiaId = if (node.aphiaId > maxAphiaId) -node.aphiaId else node.aphiaId
+    val newAcceptedAphiaId = if (newAphiaId < 0) newAphiaId else node.acceptedAphiaId
     node.copy(
-      aphiaId = if (node.aphiaId > maxAphiaId) -node.aphiaId else node.aphiaId,
+      aphiaId = newAphiaId,
+      acceptedAphiaId = newAcceptedAphiaId,
       children = node.children.map(n => flipFakeAphiaId(n, maxAphiaId))
     )

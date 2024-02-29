@@ -14,6 +14,7 @@ import org.fathomnet.worms.util.HexUtil
 import org.fathomnet.worms.{ErrorMsg, SimpleWormsNode, WormsNode}
 import org.fathomnet.worms.Page
 import java.net.URI
+import org.fathomnet.worms.Names
 
 /**
  * JSON codecs for use with Circe. Usage:
@@ -47,6 +48,9 @@ object CirceCodecs:
 
   given Decoder[SimpleWormsNode] = deriveDecoder
   given Encoder[SimpleWormsNode] = deriveEncoder
+
+  given Decoder[Names] = deriveDecoder
+  given Encoder[Names] = deriveEncoder
 
   given Decoder[ErrorMsg] = deriveDecoder
   given Encoder[ErrorMsg] = deriveEncoder

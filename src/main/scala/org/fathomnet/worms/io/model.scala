@@ -31,17 +31,20 @@ final case class Taxon(
     taxonID: String,
     parentNameUsageID: Option[String],
     scientificName: String,
-    rank: String
+    rank: String,
+    acceptedNameUsageID: Option[String]
 ):
   val id       = taxonIDToKey(taxonID)
   val parentId = parentNameUsageID.map(taxonIDToKey)
+  val acceptedId = acceptedNameUsageID.map(taxonIDToKey)
 
 object Taxon:
   def from(row: String): Option[Taxon] =
     Try {
       val cols              = row.split("\t")
       val parentNameUsageID = if cols(3).isBlank then None else Some(cols(3))
-      Taxon(cols(0), parentNameUsageID, cols(5), cols(19))
+      val acceptedNameUsageID = if cols(2).isBlank then None else Some(cols(2))
+      Taxon(cols(0), parentNameUsageID, cols(5), cols(19), acceptedNameUsageID)
     }.toOption
 
   def read(file: String): List[Taxon] = readFile(file, Taxon.from)

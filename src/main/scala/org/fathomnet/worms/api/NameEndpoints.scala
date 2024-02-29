@@ -11,7 +11,7 @@ import sttp.tapir._
 import sttp.tapir.json.circe._
 import sttp.tapir.generic.auto._
 import io.circe.generic.auto._
-import org.fathomnet.worms.{Data, NotFound, Page, ServerError, State}
+import org.fathomnet.worms.{Data, Names, NotFound, Page, ServerError, State}
 import sttp.tapir.server.ServerEndpoint
 import scala.concurrent.Future
 import org.fathomnet.worms.ErrorMsg
@@ -53,6 +53,16 @@ class NameEndpoints(using ec: ExecutionContext) extends Endpoints:
 
   val namesCountServerEndpoint: ServerEndpoint[Any, Future] =
     namesCountEndpoint.serverLogic(Unit => Future.successful(StateController.countAllNames()))
+
+  val namesByAphiaId: PublicEndpoint[Long, ErrorMsg, Names, Any] = baseEndpoint
+    .get
+    .in("names" / "aphiaid")
+    .in(path[Long]("aphiaid"))
+    .out(jsonBody[Names])
+    .description("Returns the data for a name given its aphiaid.")
+
+  val namesByAphiaIdServerEndpoint: ServerEndpoint[Any, Future] =
+    namesByAphiaId.serverLogic(aphiaid => Future(StateController.findNamesByAphiaId(aphiaid)))
 
   // --/query/startswith/:prefix
   val queryStartswithEndpoint: PublicEndpoint[String, ErrorMsg, List[String], Any] = baseEndpoint
@@ -142,6 +152,7 @@ class NameEndpoints(using ec: ExecutionContext) extends Endpoints:
   override val all: List[ServerEndpoint[Any, Future]] = List(
     namesServerEndpoint,
     namesCountServerEndpoint,
+    namesByAphiaIdServerEndpoint,
     queryStartswithServerEndpoint,
     queryContainsServerEndpoint,
     descendantsServerEndpoint,

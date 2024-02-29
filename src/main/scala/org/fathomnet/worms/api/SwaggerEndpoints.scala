@@ -19,6 +19,7 @@ case class SwaggerEndpoints(nameEndpoints: NameEndpoints, taxaEndpoints: TaxaEnd
         List(
           nameEndpoints.namesCountEndpoint,
           nameEndpoints.namesEndpoint,
+          nameEndpoints.namesByAphiaId,
           nameEndpoints.ancestorsEndpoint,
           nameEndpoints.childrenEndpoint,
           nameEndpoints.descendantsEndpoint,

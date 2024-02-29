@@ -7,6 +7,7 @@
 package org.fathomnet.worms
 
 import org.fathomnet.worms.io.MutableWormsNode
+import org.fathomnet.worms.io.extended.CombineTrees.add
 
 /**
  * Immutable tree node
@@ -19,6 +20,7 @@ final case class WormsNode(
     name: String,
     rank: String,
     aphiaId: Long,
+    acceptedAphiaId: Long,
     alternateNames: Seq[String],
     children: Seq[WormsNode]
 ):
@@ -58,6 +60,7 @@ final case class WormsNode(
     name = this.name,
     rank = this.rank,
     aphiaId = this.aphiaId,
+    acceptedAphiaId = this.acceptedAphiaId,
     alternateNames = this.alternateNames
   )
 
@@ -87,6 +90,7 @@ object WormsNodeBuilder:
       name,
       node.concept.rank,
       node.concept.id,
+      node.concept.acceptedId,
       alternateNames,
       node.children.map(from).toSeq
     )
@@ -95,5 +99,6 @@ final case class SimpleWormsNode(
     name: String,
     rank: String,
     aphiaId: Long,
+    acceptedAphiaId: Long,
     alternateNames: Seq[String]
 )
