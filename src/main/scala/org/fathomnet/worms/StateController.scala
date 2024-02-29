@@ -90,6 +90,7 @@ object StateController:
       else 
         candidate.map(c => {
           val alternateNames = (outdated.flatMap(n => n.names) ++ c.alternateNames)
+              .filter(s => s != c.acceptedName)
               .toSet
               .toSeq
               .sorted
@@ -138,15 +139,18 @@ object StateController:
     )
 
   def synonyms(name: String): Either[ErrorMsg, List[String]] =
-    def search(data: Data): List[String] =
-      data.findNodeByName(name) match
-        case None       => Nil
-        case Some(node) => node.names.toList
+    for 
+      node <- taxaInfo(name)
+      names <- findNamesByAphiaId(node.acceptedAphiaId)
+    yield
+      val alternativeNames = if (names.acceptedName == name) 
+        names.alternateNames.toList
+      else 
+        names.name :: names.alternateNames.toList
+      
+      names.acceptedName +: alternativeNames.filter(s => s != names.acceptedName).distinct.sorted
 
-    runSearch(search).fold(
-      e => Left(e),
-      v => if (v.isEmpty) Left(NotFound(s"Unable to find `$name`")) else Right(v)
-    )
+
 
   def descendantTaxa(name: String): Either[ErrorMsg, WormsNode] =
     def search(data: Data): Option[WormsNode] =
