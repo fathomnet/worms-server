@@ -67,7 +67,8 @@ object StateController:
     def search(data: Data): Option[Names] =
       val allNodes = data.namesMap.values
       val existing = allNodes.find(n => n.aphiaId == aphiaId)
-      existing match
+      val outdated = allNodes.filter(n => n.acceptedAphiaId == aphiaId)
+      val candidate = existing match
         case None => None
         case Some(node) =>
           val accepted = if (node.aphiaId == node.acceptedAphiaId) 
@@ -76,9 +77,24 @@ object StateController:
             allNodes.find(n => n.aphiaId == node.acceptedAphiaId)
           val names = accepted match
             case None => Names(node.aphiaId, node.name, node.name, node.alternateNames)
-            case Some(value) => Names(node.aphiaId, node.name, value.name, node.alternateNames ++ value.alternateNames)
+            case Some(value) => 
+              val alternateNames = (node.alternateNames ++ value.alternateNames)
+                  .toSet
+                  .toSeq
+                  .sorted
+              Names(node.aphiaId, node.name, value.name, alternateNames)
 
           Option(names)
+
+      if (outdated.isEmpty) candidate
+      else 
+        candidate.map(c => {
+          val alternateNames = (outdated.flatMap(n => n.names) ++ c.alternateNames)
+              .toSet
+              .toSeq
+              .sorted
+          c.copy(alternateNames = alternateNames)
+        })
 
     runNodeSearch(search, s"Unable to find a name with aphiaId: $aphiaId")
 
