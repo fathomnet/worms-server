@@ -33,6 +33,22 @@ WoRMS has its own [API](https://www.marinespecies.org/rest/) that is a fantastic
 
 - GET `/names/count` - returns the total number of names available. [Example](https://fathomnet.org/worms/names/count). Response example: `872962`
 
+- GET `/names/aphiaid/:aphiaid` - returns the names associated to a given aphiaid, a code that works assigns to every taxa. [Example](https://fathomnet.org/worms/names/aphiaid/125401). Example response:
+
+```json
+{
+    "aphiaId": 125401,
+    "name": "Swiftia pallida",
+    "acceptedName": "Callistephanus pallida",
+    "alternateNames": [
+        "Northern sea fan coral",
+        "Nördliche Seefeder",
+        "corail pâle",
+        "northern sea fan"
+    ]
+}
+```
+
 ### Name requests
 
 Unless otherwise indicated, these respond with a JSON array of Strings
@@ -54,6 +70,7 @@ The following endpoints respond with a tree structure with each node like:
   "name": "Biota",
   "rank": "",
   "aphiaId": 1,
+  "acceptedAphiaId": 1,
   "alternateNames": [], 
   "children": []
 }
