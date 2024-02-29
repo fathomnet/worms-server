@@ -30,7 +30,7 @@ lazy val root = project
     },
     git.useGitDescribe := true,
     // sbt-header
-    dockerBaseImage := "openjdk:17",
+    dockerBaseImage := "eclipse-temurin:21",
     dockerEntrypoint := Seq("/opt/docker/bin/worms-server", "/opt/worms"),
     dockerExposedPorts := Seq(8080),
     dockerExposedVolumes := Seq("/opt/worms"),
