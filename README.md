@@ -33,7 +33,7 @@ WoRMS has its own [API](https://www.marinespecies.org/rest/) that is a fantastic
 
 - GET `/names/count` - returns the total number of names available. [Example](https://fathomnet.org/worms/names/count). Response example: `872962`
 
-- GET `/names/aphiaid/:aphiaid` - returns the names associated to a given aphiaid, a code that works assigns to every taxa. [Example](https://fathomnet.org/worms/names/aphiaid/125401). Example response:
+- GET `/names/aphiaid/:aphiaid` - returns the names associated to a given aphiaid, a code that WoRMS assigns to every taxa. [Example](https://fathomnet.org/worms/names/aphiaid/125401). Example response:
 
 ```json
 {
