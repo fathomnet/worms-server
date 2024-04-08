@@ -25,6 +25,8 @@ final case class WormsNode(
     children: Seq[WormsNode]
 ):
 
+  lazy val isAccepted: Boolean = this.aphiaId == this.acceptedAphiaId
+
   def find(name: String): Option[WormsNode] =
     if (this.name == name || this.alternateNames.contains(name))
       Some(this)

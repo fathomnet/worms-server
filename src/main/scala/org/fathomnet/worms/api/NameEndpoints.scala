@@ -89,17 +89,18 @@ class NameEndpoints(using ec: ExecutionContext) extends Endpoints:
     queryContainsEndpoint.serverLogic(glob => Future(StateController.queryNamesContaining(glob)))
 
   // -- /descendants/:name
-  val descendantsEndpoint: PublicEndpoint[String, ErrorMsg, List[String], Any] = baseEndpoint
+  val descendantsEndpoint: Endpoint[Unit, (String, Option[Boolean]), ErrorMsg, List[String], Any] = baseEndpoint
     .get
     .in("descendants")
     .in(path[String]("name"))
+    .in(query[Option[Boolean]]("accepted").description("Only include accepted names. Allowed values are true or false. Default is false."))
     .out(jsonBody[List[String]])
     .description(
       "Return the primary names of the taxa and all its descendants in alphabetical order."
     )
 
   val descendantsServerEndpoint: ServerEndpoint[Any, Future] =
-    descendantsEndpoint.serverLogic(name => Future(StateController.descendantNames(name)))
+    descendantsEndpoint.serverLogic((name, accepted) => Future(StateController.descendantNames(name, accepted.getOrElse(false))))
 
   // -- /ancestors/:name
   val ancestorsEndpoint: PublicEndpoint[String, ErrorMsg, List[String], Any] = baseEndpoint
