@@ -7,6 +7,7 @@
 package org.fathomnet.worms
 
 import com.typesafe.config.ConfigFactory
+
 import scala.util.Try
 
 /**

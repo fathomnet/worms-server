@@ -6,24 +6,16 @@
 
 package org.fathomnet.worms.api
 
-import io.circe.generic.auto._
-import org.fathomnet.worms.{Data, NotFound, Page, ServerError, State}
-import org.fathomnet.worms.ErrorMsg
+import io.circe.generic.auto.*
 import org.fathomnet.worms.etc.circe.CirceCodecs.given
-import org.fathomnet.worms.etc.jdk.Logging.given
-import org.fathomnet.worms.SimpleWormsNode
-import org.fathomnet.worms.StateController
-import org.fathomnet.worms.WormsNode
-import scala.concurrent.ExecutionContext
-import scala.concurrent.Future
-import scala.util.control.NonFatal
-import sttp.model.StatusCode
-import sttp.tapir._
-import sttp.tapir.{endpoint, query, stringBody, PublicEndpoint}
-import sttp.tapir.generic.auto._
-import sttp.tapir.json.circe._
+import org.fathomnet.worms.{ErrorMsg, SimpleWormsNode, StateController, WormsNode}
 import sttp.tapir.Schema.annotations.format
+import sttp.tapir.generic.auto.*
+import sttp.tapir.json.circe.*
 import sttp.tapir.server.ServerEndpoint
+import sttp.tapir.{query, PublicEndpoint, *}
+
+import scala.concurrent.{ExecutionContext, Future}
 
 class TaxaEndpoints(using ec: ExecutionContext) extends Endpoints:
 

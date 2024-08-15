@@ -6,15 +6,13 @@
 
 package org.fathomnet.worms.etc.circe
 
-import io.circe._
-import io.circe.generic.semiauto._
-import scala.util.Try
-import java.net.URL
+import io.circe.*
+import io.circe.generic.semiauto.*
 import org.fathomnet.worms.util.HexUtil
-import org.fathomnet.worms.{ErrorMsg, SimpleWormsNode, WormsNode}
-import org.fathomnet.worms.Page
-import java.net.URI
-import org.fathomnet.worms.Names
+import org.fathomnet.worms.{ErrorMsg, Names, Page, SimpleWormsNode, WormsNode}
+
+import java.net.{URI, URL}
+import scala.util.Try
 
 /**
  * JSON codecs for use with Circe. Usage:

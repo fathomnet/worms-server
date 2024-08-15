@@ -6,32 +6,26 @@
 
 package org.fathomnet.worms
 
-import java.{util => ju}
-import java.util.ArrayList
-import java.util.concurrent.Callable
-import picocli.CommandLine
-import picocli.CommandLine.{Command, Option => Opt, Parameters}
-import org.fathomnet.worms.io.WormsLoader
-import java.nio.file.Path
-import java.nio.file.Paths
-import org.fathomnet.worms.etc.jdk.Logging.given
-import scala.concurrent.ExecutionContext
+import _root_.io.vertx.core.Vertx
+import _root_.io.vertx.ext.web.Router
 import org.fathomnet.worms.api.{NameEndpoints, SwaggerEndpoints, TaxaEndpoints}
 import org.fathomnet.worms.etc.jdk.CustomExecutors
 import org.fathomnet.worms.etc.jdk.CustomExecutors.*
-// import sttp.tapir.server.netty.NettyFutureServer
-
-import scala.io.StdIn
-import scala.concurrent.Await
-import scala.concurrent.duration.Duration
-import scala.concurrent.Future
-import _root_.io.vertx.core.Vertx
-import _root_.io.vertx.ext.web.Router
+import org.fathomnet.worms.etc.jdk.Logging.given
+import org.fathomnet.worms.io.WormsLoader
+import org.fathomnet.worms.io.extended.CombineTrees.combine
+import org.fathomnet.worms.io.extended.{CombineTrees, ExtendedLoader}
+import picocli.CommandLine
+import picocli.CommandLine.{Command, Option as Opt, Parameters}
 import sttp.tapir.server.vertx.VertxFutureServerInterpreter
 import sttp.tapir.server.vertx.VertxFutureServerInterpreter.*
-import org.fathomnet.worms.io.extended.CombineTrees.combine
-import org.fathomnet.worms.io.extended.CombineTrees
-import org.fathomnet.worms.io.extended.ExtendedLoader
+
+import java.nio.file.Path
+import java.util as ju
+import java.util.concurrent.Callable
+import scala.compiletime.uninitialized
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, ExecutionContext}
 
 @Command(
     description = Array("The Worms Server"),
@@ -49,7 +43,7 @@ class MainRunner extends Callable[Int]:
 
     // "/Users/brian/Downloads/worms"
     @Parameters(index = "0", description = Array("Path to the WoRMS data file directory"))
-    var path: Path = _
+    var path: Path = uninitialized
 
     @Parameters(
         index = "1..*",
@@ -75,7 +69,7 @@ object Main:
     private val log = System.getLogger(getClass.getName)
 
     def main(args: Array[String]): Unit =
-        new CommandLine(new MainRunner()).execute(args: _*)
+        new CommandLine(new MainRunner()).execute(args*)
 
     // def run(port: Int, wormsDir: Path): Unit =
     //   log.atInfo.log(s"Starting up ${AppConfig.Name} v${AppConfig.Version}")

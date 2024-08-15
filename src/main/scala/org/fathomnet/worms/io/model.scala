@@ -6,8 +6,8 @@
 
 package org.fathomnet.worms.io
 
-import scala.util.Try
 import scala.io.Source
+import scala.util.Try
 
 /*
  * This file contains code to read the 3 relevant files from the Worms

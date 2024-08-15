@@ -6,8 +6,8 @@
 
 package org.fathomnet.worms.etc.zio
 
-import zio.*
 import org.fathomnet.worms.etc.jdk.Logging.given
+import zio.*
 import zio.Cause.Die
 
 object ZioUtil:

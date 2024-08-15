@@ -7,17 +7,13 @@
 package org.fathomnet.worms.api
 
 import _root_.org.fathomnet.worms.{ErrorMsg, NotFound, ServerError}
-
-import _root_.org.fathomnet.worms.{Data, State}
-import _root_.org.fathomnet.worms.etc.jdk.Logging.given
-import scala.util.control.NonFatal
-import sttp.tapir.*
-import sttp.tapir.json.circe.*
-import sttp.model.StatusCode
-import sttp.tapir.json.circe.*
-import sttp.tapir.generic.auto.*
 import io.circe.generic.auto.*
+import sttp.model.StatusCode
+import sttp.tapir.*
+import sttp.tapir.generic.auto.*
+import sttp.tapir.json.circe.*
 import sttp.tapir.server.ServerEndpoint
+
 import scala.concurrent.Future
 
 trait Endpoints:

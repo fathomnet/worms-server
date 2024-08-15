@@ -6,8 +6,6 @@
 
 package org.fathomnet.worms
 
-import scala.concurrent.ExecutionContext
-
 /**
  * @author
  *   Brian Schlining

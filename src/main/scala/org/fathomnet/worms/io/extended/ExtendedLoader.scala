@@ -6,16 +6,13 @@
 
 package org.fathomnet.worms.io.extended
 
-import scala.concurrent.ExecutionContext
-import org.fathomnet.worms.WormsNode
-import java.nio.file.Path
-import org.fathomnet.worms.io.{WormsConcept, WormsConceptName}
-import scala.util.control.NonFatal
-import org.fathomnet.worms.io.MutableWormsNodeBuilder
-import org.fathomnet.worms.WormsNodeBuilder
 import org.fathomnet.worms.etc.jdk.Logging.given
+import org.fathomnet.worms.io.{MutableWormsNodeBuilder, WormsConcept, WormsConceptName}
+import org.fathomnet.worms.{WormsNode, WormsNodeBuilder}
+
+import java.nio.file.Path
 import scala.util.Using
-import sttp.tapir.EndpointIO.annotations.formBody
+import scala.util.control.NonFatal
 
 object ExtendedLoader:
 

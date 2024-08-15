@@ -6,20 +6,14 @@
 
 package org.fathomnet.worms.api
 
-import sttp.tapir.{endpoint, query, stringBody, PublicEndpoint}
-import sttp.tapir._
-import sttp.tapir.json.circe._
-import sttp.tapir.generic.auto._
-import io.circe.generic.auto._
-import org.fathomnet.worms.{Data, Names, NotFound, Page, ServerError, State}
+import io.circe.generic.auto.*
+import org.fathomnet.worms.{ErrorMsg, Names, Page, StateController}
+import sttp.tapir.generic.auto.*
+import sttp.tapir.json.circe.*
 import sttp.tapir.server.ServerEndpoint
-import scala.concurrent.Future
-import org.fathomnet.worms.ErrorMsg
-import scala.util.control.NonFatal
-import org.fathomnet.worms.etc.jdk.Logging.given
-import scala.concurrent.ExecutionContext
-import sttp.model.StatusCode
-import org.fathomnet.worms.StateController
+import sttp.tapir.{query, PublicEndpoint, *}
+
+import scala.concurrent.{ExecutionContext, Future}
 
 class NameEndpoints(using ec: ExecutionContext) extends Endpoints:
 

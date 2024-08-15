@@ -6,13 +6,14 @@
 
 package org.fathomnet.worms.io
 
-import java.nio.file.Path
-import zio.ZIO
-import scala.util.Try
 import org.fathomnet.worms.etc.jdk.Logging.given
 import org.fathomnet.worms.etc.zio.ZioUtil
 import org.fathomnet.worms.{WormsNode, WormsNodeBuilder}
+import zio.ZIO
+
+import java.nio.file.Path
 import scala.concurrent.ExecutionContext
+import scala.util.Try
 
 /**
  * Loades a Worm download into memory

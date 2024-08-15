@@ -7,6 +7,7 @@
 package org.fathomnet.worms.io.extended
 
 import org.fathomnet.worms.WormsNode
+
 import java.nio.file.Paths
 
 class CombinedTreesSuite extends munit.FunSuite:

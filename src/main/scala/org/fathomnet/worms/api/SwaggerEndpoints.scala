@@ -6,10 +6,11 @@
 
 package org.fathomnet.worms.api
 
-import sttp.tapir.server.ServerEndpoint
-import scala.concurrent.Future
-import sttp.tapir.swagger.bundle.SwaggerInterpreter
 import org.fathomnet.worms.AppConfig
+import sttp.tapir.server.ServerEndpoint
+import sttp.tapir.swagger.bundle.SwaggerInterpreter
+
+import scala.concurrent.Future
 
 case class SwaggerEndpoints(nameEndpoints: NameEndpoints, taxaEndpoints: TaxaEndpoints):
 

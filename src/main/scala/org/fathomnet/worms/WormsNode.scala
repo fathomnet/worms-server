@@ -7,7 +7,6 @@
 package org.fathomnet.worms
 
 import org.fathomnet.worms.io.MutableWormsNode
-import org.fathomnet.worms.io.extended.CombineTrees.add
 
 /**
  * Immutable tree node

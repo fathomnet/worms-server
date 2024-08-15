@@ -6,10 +6,7 @@
 
 package org.fathomnet.worms.etc.jdk
 
-import java.util.concurrent.Executors
-import java.util.concurrent.ForkJoinPool
-import java.util.concurrent.Executor
-import java.util.concurrent.ExecutorService
+import java.util.concurrent.{ExecutorService, Executors, ForkJoinPool}
 import scala.concurrent.ExecutionContext
 
 /**

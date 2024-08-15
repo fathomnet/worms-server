@@ -6,10 +6,9 @@
 
 package org.fathomnet.worms
 
-import scala.util.control.NonFatal
 import org.fathomnet.worms.etc.jdk.Logging.given
-import scala.collection.mutable.ListMap
-import cats.conversions.all
+
+import scala.util.control.NonFatal
 
 object StateController:
 
