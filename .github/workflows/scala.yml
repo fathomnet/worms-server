@@ -1,0 +1,32 @@
+name: Publish to Dockerhub
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "*"
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: "21"
+          distribution: "temurin"
+          cache: "sbt"
+      - name: Package and publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          sbt 'Docker / stage'
+          cd target/docker/stage
+          docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
+          docker buildx create --name dockerbuilder --platform linux/amd64,linux/arm64 --use
+          docker buildx build --platform linux/amd64,linux/arm64 -t mbari/worms-server:${{ github.ref_name }} -t mbari/worms-server:latest --push .
