@@ -19,7 +19,7 @@ import scala.concurrent.ExecutionContext
 import org.fathomnet.worms.api.{NameEndpoints, SwaggerEndpoints, TaxaEndpoints}
 import org.fathomnet.worms.etc.jdk.CustomExecutors
 import org.fathomnet.worms.etc.jdk.CustomExecutors.*
-import sttp.tapir.server.netty.NettyFutureServer
+// import sttp.tapir.server.netty.NettyFutureServer
 
 import scala.io.StdIn
 import scala.concurrent.Await
