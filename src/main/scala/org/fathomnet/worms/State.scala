@@ -15,4 +15,4 @@ import scala.concurrent.ExecutionContext
  */
 object State:
 
-  var data: Option[Data] = None
+    var data: Option[Data] = None

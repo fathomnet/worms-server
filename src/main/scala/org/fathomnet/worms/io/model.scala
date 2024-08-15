@@ -18,14 +18,14 @@ import scala.io.Source
  */
 
 def taxonIDToKey(taxonID: String): Long =
-  taxonID.split(":").last.toLong
+    taxonID.split(":").last.toLong
 
 def readFile[A](file: String, rowMapper: String => Option[A]): List[A] =
-  Source
-    .fromFile(file)
-    .getLines
-    .flatMap(rowMapper)
-    .toList
+    Source
+        .fromFile(file)
+        .getLines
+        .flatMap(rowMapper)
+        .toList
 
 final case class Taxon(
     taxonID: String,
@@ -34,41 +34,41 @@ final case class Taxon(
     rank: String,
     acceptedNameUsageID: Option[String]
 ):
-  val id       = taxonIDToKey(taxonID)
-  val parentId = parentNameUsageID.map(taxonIDToKey)
-  val acceptedId = acceptedNameUsageID.map(taxonIDToKey)
+    val id         = taxonIDToKey(taxonID)
+    val parentId   = parentNameUsageID.map(taxonIDToKey)
+    val acceptedId = acceptedNameUsageID.map(taxonIDToKey)
 
 object Taxon:
-  def from(row: String): Option[Taxon] =
-    Try {
-      val cols              = row.split("\t")
-      val parentNameUsageID = if cols(3).isBlank then None else Some(cols(3))
-      val acceptedNameUsageID = if cols(2).isBlank then None else Some(cols(2))
-      Taxon(cols(0), parentNameUsageID, cols(5), cols(19), acceptedNameUsageID)
-    }.toOption
+    def from(row: String): Option[Taxon] =
+        Try {
+            val cols                = row.split("\t")
+            val parentNameUsageID   = if cols(3).isBlank then None else Some(cols(3))
+            val acceptedNameUsageID = if cols(2).isBlank then None else Some(cols(2))
+            Taxon(cols(0), parentNameUsageID, cols(5), cols(19), acceptedNameUsageID)
+        }.toOption
 
-  def read(file: String): List[Taxon] = readFile(file, Taxon.from)
+    def read(file: String): List[Taxon] = readFile(file, Taxon.from)
 
 final case class VernacularName(taxonID: String, vernacularName: String):
-  val id = taxonIDToKey(taxonID)
+    val id = taxonIDToKey(taxonID)
 
 object VernacularName:
-  def from(row: String): Option[VernacularName] =
-    Try {
-      val cols = row.split("\t")
-      VernacularName(cols(0), cols(1))
-    }.toOption
+    def from(row: String): Option[VernacularName] =
+        Try {
+            val cols = row.split("\t")
+            VernacularName(cols(0), cols(1))
+        }.toOption
 
-  def read(file: String): List[VernacularName] = readFile(file, VernacularName.from)
+    def read(file: String): List[VernacularName] = readFile(file, VernacularName.from)
 
 final case class SpeciesProfile(taxonID: String, isMarine: Boolean, isExtinct: Boolean):
-  val id = taxonIDToKey(taxonID)
+    val id = taxonIDToKey(taxonID)
 
 object SpeciesProfile:
-  def from(row: String): Option[SpeciesProfile] =
-    Try {
-      val cols = row.split("\t")
-      SpeciesProfile(cols(0), cols(1) == "1", cols(4) == "1")
-    }.toOption
+    def from(row: String): Option[SpeciesProfile] =
+        Try {
+            val cols = row.split("\t")
+            SpeciesProfile(cols(0), cols(1) == "1", cols(4) == "1")
+        }.toOption
 
-  def read(file: String): List[SpeciesProfile] = readFile(file, SpeciesProfile.from)
+    def read(file: String): List[SpeciesProfile] = readFile(file, SpeciesProfile.from)

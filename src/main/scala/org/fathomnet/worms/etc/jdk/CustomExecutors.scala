@@ -19,20 +19,20 @@ import scala.concurrent.ExecutionContext
  */
 object CustomExecutors:
 
-  private val ThreadCount = java.lang.Runtime.getRuntime().availableProcessors()
+    private val ThreadCount = java.lang.Runtime.getRuntime().availableProcessors()
 
-  /**
-   * Best for IO bound tasks.
-   * @param n
-   *   Mu
-   */
-  def newFixedThreadPoolExecutor(n: Int = ThreadCount): ExecutorService =
-    Executors.newFixedThreadPool(n)
+    /**
+     * Best for IO bound tasks.
+     * @param n
+     *   Mu
+     */
+    def newFixedThreadPoolExecutor(n: Int = ThreadCount): ExecutorService =
+        Executors.newFixedThreadPool(n)
 
-  /**
-   * Best for CPU bound tasks
-   */
-  def newForkJoinPool(): ExecutorService = new ForkJoinPool(ThreadCount)
+    /**
+     * Best for CPU bound tasks
+     */
+    def newForkJoinPool(): ExecutorService = new ForkJoinPool(ThreadCount)
 
-  extension (executorService: ExecutorService)
-    def asScala: ExecutionContext = ExecutionContext.fromExecutorService(executorService)
+    extension (executorService: ExecutorService)
+        def asScala: ExecutionContext = ExecutionContext.fromExecutorService(executorService)

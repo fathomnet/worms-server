@@ -22,28 +22,28 @@ import scala.concurrent.ExecutionContext
  */
 object WormsLoader:
 
-  private val log = System.getLogger(getClass.getName)
+    private val log = System.getLogger(getClass.getName)
 
-  /**
-   * Loads the Worms download into memory from files in a directory
-   * @param wormsDir
-   *   The directory containing the Worms download
-   */
-  def load(wormsDir: Path)(using ec: ExecutionContext): Option[WormsNode] =
-    val taxonPath          = wormsDir.resolve("taxon.txt")
-    val vernacularNamePath = wormsDir.resolve("vernacularname.txt")
-    val speciesProfilePath = wormsDir.resolve("speciesprofile.txt")
+    /**
+     * Loads the Worms download into memory from files in a directory
+     * @param wormsDir
+     *   The directory containing the Worms download
+     */
+    def load(wormsDir: Path)(using ec: ExecutionContext): Option[WormsNode] =
+        val taxonPath          = wormsDir.resolve("taxon.txt")
+        val vernacularNamePath = wormsDir.resolve("vernacularname.txt")
+        val speciesProfilePath = wormsDir.resolve("speciesprofile.txt")
 
-    val app = for
-      _               <- ZIO.succeed(log.atInfo.log(s"Loading WoRMS from $wormsDir"))
-      taxons          <- ZIO.fromTry(Try(Taxon.read(taxonPath.toString)))
-      vernacularNames <- ZIO.fromTry(Try(VernacularName.read(vernacularNamePath.toString)))
-      speciesProfiles <- ZIO.fromTry(Try(SpeciesProfile.read(speciesProfilePath.toString)))
-      wormsConcepts   <-
-        ZIO.fromTry(Try(WormsConcept.build(taxons, vernacularNames, speciesProfiles).toList))
-      mutableRoot     <- ZIO.fromTry(Try(MutableWormsNodeBuilder.fathomNetTree(wormsConcepts)))
-      root            <- ZIO.fromTry(Try(WormsNodeBuilder.from(mutableRoot)))
-      _               <- ZIO.succeed(log.atInfo.log(s"Loaded WoRMS from $wormsDir"))
-    yield Some(root)
+        val app = for
+            _               <- ZIO.succeed(log.atInfo.log(s"Loading WoRMS from $wormsDir"))
+            taxons          <- ZIO.fromTry(Try(Taxon.read(taxonPath.toString)))
+            vernacularNames <- ZIO.fromTry(Try(VernacularName.read(vernacularNamePath.toString)))
+            speciesProfiles <- ZIO.fromTry(Try(SpeciesProfile.read(speciesProfilePath.toString)))
+            wormsConcepts   <-
+                ZIO.fromTry(Try(WormsConcept.build(taxons, vernacularNames, speciesProfiles).toList))
+            mutableRoot     <- ZIO.fromTry(Try(MutableWormsNodeBuilder.fathomNetTree(wormsConcepts)))
+            root            <- ZIO.fromTry(Try(WormsNodeBuilder.from(mutableRoot)))
+            _               <- ZIO.succeed(log.atInfo.log(s"Loaded WoRMS from $wormsDir"))
+        yield Some(root)
 
-    ZioUtil.safeRun(app).getOrElse(None)
+        ZioUtil.safeRun(app).getOrElse(None)

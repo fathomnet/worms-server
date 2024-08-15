@@ -22,13 +22,13 @@ import scala.concurrent.Future
 
 trait Endpoints:
 
-  val log = System.getLogger(getClass.getName)
+    val log = System.getLogger(getClass.getName)
 
-  def all: List[ServerEndpoint[Any, Future]]
+    def all: List[ServerEndpoint[Any, Future]]
 
-  val baseEndpoint = endpoint.errorOut(
-    oneOf[ErrorMsg](
-      oneOfVariant(statusCode(StatusCode.NotFound).and(jsonBody[NotFound])),
-      oneOfVariant(statusCode(StatusCode.InternalServerError).and(jsonBody[ServerError]))
+    val baseEndpoint = endpoint.errorOut(
+        oneOf[ErrorMsg](
+            oneOfVariant(statusCode(StatusCode.NotFound).and(jsonBody[NotFound])),
+            oneOfVariant(statusCode(StatusCode.InternalServerError).and(jsonBody[ServerError]))
+        )
     )
-  )

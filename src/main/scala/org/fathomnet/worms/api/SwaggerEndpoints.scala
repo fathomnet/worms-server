@@ -13,27 +13,27 @@ import org.fathomnet.worms.AppConfig
 
 case class SwaggerEndpoints(nameEndpoints: NameEndpoints, taxaEndpoints: TaxaEndpoints):
 
-  val all: List[ServerEndpoint[Any, Future]] =
-    SwaggerInterpreter()
-      .fromEndpoints[Future](
-        List(
-          nameEndpoints.namesCountEndpoint,
-          nameEndpoints.namesEndpoint,
-          nameEndpoints.namesByAphiaId,
-          nameEndpoints.ancestorsEndpoint,
-          nameEndpoints.childrenEndpoint,
-          nameEndpoints.descendantsEndpoint,
-          nameEndpoints.parentEndpoint,
-          nameEndpoints.queryContainsEndpoint,
-          nameEndpoints.queryStartswithEndpoint,
-          nameEndpoints.synonymsEndpoint,
-          taxaEndpoints.taxaAncestors,
-          taxaEndpoints.taxaChildren,
-          taxaEndpoints.taxaDescendants,
-          taxaEndpoints.taxaInfo,
-          taxaEndpoints.taxaParent,
-          taxaEndpoints.taxaQueryStartswith
-        ),
-        AppConfig.Name,
-        AppConfig.Version
-      )
+    val all: List[ServerEndpoint[Any, Future]] =
+        SwaggerInterpreter()
+            .fromEndpoints[Future](
+                List(
+                    nameEndpoints.namesCountEndpoint,
+                    nameEndpoints.namesEndpoint,
+                    nameEndpoints.namesByAphiaId,
+                    nameEndpoints.ancestorsEndpoint,
+                    nameEndpoints.childrenEndpoint,
+                    nameEndpoints.descendantsEndpoint,
+                    nameEndpoints.parentEndpoint,
+                    nameEndpoints.queryContainsEndpoint,
+                    nameEndpoints.queryStartswithEndpoint,
+                    nameEndpoints.synonymsEndpoint,
+                    taxaEndpoints.taxaAncestors,
+                    taxaEndpoints.taxaChildren,
+                    taxaEndpoints.taxaDescendants,
+                    taxaEndpoints.taxaInfo,
+                    taxaEndpoints.taxaParent,
+                    taxaEndpoints.taxaQueryStartswith
+                ),
+                AppConfig.Name,
+                AppConfig.Version
+            )

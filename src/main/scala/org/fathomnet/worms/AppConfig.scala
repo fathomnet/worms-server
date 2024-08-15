@@ -16,9 +16,9 @@ import scala.util.Try
  */
 object AppConfig:
 
-  val Config = ConfigFactory.load()
+    val Config = ConfigFactory.load()
 
-  val Name: String = "worms-server"
+    val Name: String = "worms-server"
 
-  val Version: String =
-    Try(getClass.getPackage.getImplementationVersion).getOrElse("0.0.0-SNAPSHOT")
+    val Version: String =
+        Try(getClass.getPackage.getImplementationVersion).getOrElse("0.0.0-SNAPSHOT")

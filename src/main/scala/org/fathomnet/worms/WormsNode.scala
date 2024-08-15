@@ -25,77 +25,77 @@ final case class WormsNode(
     children: Seq[WormsNode]
 ):
 
-  lazy val isAccepted: Boolean = this.aphiaId == this.acceptedAphiaId
+    lazy val isAccepted: Boolean = this.aphiaId == this.acceptedAphiaId
 
-  def find(name: String): Option[WormsNode] =
-    if (this.name == name || this.alternateNames.contains(name))
-      Some(this)
-    else
-      this.children.foldLeft(None: Option[WormsNode]) { (acc, child) =>
-        acc match
-          case Some(node) => Some(node)
-          case None       => child.find(name)
-      }
+    def find(name: String): Option[WormsNode] =
+        if (this.name == name || this.alternateNames.contains(name))
+            Some(this)
+        else
+            this.children.foldLeft(None: Option[WormsNode]) { (acc, child) =>
+                acc match
+                    case Some(node) => Some(node)
+                    case None       => child.find(name)
+            }
 
-  lazy val descendantNames: Seq[String] =
-    this.children.foldLeft(Seq(this.name): Seq[String]) { (acc, child) =>
-      acc ++ child.descendantNames
-    }
+    lazy val descendantNames: Seq[String] =
+        this.children.foldLeft(Seq(this.name): Seq[String]) { (acc, child) =>
+            acc ++ child.descendantNames
+        }
 
-  lazy val descendants: Seq[WormsNode] =
-    this.children.foldLeft(Seq(this): Seq[WormsNode]) { (acc, child) =>
-      acc ++ child.descendants
-    }
+    lazy val descendants: Seq[WormsNode] =
+        this.children.foldLeft(Seq(this): Seq[WormsNode]) { (acc, child) =>
+            acc ++ child.descendants
+        }
 
-  // lazy val descendantNamesWithVernacular: Seq[String] =
-  //   this.children.foldLeft(this.names: Seq[String]) { (acc, child) =>
-  //     acc ++ child.descendantNamesWithVernacular
-  //   }
+    // lazy val descendantNamesWithVernacular: Seq[String] =
+    //   this.children.foldLeft(this.names: Seq[String]) { (acc, child) =>
+    //     acc ++ child.descendantNamesWithVernacular
+    //   }
 
-  lazy val names: Seq[String] =
-    (this.name +: this.alternateNames.sorted).toSeq
+    lazy val names: Seq[String] =
+        (this.name +: this.alternateNames.sorted).toSeq
 
-  /**
-   * A version of this node with no children
-   */
-  lazy val simple: SimpleWormsNode = SimpleWormsNode(
-    name = this.name,
-    rank = this.rank,
-    aphiaId = this.aphiaId,
-    acceptedAphiaId = this.acceptedAphiaId,
-    alternateNames = this.alternateNames
-  )
+    /**
+     * A version of this node with no children
+     */
+    lazy val simple: SimpleWormsNode = SimpleWormsNode(
+        name = this.name,
+        rank = this.rank,
+        aphiaId = this.aphiaId,
+        acceptedAphiaId = this.acceptedAphiaId,
+        alternateNames = this.alternateNames
+    )
 
-  /**
-   * The maximum Aphia ID of this node and all its descendants
-   */
-  lazy val maxAphiaId: Long =
-    this.children.foldLeft(this.aphiaId) { (acc, child) =>
-      acc.max(child.maxAphiaId)
-    }
+    /**
+     * The maximum Aphia ID of this node and all its descendants
+     */
+    lazy val maxAphiaId: Long =
+        this.children.foldLeft(this.aphiaId) { (acc, child) =>
+            acc.max(child.maxAphiaId)
+        }
 
 object WormsNodeBuilder:
 
-  def from(node: MutableWormsNode): WormsNode =
-    val name           = node
-      .concept
-      .names
-      .find(_.isPrimary)
-      .map(_.name)
-      .get
-    val alternateNames = node
-      .concept
-      .names
-      .filter(_.isPrimary == false)
-      .map(_.name)
-    WormsNode(
-      name,
-      node.concept.rank,
-      node.concept.id,
-      node.concept.acceptedId,
-      alternateNames,
-      node.children.map(from).toSeq
-    )
+    def from(node: MutableWormsNode): WormsNode =
+        val name           = node
+            .concept
+            .names
+            .find(_.isPrimary)
+            .map(_.name)
+            .get
+        val alternateNames = node
+            .concept
+            .names
+            .filter(_.isPrimary == false)
+            .map(_.name)
+        WormsNode(
+            name,
+            node.concept.rank,
+            node.concept.id,
+            node.concept.acceptedId,
+            alternateNames,
+            node.children.map(from).toSeq
+        )
 
 final case class SimpleWormsNode(
     name: String,

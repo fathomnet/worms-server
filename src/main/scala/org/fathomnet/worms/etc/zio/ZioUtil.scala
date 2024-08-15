@@ -12,20 +12,20 @@ import zio.Cause.Die
 
 object ZioUtil:
 
-  private val log = java.lang.System.getLogger(getClass.getName)
+    private val log = java.lang.System.getLogger(getClass.getName)
 
-  def unsafeRun[E, A](app: ZIO[Any, E, A]): A =
-    Unsafe.unsafe { implicit unsafe =>
-      Runtime.default.unsafe.run(app).getOrThrowFiberFailure()
-    }
+    def unsafeRun[E, A](app: ZIO[Any, E, A]): A =
+        Unsafe.unsafe { implicit unsafe =>
+            Runtime.default.unsafe.run(app).getOrThrowFiberFailure()
+        }
 
-  def safeRun[E, A](app: ZIO[Any, E, A]): Option[A] =
-    Unsafe.unsafe { implicit unsafe =>
-      Runtime.default.unsafe.run(app) match
-        case Exit.Success(a) => Some(a)
-        case Exit.Failure(e) =>
-          e match
-            case d: Die => log.atError.withCause(d.value).log(e.toString)
-            case _      => log.atError.log(e.toString)
-          None
-    }
+    def safeRun[E, A](app: ZIO[Any, E, A]): Option[A] =
+        Unsafe.unsafe { implicit unsafe =>
+            Runtime.default.unsafe.run(app) match
+                case Exit.Success(a) => Some(a)
+                case Exit.Failure(e) =>
+                    e match
+                        case d: Die => log.atError.withCause(d.value).log(e.toString)
+                        case _      => log.atError.log(e.toString)
+                    None
+        }
