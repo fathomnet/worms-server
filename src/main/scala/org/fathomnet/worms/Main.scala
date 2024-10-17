@@ -8,12 +8,12 @@ package org.fathomnet.worms
 
 import _root_.io.vertx.core.Vertx
 import _root_.io.vertx.ext.web.Router
-import org.fathomnet.worms.api.{NameEndpoints, SwaggerEndpoints, TaxaEndpoints}
+import org.fathomnet.worms.api.{DetailEndpoints, NameEndpoints, SwaggerEndpoints, TaxaEndpoints}
 import org.fathomnet.worms.etc.jdk.CustomExecutors
 import org.fathomnet.worms.etc.jdk.CustomExecutors.*
 import org.fathomnet.worms.etc.jdk.Logging.given
 import org.fathomnet.worms.io.WormsLoader
-import org.fathomnet.worms.io.extended.CombineTrees.combine
+// import org.fathomnet.worms.io.extended.CombineTrees.combine
 import org.fathomnet.worms.io.extended.{CombineTrees, ExtendedLoader}
 import picocli.CommandLine
 import picocli.CommandLine.{Command, Option as Opt, Parameters}
@@ -26,6 +26,7 @@ import java.util.concurrent.Callable
 import scala.compiletime.uninitialized
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext}
+import org.fathomnet.worms.io.WormsConcept
 
 @Command(
     description = Array("The Worms Server"),
@@ -100,12 +101,17 @@ object Main:
         // Lood data off main thread
         given executionContext: ExecutionContext =
             CustomExecutors.newFixedThreadPoolExecutor(20).asScala
-        executionContext.execute(() => State.data = load(wormsDir, treeFiles).map(n => Data(n)))
+        executionContext.execute(() => {
+            val (wormsConcepts, root) = load(wormsDir, treeFiles)
+            val data = root.map(r => Data(r, wormsConcepts))
+            State.data = data
+        })
 
         val nameEndpoints    = NameEndpoints()
         val taxaEndpoints    = TaxaEndpoints()
-        val swaggerEndpoints = SwaggerEndpoints(nameEndpoints, taxaEndpoints)
-        val allEndpoints     = nameEndpoints.all ++ taxaEndpoints.all ++ swaggerEndpoints.all
+        val detailEndpoints  = DetailEndpoints()
+        val swaggerEndpoints = SwaggerEndpoints(nameEndpoints, taxaEndpoints, detailEndpoints)
+        val allEndpoints     = nameEndpoints.all ++ taxaEndpoints.all ++ detailEndpoints.all ++ swaggerEndpoints.all 
 
         val vertx  = Vertx.vertx()
         val server = vertx.createHttpServer()
@@ -117,8 +123,9 @@ object Main:
 
         Await.result(server.requestHandler(router).listen(port).asScala, Duration.Inf)
 
-    def load(wormsDir: Path, treeFiles: List[Path])(using ec: ExecutionContext): Option[WormsNode] =
-        WormsLoader.load(wormsDir).map { root =>
+    def load(wormsDir: Path, treeFiles: List[Path])(using ec: ExecutionContext): (Seq[WormsConcept], Option[WormsNode]) =
+        val (wormsConcepts, rootOpt) = WormsLoader.load(wormsDir)
+        val newRoot = rootOpt.map { root =>
             if (treeFiles.nonEmpty)
                 // Our new base. We use 0 as aphiaId so that the real aphiaIds are not incremented when the trees are combined
                 val newRoot      = WormsNode("object", "", 0L, 0L, Nil, Nil)
@@ -129,3 +136,4 @@ object Main:
                 combinedRoot.copy(aphiaId = -1L)
             else root
         }
+        (wormsConcepts, newRoot)

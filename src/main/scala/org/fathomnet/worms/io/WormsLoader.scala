@@ -30,7 +30,7 @@ object WormsLoader:
      * @param wormsDir
      *   The directory containing the Worms download
      */
-    def load(wormsDir: Path)(using ec: ExecutionContext): Option[WormsNode] =
+    def load(wormsDir: Path)(using ec: ExecutionContext): (Seq[WormsConcept], Option[WormsNode]) =
         val taxonPath          = wormsDir.resolve("taxon.txt")
         val vernacularNamePath = wormsDir.resolve("vernacularname.txt")
         val speciesProfilePath = wormsDir.resolve("speciesprofile.txt")
@@ -45,6 +45,6 @@ object WormsLoader:
             mutableRoot     <- ZIO.fromTry(Try(MutableWormsNodeBuilder.fathomNetTree(wormsConcepts)))
             root            <- ZIO.fromTry(Try(WormsNodeBuilder.from(mutableRoot)))
             _               <- ZIO.succeed(log.atInfo.log(s"Loaded WoRMS from $wormsDir"))
-        yield Some(root)
+        yield (wormsConcepts, Some(root))
 
-        ZioUtil.safeRun(app).getOrElse(None)
+        ZioUtil.safeRun(app).getOrElse((Seq.empty, None))
