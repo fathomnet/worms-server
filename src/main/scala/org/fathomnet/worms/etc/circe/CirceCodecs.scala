@@ -13,6 +13,7 @@ import org.fathomnet.worms.{ErrorMsg, Names, Page, SimpleWormsNode, WormsNode}
 
 import java.net.{URI, URL}
 import scala.util.Try
+import org.fathomnet.worms.WormsDetails
 
 /**
  * JSON codecs for use with Circe. Usage:
@@ -40,6 +41,9 @@ object CirceCodecs:
     given urlEncoder: Encoder[URL] = Encoder
         .encodeString
         .contramap(_.toString)
+
+    given Decoder[WormsDetails] = deriveDecoder
+    given Encoder[WormsDetails] = deriveEncoder  
 
     given Decoder[WormsNode] = deriveDecoder
     given Encoder[WormsNode] = deriveEncoder

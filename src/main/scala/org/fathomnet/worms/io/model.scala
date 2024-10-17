@@ -61,14 +61,23 @@ object VernacularName:
 
     def read(file: String): List[VernacularName] = readFile(file, VernacularName.from)
 
-final case class SpeciesProfile(taxonID: String, isMarine: Boolean, isExtinct: Boolean):
+final case class SpeciesProfile(taxonID: String, 
+        isMarine: Boolean, 
+        isFreshwater: Boolean,
+        isTerrestrial: Boolean,
+        isExtinct: Boolean,
+        isBrackish: Boolean):
     val id = taxonIDToKey(taxonID)
 
 object SpeciesProfile:
+
+    private def toBool(value: String): Boolean =
+        value == "1"
+
     def from(row: String): Option[SpeciesProfile] =
         Try {
             val cols = row.split("\t")
-            SpeciesProfile(cols(0), cols(1) == "1", cols(4) == "1")
+            SpeciesProfile(cols(0), toBool(cols(1)), toBool(cols(2)), toBool(cols(3)), toBool(cols(4)), toBool(cols(5)))
         }.toOption
 
     def read(file: String): List[SpeciesProfile] = readFile(file, SpeciesProfile.from)

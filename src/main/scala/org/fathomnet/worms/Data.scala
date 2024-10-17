@@ -7,6 +7,7 @@
 package org.fathomnet.worms
 
 import scala.collection.immutable.SortedMap
+import org.fathomnet.worms.io.WormsConcept
 
 /**
  * Wraps a Worms tree with untility methods for fast access.
@@ -17,7 +18,7 @@ import scala.collection.immutable.SortedMap
  *   Brian Schlining
  * @since 2022-03-17
  */
-final case class Data(rootNode: WormsNode):
+final case class Data(rootNode: WormsNode, wormsConcepts: Seq[WormsConcept]):
 
     /**
      * Map of [nodeName, Node] for both the name and alternate name of the node.

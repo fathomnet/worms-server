@@ -12,12 +12,15 @@ import sttp.tapir.swagger.bundle.SwaggerInterpreter
 
 import scala.concurrent.Future
 
-case class SwaggerEndpoints(nameEndpoints: NameEndpoints, taxaEndpoints: TaxaEndpoints):
+case class SwaggerEndpoints(nameEndpoints: NameEndpoints, 
+                            taxaEndpoints: TaxaEndpoints,
+                            detailEndpoints: DetailEndpoints):
 
     val all: List[ServerEndpoint[Any, Future]] =
         SwaggerInterpreter()
             .fromEndpoints[Future](
                 List(
+                    detailEndpoints.detailsEndpoint,
                     nameEndpoints.namesCountEndpoint,
                     nameEndpoints.namesEndpoint,
                     nameEndpoints.namesByAphiaId,
