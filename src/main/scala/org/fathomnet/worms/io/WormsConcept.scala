@@ -21,11 +21,11 @@ final case class WormsConcept(
     parentId: Option[Long],
     names: Seq[WormsConceptName],
     rank: String,
-    isMarine: Boolean = false, 
-    isFreshwater: Boolean = false,
-    isTerrestrial: Boolean = false,
-    isExtinct: Boolean = false,
-    isBrackish: Boolean = false
+    isMarine: Option[Boolean] = None, 
+    isFreshwater: Option[Boolean] = None,
+    isTerrestrial: Option[Boolean] = None,
+    isExtinct: Option[Boolean] = None,
+    isBrackish: Option[Boolean] = None
 )
 
 object WormsConcept:

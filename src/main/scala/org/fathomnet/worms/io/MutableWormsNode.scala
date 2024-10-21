@@ -71,7 +71,7 @@ object MutableWormsNodeBuilder:
         rows.filter(wc =>
             val lr = wc.rank.toLowerCase
             // (!lr.contains("species") && !lr.contains("variety")) || (!wc.isExtinct && wc.isMarine)
-            (!lr.contains("species") && !lr.contains("variety")) || (!wc.isExtinct)
+            (!lr.contains("species") && !lr.contains("variety")) || (!wc.isExtinct.getOrElse(false))
         )
 
     /**

@@ -62,17 +62,19 @@ object VernacularName:
     def read(file: String): List[VernacularName] = readFile(file, VernacularName.from)
 
 final case class SpeciesProfile(taxonID: String, 
-        isMarine: Boolean, 
-        isFreshwater: Boolean,
-        isTerrestrial: Boolean,
-        isExtinct: Boolean,
-        isBrackish: Boolean):
+        isMarine: Option[Boolean], 
+        isFreshwater: Option[Boolean],
+        isTerrestrial: Option[Boolean],
+        isExtinct: Option[Boolean],
+        isBrackish: Option[Boolean]):
     val id = taxonIDToKey(taxonID)
 
 object SpeciesProfile:
 
-    private def toBool(value: String): Boolean =
-        value == "1"
+    private def toBool(value: String): Option[Boolean] =
+        if value.isBlank then None
+        else Some(value == "1")
+
 
     def from(row: String): Option[SpeciesProfile] =
         Try {

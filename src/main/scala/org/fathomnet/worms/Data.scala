@@ -69,3 +69,5 @@ final case class Data(rootNode: WormsNode, wormsConcepts: Seq[WormsConcept]):
             case (parent, Some(child)) =>
                 val newParent = parent.copy(children = Seq(child))
                 Some(newParent)
+
+
