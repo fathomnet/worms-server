@@ -21,8 +21,11 @@ final case class WormsConcept(
     parentId: Option[Long],
     names: Seq[WormsConceptName],
     rank: String,
-    isMarine: Boolean = false,
-    isExtinct: Boolean = false
+    isMarine: Option[Boolean] = None, 
+    isFreshwater: Option[Boolean] = None,
+    isTerrestrial: Option[Boolean] = None,
+    isExtinct: Option[Boolean] = None,
+    isBrackish: Option[Boolean] = None
 )
 
 object WormsConcept:
@@ -49,7 +52,12 @@ object WormsConcept:
 
         for s <- speciesProfiles do
             val wc    = concepts(s.id)
-            val newWc = wc.copy(isMarine = s.isMarine, isExtinct = s.isExtinct)
+            val newWc = wc.copy(
+                isMarine = s.isMarine, 
+                isExtinct = s.isExtinct,
+                isBrackish = s.isBrackish,
+                isFreshwater = s.isFreshwater,
+                isTerrestrial = s.isTerrestrial)
             concepts(s.id) = newWc
 
         concepts
