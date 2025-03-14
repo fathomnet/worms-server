@@ -43,7 +43,7 @@ object CirceCodecs:
         .contramap(_.toString)
 
     given Decoder[WormsDetails] = deriveDecoder
-    given Encoder[WormsDetails] = deriveEncoder  
+    given Encoder[WormsDetails] = deriveEncoder
 
     given Decoder[WormsNode] = deriveDecoder
     given Encoder[WormsNode] = deriveEncoder
