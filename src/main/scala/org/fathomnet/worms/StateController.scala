@@ -225,14 +225,20 @@ object StateController:
         runSearch(search)
 
     def details(name: String): Either[ErrorMsg, WormsDetails] =
-        for 
-            data         <- State.data
-                                .toRight(NotFound("The WoRMS dataset is missing; this may happen for a few seconds when the server starts. If this continues, please report it to the FathomNet team."))
+        for
+            data         <-
+                State
+                    .data
+                    .toRight(
+                        NotFound(
+                            "The WoRMS dataset is missing; this may happen for a few seconds when the server starts. If this continues, please report it to the FathomNet team."
+                        )
+                    )
             names        <- synonyms(name)
             acceptedName <- names.headOption.toRight(NotFound(s"Unable to find `$name`"))
-            wormsConcept <- data.wormsConcepts.find(_.names.exists(_.name == acceptedName)).toRight(NotFound(s"Unable to find `$name` accepted name of `$acceptedName`"))
-        yield
-
-            WormsDetails.from(acceptedName, wormsConcept)
-                .copy(alternateNames = names.tail)
-            
+            wormsConcept <- data.wormsConcepts
+                                .find(_.names.exists(_.name == acceptedName))
+                                .toRight(NotFound(s"Unable to find `$name` accepted name of `$acceptedName`"))
+        yield WormsDetails
+            .from(acceptedName, wormsConcept)
+            .copy(alternateNames = names.tail)
