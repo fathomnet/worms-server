@@ -41,7 +41,7 @@ final case class Taxon(
 object Taxon:
     def from(row: String): Option[Taxon] =
         Try {
-            val cols                = row.split("\t") 
+            val cols                = row.split("\t")
             val taxonID             = cols(0)
             val acceptedNameUsageID = if cols(2).isBlank then None else Some(cols(2))
             val parentNameUsageID   = if cols(3).isBlank then None else Some(cols(3))
@@ -64,12 +64,14 @@ object VernacularName:
 
     def read(file: String): List[VernacularName] = readFile(file, VernacularName.from)
 
-final case class SpeciesProfile(taxonID: String, 
-        isMarine: Option[Boolean], 
-        isFreshwater: Option[Boolean],
-        isTerrestrial: Option[Boolean],
-        isExtinct: Option[Boolean],
-        isBrackish: Option[Boolean]):
+final case class SpeciesProfile(
+    taxonID: String,
+    isMarine: Option[Boolean],
+    isFreshwater: Option[Boolean],
+    isTerrestrial: Option[Boolean],
+    isExtinct: Option[Boolean],
+    isBrackish: Option[Boolean]
+):
     val id = taxonIDToKey(taxonID)
 
 object SpeciesProfile:
@@ -77,7 +79,6 @@ object SpeciesProfile:
     private def toBool(value: String): Option[Boolean] =
         if value.isBlank then None
         else Some(value == "1")
-
 
     def from(row: String): Option[SpeciesProfile] =
         Try {

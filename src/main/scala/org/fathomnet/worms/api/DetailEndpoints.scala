@@ -17,12 +17,11 @@ import org.fathomnet.worms.etc.circe.CirceCodecs.given
 import scala.concurrent.Future
 import org.fathomnet.worms.StateController
 
-class DetailEndpoints(using ec: ExecutionContext) extends Endpoints {
-
+class DetailEndpoints(using ec: ExecutionContext) extends Endpoints:
 
     private val tag = "Details"
 
-    val detailsEndpoint = 
+    val detailsEndpoint =
         baseEndpoint
             .get
             .in("details")
@@ -34,7 +33,4 @@ class DetailEndpoints(using ec: ExecutionContext) extends Endpoints {
     val detailsServerEndpoint: ServerEndpoint[Any, Future] =
         detailsEndpoint.serverLogic((name: String) => Future(StateController.details(name)))
 
-
     override def all: List[ServerEndpoint[Any, Future]] = List(detailsServerEndpoint)
-  
-}

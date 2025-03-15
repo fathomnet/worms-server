@@ -14,17 +14,15 @@ case class WormsDetails(
     aphiaId: Long,
     parentAphiaId: Option[Long] = None,
     alternateNames: Seq[String] = Seq.empty,
-    isMarine: Option[Boolean] = None, 
+    isMarine: Option[Boolean] = None,
     isFreshwater: Option[Boolean] = None,
     isTerrestrial: Option[Boolean] = None,
     isExtinct: Option[Boolean] = None,
     isBrackish: Option[Boolean] = None
-) {
-
-}
+) {}
 
 object WormsDetails:
-    def from(acceptedName: String, wormsConcept: WormsConcept): WormsDetails = 
+    def from(acceptedName: String, wormsConcept: WormsConcept): WormsDetails =
         WormsDetails(
             name = acceptedName,
             rank = wormsConcept.rank,

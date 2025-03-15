@@ -101,17 +101,17 @@ object Main:
         // Lood data off main thread
         given executionContext: ExecutionContext =
             CustomExecutors.newFixedThreadPoolExecutor(20).asScala
-        executionContext.execute(() => {
+        executionContext.execute(() =>
             val (wormsConcepts, root) = load(wormsDir, treeFiles)
-            val data = root.map(r => Data(r, wormsConcepts))
+            val data                  = root.map(r => Data(r, wormsConcepts))
             State.data = data
-        })
+        )
 
         val nameEndpoints    = NameEndpoints()
         val taxaEndpoints    = TaxaEndpoints()
         val detailEndpoints  = DetailEndpoints()
         val swaggerEndpoints = SwaggerEndpoints(nameEndpoints, taxaEndpoints, detailEndpoints)
-        val allEndpoints     = nameEndpoints.all ++ taxaEndpoints.all ++ detailEndpoints.all ++ swaggerEndpoints.all 
+        val allEndpoints     = nameEndpoints.all ++ taxaEndpoints.all ++ detailEndpoints.all ++ swaggerEndpoints.all
 
         val vertx  = Vertx.vertx()
         val server = vertx.createHttpServer()
@@ -123,9 +123,11 @@ object Main:
 
         Await.result(server.requestHandler(router).listen(port).asScala, Duration.Inf)
 
-    def load(wormsDir: Path, treeFiles: List[Path])(using ec: ExecutionContext): (Seq[WormsConcept], Option[WormsNode]) =
+    def load(wormsDir: Path, treeFiles: List[Path])(using
+        ec: ExecutionContext
+    ): (Seq[WormsConcept], Option[WormsNode]) =
         val (wormsConcepts, rootOpt) = WormsLoader.load(wormsDir)
-        val newRoot = rootOpt.map { root =>
+        val newRoot                  = rootOpt.map { root =>
             if (treeFiles.nonEmpty)
                 // Our new base. We use 0 as aphiaId so that the real aphiaIds are not incremented when the trees are combined
                 val newRoot      = WormsNode("object", "", 0L, 0L, Nil, Nil)

@@ -7,6 +7,7 @@
 package org.fathomnet.worms.io
 
 import scala.collection.mutable
+import org.fathomnet.worms.etc.sdk.Maps
 
 /*
  * @author Brian Schlining
@@ -21,12 +22,16 @@ final case class WormsConcept(
     parentId: Option[Long],
     names: Seq[WormsConceptName],
     rank: String,
-    isMarine: Option[Boolean] = None, 
+    isMarine: Option[Boolean] = None,
     isFreshwater: Option[Boolean] = None,
     isTerrestrial: Option[Boolean] = None,
     isExtinct: Option[Boolean] = None,
     isBrackish: Option[Boolean] = None
-)
+):
+    lazy val primaryName: String =
+        names.find(_.isPrimary) match
+            case Some(name) => name.name
+            case None       => names.head.name
 
 object WormsConcept:
 
@@ -53,14 +58,54 @@ object WormsConcept:
         for s <- speciesProfiles do
             val wc    = concepts(s.id)
             val newWc = wc.copy(
-                isMarine = s.isMarine, 
+                isMarine = s.isMarine,
                 isExtinct = s.isExtinct,
                 isBrackish = s.isBrackish,
                 isFreshwater = s.isFreshwater,
-                isTerrestrial = s.isTerrestrial)
+                isTerrestrial = s.isTerrestrial
+            )
             concepts(s.id) = newWc
 
-        concepts
+        makePrimaryNamesUnique(concepts.values)
+
+    /**
+     * WARNING: THIS IS A HACK
+     *
+     * Given a list of WormsConcepts, make the primary names unique. This is done by appending a number to the name if
+     * the name is not unique.
+     * @param wormsConcepts
+     */
+    private def makePrimaryNamesUnique(nodes: Iterable[WormsConcept]): Seq[WormsConcept] =
+        val map = mutable.Map[String, WormsConcept]()
+
+        def addPossibleDuplicateName(node: WormsConcept): Unit =
+            val uniqueName = Maps.findUniqueKey(node.primaryName, map)
+            if (node.primaryName != uniqueName) {
+                val filteredNames = node.names.filter(_.name != node.primaryName)
+                val newNames      = filteredNames :+ WormsConceptName(uniqueName, true)
+                val newNode       = node.copy(names = newNames)
+                map(uniqueName) = newNode
+            }
+            else
+                map(node.primaryName) = node
+
+        for n <- nodes do
+            map.get(n.primaryName) match
+                case Some(existing) =>
+                    if (existing.id == existing.acceptedId) {
+                        // Change the new name by appending a number
+                        addPossibleDuplicateName(n)
+                    }
+                    else {
+                        // TODO change the new name by appending a number
+                        map.remove(existing.primaryName)
+                        map(n.primaryName) = n
+                        addPossibleDuplicateName(existing)
+                    }
+                case None           =>
+                    map(n.primaryName) = n
+
+        map
             .values
             .toSeq
             .sortBy(_.parentId)
