@@ -8,6 +8,7 @@ package org.fathomnet.worms.io
 
 import scala.collection.mutable
 import org.fathomnet.worms.etc.sdk.Maps
+import org.fathomnet.worms.etc.jdk.Logging.given
 
 /*
  * @author Brian Schlining
@@ -35,6 +36,8 @@ final case class WormsConcept(
 
 object WormsConcept:
 
+    private val log = System.getLogger(getClass.getName)
+
     /**
      * Combines the parsed info from the 3 different WorMS files into WormsConcepts
      */
@@ -46,7 +49,9 @@ object WormsConcept:
         val concepts = mutable.Map[Long, WormsConcept]()
         for t <- taxons do
             val acceptedId = t.acceptedId.getOrElse(t.id)
-            val wc         = WormsConcept(t.id, acceptedId, t.parentId, Seq(WormsConceptName(t.scientificName)), t.rank)
+            val isPrimary  = t.id == acceptedId
+            val name       = WormsConceptName(t.scientificName, isPrimary)
+            val wc         = WormsConcept(t.id, acceptedId, t.parentId, Seq(name), t.rank)
             concepts(t.id) = wc
 
         for v <- vernacularNames do
@@ -93,6 +98,12 @@ object WormsConcept:
             map.get(n.primaryName) match
                 case Some(existing) =>
                     if (existing.id == existing.acceptedId) {
+                        if (n.id == n.acceptedId) {
+                            log.atWarn.log(
+                                s"Duplicate primary name found: ${n.primaryName} (${n.id}) and ${existing.primaryName} (${existing.id})"
+                            )
+
+                        }
                         // Change the new name by appending a number
                         addPossibleDuplicateName(n)
                     }

@@ -78,14 +78,11 @@ object WormsNodeBuilder:
     def from(node: MutableWormsNode): WormsNode =
         val name           = node
             .concept
-            .names
-            .find(_.isPrimary)
-            .map(_.name)
-            .get
+            .primaryName
         val alternateNames = node
             .concept
             .names
-            .filter(_.isPrimary == false)
+            .filter(n => n.isPrimary == false && n.name != name)
             .map(_.name)
         WormsNode(
             name,
