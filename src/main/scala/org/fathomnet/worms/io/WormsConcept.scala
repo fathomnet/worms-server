@@ -71,7 +71,9 @@ object WormsConcept:
             )
             concepts(s.id) = newWc
 
-        makePrimaryNamesUnique(concepts.values)
+        concepts.values.toSeq
+
+//        makePrimaryNamesUnique(concepts.values)
 
     /**
      * WARNING: THIS IS A HACK
@@ -80,7 +82,7 @@ object WormsConcept:
      * the name is not unique.
      * @param wormsConcepts
      */
-    private def makePrimaryNamesUnique(nodes: Iterable[WormsConcept]): Seq[WormsConcept] =
+    def makePrimaryNamesUnique(nodes: Iterable[WormsConcept]): Seq[WormsConcept] =
         val map = mutable.Map[String, WormsConcept]()
 
         def addPossibleDuplicateName(node: WormsConcept): Unit =

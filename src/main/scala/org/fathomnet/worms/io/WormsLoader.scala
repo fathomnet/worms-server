@@ -36,15 +36,18 @@ object WormsLoader:
         val speciesProfilePath = wormsDir.resolve("speciesprofile.txt")
 
         val app = for
-            _               <- ZIO.succeed(log.atInfo.log(s"Loading WoRMS from $wormsDir"))
-            taxons          <- ZIO.fromTry(Try(Taxon.read(taxonPath.toString)))
-            vernacularNames <- ZIO.fromTry(Try(VernacularName.read(vernacularNamePath.toString)))
-            speciesProfiles <- ZIO.fromTry(Try(SpeciesProfile.read(speciesProfilePath.toString)))
-            wormsConcepts   <-
+            _                      <- ZIO.succeed(log.atInfo.log(s"Loading WoRMS from $wormsDir"))
+            taxons                 <- ZIO.fromTry(Try(Taxon.read(taxonPath.toString)))
+            vernacularNames        <- ZIO.fromTry(Try(VernacularName.read(vernacularNamePath.toString)))
+            speciesProfiles        <- ZIO.fromTry(Try(SpeciesProfile.read(speciesProfilePath.toString)))
+            wormsConcepts          <-
                 ZIO.fromTry(Try(WormsConcept.build(taxons, vernacularNames, speciesProfiles).toList))
-            mutableRoot     <- ZIO.fromTry(Try(MutableWormsNodeBuilder.fathomNetTree(wormsConcepts)))
-            root            <- ZIO.fromTry(Try(WormsNodeBuilder.from(mutableRoot)))
-            _               <- ZIO.succeed(log.atInfo.log(s"Loaded WoRMS from $wormsDir"))
+            mutableRoot            <- ZIO.fromTry(Try(MutableWormsNodeBuilder.fathomNetTree(wormsConcepts)))
+            fathomnetWormsConcepts <- ZIO.succeed(MutableWormsNodeBuilder.flattenTree(mutableRoot))
+            renamedWormsConcepts   <- ZIO.succeed(WormsConcept.makePrimaryNamesUnique(fathomnetWormsConcepts))
+            fathomnetRoot          <- ZIO.fromTry(Try(MutableWormsNodeBuilder.buildTree(renamedWormsConcepts)))
+            root                   <- ZIO.fromTry(Try(WormsNodeBuilder.from(fathomnetRoot)))
+            _                      <- ZIO.succeed(log.atInfo.log(s"Loaded WoRMS from $wormsDir"))
         yield (wormsConcepts, Some(root))
 
         ZioUtil.safeRun(app).getOrElse((Seq.empty, None))

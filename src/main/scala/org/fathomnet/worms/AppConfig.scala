@@ -6,7 +6,7 @@
 
 package org.fathomnet.worms
 
-import com.typesafe.config.ConfigFactory
+import com.typesafe.config.{Config, ConfigFactory}
 
 import scala.util.Try
 
@@ -17,7 +17,7 @@ import scala.util.Try
  */
 object AppConfig:
 
-    val Config = ConfigFactory.load()
+    val Config: Config = ConfigFactory.load()
 
     val Name: String = "worms-server"
 
