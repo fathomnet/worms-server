@@ -1,22 +1,22 @@
 # worms-server
 
-A very fast [World Register of Marine Species (WoRMS)](https://www.marinespecies.org) name server for [FathomNet](http://fathomnet.org) use. Ingests a dump of the WoRMS database and serves out names and tree structures. The WoRMS data is simplified on load so that only the "Animalia" branch is used and all extinct species are removed.
+A very fast [World Register of Marine Species (WoRMS)](https://www.marinespecies.org) name server for [FathomNet](https://database.fathomnet.org) use. Ingests a dump of the WoRMS database and serves out names and tree structures. The WoRMS data is simplified on load so that only the "Animalia" branch is used and all extinct species are removed.
 
 ## Why?
 
 WoRMS has its own [API](https://www.marinespecies.org/rest/) that is a fantastic resource if you're looking for information about a specific taxa. However, FathomNet requires some features that are not available in the WoRMS API. Most notably:
 
-- WoRMS lacks an endpoint to get the taxonomic names that are actually in WoRMS. To use that API, you have to already know what you are looking for. For web-sites and machine learning applications, we need to be able to ask ["What do you already know about?"](https://fathomnet.org/worms/names).
-- WoRMS has methods to get the direct parent and children of a taxa, but lacks methods to get _all_ the ancestors or descendants. This forces WoRMS API users to write their own recursive algorithms on top of the WoRMS API. This server provides simple methods to get a complete listing of all [ancestors](https://fathomnet.org/worms/ancestors/Atollidae) or [descendants](https://fathomnet.org/worms/descendants/Atollidae) of any taxa. This feature is critical for aggregating machine learning datasets.
-- Most WoRMS api endpoints require an _aphia id_ to use the endpoint. So at a minimum, every use of a WoRMS endpoint actually requires two HTTP requests: [one to look up the aphia id by a name](https://www.marinespecies.org/rest/AphiaIDByName/Atolla?marine_only=true) and then a second call to get the [piece of information you actually want](https://www.marinespecies.org/rest/AphiaVernacularsByAphiaID/135248). Our worms-server API is name-based, allowing naming requests to be fullfilled in a [single request](https://fathomnet.org/worms/taxa/info/Atolla).
-- WoRMS places a heavy emphasis on scientific names, making the barrier of entry to using common names, also called vernacular names, high. For machine learning applications, we want to enable non-marine scientists to more easily ask for things like "[what are all the types of shrimp](https://fathomnet.org/worms/descendants/shrimps) or "[What squids are found in WoRMS](https://fathomnet.org/worms/query/contains/squid)"
+- WoRMS lacks an endpoint to get the taxonomic names that are actually in WoRMS. To use that API, you have to already know what you are looking for. For web-sites and machine learning applications, we need to be able to ask ["What do you already know about?"](https://database.fathomnet.org/worms/names).
+- WoRMS has methods to get the direct parent and children of a taxa, but lacks methods to get _all_ the ancestors or descendants. This forces WoRMS API users to write their own recursive algorithms on top of the WoRMS API. This server provides simple methods to get a complete listing of all [ancestors](https://database.fathomnet.org/worms/ancestors/Atollidae) or [descendants](https://database.fathomnet.org/worms/descendants/Atollidae) of any taxa. This feature is critical for aggregating machine learning datasets.
+- Most WoRMS api endpoints require an _aphia id_ to use the endpoint. So at a minimum, every use of a WoRMS endpoint actually requires two HTTP requests: [one to look up the aphia id by a name](https://www.marinespecies.org/rest/AphiaIDByName/Atolla?marine_only=true) and then a second call to get the [piece of information you actually want](https://www.marinespecies.org/rest/AphiaVernacularsByAphiaID/135248). Our worms-server API is name-based, allowing naming requests to be fullfilled in a [single request](https://database.fathomnet.org/worms/taxa/info/Atolla).
+- WoRMS places a heavy emphasis on scientific names, making the barrier of entry to using common names, also called vernacular names, high. For machine learning applications, we want to enable non-marine scientists to more easily ask for things like "[what are all the types of shrimp](https://database.fathomnet.org/worms/descendants/shrimps) or "[What squids are found in WoRMS](https://database.fathomnet.org/worms/query/contains/squid)"
 - For the FathomNet website, we need the server responses to be fast. This server holds all data in memory for fast access and responses.
 
 ## Endpoints
 
 ### General information
 
-- GET `/names` - returns all names ... there's a lot of names. The results are paged using query params `limit` (default 100) and `offset` (default 0). [Example](https://fathomnet.org/worms/names). [Example with limit and offset](https://fathomnet.org/worms/names?limit=500&offset=500000). Example response:
+- GET `/names` - returns all names ... there's a lot of names. The results are paged using query params `limit` (default 100) and `offset` (default 0). [Example](https://database.fathomnet.org/worms/names). [Example with limit and offset](https://database.fathomnet.org/worms/names?limit=500&offset=500000). Example response:
 
 ```json
 {
@@ -31,9 +31,9 @@ WoRMS has its own [API](https://www.marinespecies.org/rest/) that is a fantastic
 }
 ```
 
-- GET `/names/count` - returns the total number of names available. [Example](https://fathomnet.org/worms/names/count). Response example: `872962`
+- GET `/names/count` - returns the total number of names available. [Example](https://database.fathomnet.org/worms/names/count). Response example: `872962`
 
-- GET `/names/aphiaid/:aphiaid` - returns the names associated to a given aphiaid, a code that WoRMS assigns to every taxa. [Example](https://fathomnet.org/worms/names/aphiaid/125401). Example response:
+- GET `/names/aphiaid/:aphiaid` - returns the names associated to a given aphiaid, a code that WoRMS assigns to every taxa. [Example](https://database.fathomnet.org/worms/names/aphiaid/125401). Example response:
 
 ```json
 {
@@ -53,13 +53,13 @@ WoRMS has its own [API](https://www.marinespecies.org/rest/) that is a fantastic
 
 Unless otherwise indicated, these respond with a JSON array of Strings
 
-- GET `/parent/:name` - return the name of the parent of `:name`. [Example](https://fathomnet.org/worms/parent/Bathochordaeus). Responds with a simple JSON string, e.g. `"Bathochordaeinae"`
-- GET `/children/:name` - return the primary names of the direct children. [Example](https://fathomnet.org/worms/children/Bathochordaeus)
-- GET `/ancestors/:name` - return the primary names of all the ancestors in order from the top of the taxa tree down. [Example](https://fathomnet.org/worms/ancestors/Atolla)
-- GET `/descendants/:name` - return the primary names of the taxa and all its descendants in alphabetical order. [Example](https://fathomnet.org/worms/descendants/Atolla)
-- GET `/synonyms/:name` - returns alternative names for a term. The first term in the list is the primary/accepted name. [Example](https://fathomnet.org/worms/synonyms/Acanthonus%20armatus)
-- GET `/query/startswith/:prefix` - returns all names that start with `:prefix`. [Example](https://fathomnet.org/worms/query/startswith/fish)
-- GET `/query/contains/:glob` - returns all the names that contain `:glob`. [Example](https://fathomnet.org/worms/query/contains/crab)
+- GET `/parent/:name` - return the name of the parent of `:name`. [Example](https://database.fathomnet.org/worms/parent/Bathochordaeus). Responds with a simple JSON string, e.g. `"Bathochordaeinae"`
+- GET `/children/:name` - return the primary names of the direct children. [Example](https://database.fathomnet.org/worms/children/Bathochordaeus)
+- GET `/ancestors/:name` - return the primary names of all the ancestors in order from the top of the taxa tree down. [Example](https://database.fathomnet.org/worms/ancestors/Atolla)
+- GET `/descendants/:name` - return the primary names of the taxa and all its descendants in alphabetical order. [Example](https://database.fathomnet.org/worms/descendants/Atolla)
+- GET `/synonyms/:name` - returns alternative names for a term. The first term in the list is the primary/accepted name. [Example](https://database.fathomnet.org/worms/synonyms/Acanthonus%20armatus)
+- GET `/query/startswith/:prefix` - returns all names that start with `:prefix`. [Example](https://database.fathomnet.org/worms/query/startswith/fish)
+- GET `/query/contains/:glob` - returns all the names that contain `:glob`. [Example](https://database.fathomnet.org/worms/query/contains/crab)
 
 ### Tree-structure requests
 
@@ -78,11 +78,11 @@ The following endpoints respond with a tree structure with each node like:
 
 `alternateNames` is an array of strings, `children` can be an array of nodes.
 
-- GET `/taxa/parent/:name` - returns the name, alternateNames, and rank of the parent of the term. [Example](https://fathomnet.org/worms/taxa/parent/Atolla)
-- GET `/taxa/children/:name` - returns the name, alternateNames, and rank of the children of the term. [Example](https://fathomnet.org/worms/taxa/children/Atolla)
-- GET `/taxa/ancestors/:name` - return a tree structure from the root of the taxonomic tree down to the given name. Note that the last node will have it's children trimmed off. [Example](https://fathomnet.org/worms/taxa/ancestors/Atolla)
-- GET `/taxa/descendants/:name` - return a tree structure of descendants from the provided name on down through the tree. [Example](https://fathomnet.org/worms/taxa/descendants/Atollidae)
-- GET `/taxa/info/:name` - returns the name, alternateNames, and rank of a term. [Example](https://fathomnet.org/worms/taxa/info/Atolla)
+- GET `/taxa/parent/:name` - returns the name, alternateNames, and rank of the parent of the term. [Example](https://database.fathomnet.org/worms/taxa/parent/Atolla)
+- GET `/taxa/children/:name` - returns the name, alternateNames, and rank of the children of the term. [Example](https://database.fathomnet.org/worms/taxa/children/Atolla)
+- GET `/taxa/ancestors/:name` - return a tree structure from the root of the taxonomic tree down to the given name. Note that the last node will have it's children trimmed off. [Example](https://database.fathomnet.org/worms/taxa/ancestors/Atolla)
+- GET `/taxa/descendants/:name` - return a tree structure of descendants from the provided name on down through the tree. [Example](https://database.fathomnet.org/worms/taxa/descendants/Atollidae)
+- GET `/taxa/info/:name` - returns the name, alternateNames, and rank of a term. [Example](https://database.fathomnet.org/worms/taxa/info/Atolla)
 
 ## Developer Information
 
