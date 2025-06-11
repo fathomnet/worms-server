@@ -1,4 +1,4 @@
-`# worms-server
+# worms-server
 
 A very fast [World Register of Marine Species (WoRMS)](https://www.marinespecies.org) name server for [FathomNet](http://fathomnet.org) use. Ingests a dump of the WoRMS database and serves out names and tree structures. The WoRMS data is simplified on load so that only the "Animalia" branch is used and all extinct species are removed.
 
