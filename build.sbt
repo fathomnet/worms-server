@@ -3,7 +3,7 @@ import Dependencies._
 Global / onChangedBuildSource := ReloadOnSourceChanges
 Laika / sourceDirectories     := Seq(baseDirectory.value / "docs")
 
-ThisBuild / scalaVersion     := "3.6.4"
+ThisBuild / scalaVersion     := "3.7.1"
 ThisBuild / organization     := "org.fathomnet"
 ThisBuild / organizationName := "MBARI"
 ThisBuild / startYear        := Some(2021)
