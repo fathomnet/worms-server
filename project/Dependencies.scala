@@ -16,7 +16,7 @@ object Dependencies {
 
     lazy val slf4jJdk = "org.slf4j" % "slf4j-jdk-platform-logging" % "2.0.17"
 
-    private val tapirVersion  = "1.11.33"
+    private val tapirVersion  = "1.11.34"
     lazy val tapirStubServer  = "com.softwaremill.sttp.tapir"   %% "tapir-sttp-stub-server"  % tapirVersion
     lazy val tapirSwagger     = "com.softwaremill.sttp.tapir"   %% "tapir-swagger-ui-bundle" % tapirVersion
     lazy val tapirCirce       = "com.softwaremill.sttp.tapir"   %% "tapir-json-circe"        % tapirVersion
