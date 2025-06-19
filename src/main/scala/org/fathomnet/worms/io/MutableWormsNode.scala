@@ -53,8 +53,12 @@ object MutableWormsNodeBuilder:
      *   the animalia node
      */
     def trimTree(rootNode: MutableWormsNode): MutableWormsNode =
+        // Filter out all nodes that do not have "Animalia" as an ancestor
         def filter(children: Seq[MutableWormsNode]): Seq[MutableWormsNode] =
             children.filter(_.concept.names.map(_.name).exists(_.contains("Animalia")))
+
+        // Uncomment this to keep the full tree including plankton and other non-animalia nodes
+        // def filter(children: Seq[MutableWormsNode]): Seq[MutableWormsNode] = children
 
         val accepted = filter(rootNode.children.toSeq)
         if (accepted.isEmpty) rootNode
