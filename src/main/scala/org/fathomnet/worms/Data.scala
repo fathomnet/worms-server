@@ -8,6 +8,7 @@ package org.fathomnet.worms
 
 import scala.collection.immutable.SortedMap
 import org.fathomnet.worms.io.WormsConcept
+import scala.annotation.tailrec
 
 /**
  * Wraps a Worms tree with untility methods for fast access.
@@ -63,11 +64,17 @@ final case class Data(rootNode: WormsNode, wormsConcepts: Seq[WormsConcept]):
 
     def findNodeByChildName(name: String): Option[WormsNode] = parents.get(name)
 
+    
     def buildParentPath(name: String): List[WormsNode] =
-        def build(node: WormsNode): List[WormsNode] =
-            findNodeByChildName(node.name) match
-                case Some(parent) => parent :: build(parent)
-                case None         => List(node)
+        def build(node: WormsNode, visited: Set[String] = Set.empty): List[WormsNode] =
+            if visited.contains(node.name) then
+                // We've detected a cycle, stop recursion
+                log.log(System.Logger.Level.WARNING, s"Cycle detected at node ${node.name}, stopping recursion.")
+                List(node)
+            else
+                findNodeByChildName(node.name) match
+                    case Some(parent) => parent :: build(parent, visited + node.name)
+                    case None         => List(node)
         findNodeByName(name) match
             case None       => List.empty
             case Some(node) => build(node).reverse.tail :+ node
