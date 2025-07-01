@@ -20,6 +20,8 @@ import org.fathomnet.worms.io.WormsConcept
  */
 final case class Data(rootNode: WormsNode, wormsConcepts: Seq[WormsConcept]):
 
+    private val log = System.getLogger(getClass.getName)
+
     /**
      * Map of [nodeName, Node] for both the name and alternate name of the node.
      */
@@ -42,10 +44,18 @@ final case class Data(rootNode: WormsNode, wormsConcepts: Seq[WormsConcept]):
      */
     lazy val parents: SortedMap[String, WormsNode] =
         val map                        = SortedMap.newBuilder[String, WormsNode]
+        val visited = scala.collection.mutable.Set.empty[String] // avoids cyclic relations in the tree
+
         def add(node: WormsNode): Unit =
-            node.children.foreach(n => map += n.name -> node)
-            node.children.foreach(n => n.alternateNames.foreach(n => map += n -> node))
-            node.children.foreach(add)
+            if visited.add(node.name) then
+                node.children.foreach(n => map += n.name -> node)
+                node.children.foreach(n => n.alternateNames.foreach(n => map += n -> node))
+                node.children.foreach(add)
+            else
+                log.log(
+                    System.Logger.Level.WARNING,
+                    s"Node ${node.name} already visited, skipping to avoid cycles."
+                )
         add(rootNode)
         map.result()
 
