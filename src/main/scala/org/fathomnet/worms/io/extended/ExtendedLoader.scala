@@ -11,7 +11,7 @@ import org.fathomnet.worms.io.{MutableWormsNodeBuilder, WormsConcept, WormsConce
 import org.fathomnet.worms.{WormsNode, WormsNodeBuilder}
 
 import java.nio.file.Path
-import scala.util.Using
+import scala.util.{Failure, Success, Try, Using}
 import scala.util.control.NonFatal
 
 object ExtendedLoader:
@@ -39,17 +39,22 @@ object ExtendedLoader:
      * @return
      */
     def load(extendedFile: Path): Option[WormsNode] =
-        val wormsConcepts = read(extendedFile.toString)
-        val tree          = MutableWormsNodeBuilder.buildTree(wormsConcepts)
-        Option(WormsNodeBuilder.from(tree))
+        Try {
+            val wormsConcepts = read(extendedFile.toString)
+            val tree = MutableWormsNodeBuilder.buildTree(wormsConcepts)
+            Option(WormsNodeBuilder.from(tree))
+        } match
+            case Success(s) => s
+            case Failure(exception) =>
+                log.atError.withCause(exception).log(s"Failed to load extended file: $extendedFile")
+                None
 
     def read(file: String): Seq[WormsConcept] =
-        val t = Using(scala.io.Source.fromFile(file)) { source =>
+        Using(scala.io.Source.fromFile(file)) { source =>
             source.getLines().flatMap(from).toSeq
-        }
-        t match
-            case scala.util.Success(s) => s
-            case scala.util.Failure(e) =>
+        } match
+            case Success(s) => s
+            case Failure(e) =>
                 log.atError.withCause(e).log(s"Failed to read file: $file")
                 Seq.empty
 

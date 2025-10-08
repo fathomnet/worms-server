@@ -43,7 +43,7 @@ object MutableWormsNodeBuilder:
         do parentNode.children.append(conceptNode)
         // In worms, the root node has an aphiaId of 1
         val minAphiaId = wormsConcepts.map(_.id).min
-        map.get(minAphiaId).get
+        map(minAphiaId)
 
     /**
      * Given the full tree, return only the animalia node

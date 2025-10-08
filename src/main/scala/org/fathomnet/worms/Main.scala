@@ -13,6 +13,8 @@ import org.fathomnet.worms.etc.jdk.CustomExecutors
 import org.fathomnet.worms.etc.jdk.CustomExecutors.*
 import org.fathomnet.worms.etc.jdk.Logging.given
 import org.fathomnet.worms.io.WormsLoader
+
+import scala.util.control.NonFatal
 // import org.fathomnet.worms.io.extended.CombineTrees.combine
 import org.fathomnet.worms.io.extended.{CombineTrees, ExtendedLoader}
 import picocli.CommandLine
@@ -129,13 +131,20 @@ object Main:
         val (wormsConcepts, rootOpt) = WormsLoader.load(wormsDir)
         val newRoot                  = rootOpt.map { root =>
             if (treeFiles.nonEmpty)
-                // Our new base. We use 0 as aphiaId so that the real aphiaIds are not incremented when the trees are combined
-                val newRoot      = WormsNode("object", "", 0L, 0L, Nil, Nil)
-                val newBranches  = treeFiles.flatMap(ExtendedLoader.load(_)).toSeq
-                val trees        = root +: newBranches
-                val combinedRoot = CombineTrees.combine(newRoot, trees, root.maxAphiaId)
-                // We need to reset the aphiaId to -1 so that it's obivious that the root is not a real aphiaId
-                combinedRoot.copy(aphiaId = -1L)
+                try {
+                    // Our new base. We use 0 as aphiaId so that the real aphiaIds are not incremented when the trees are combined
+                    val newRoot = WormsNode("object", "", 0L, 0L, Nil, Nil)
+                    val newBranches = treeFiles.flatMap(ExtendedLoader.load).toSeq
+                    val trees = root +: newBranches
+                    val combinedRoot = CombineTrees.combine(newRoot, trees, root.maxAphiaId)
+                    // We need to reset the aphiaId to -1 so that it's obivious that the root is not a real aphiaId
+                    combinedRoot.copy(aphiaId = -1L)
+                }
+                catch {
+                    case NonFatal(e) =>
+                        log.atWarn.withCause(e).log("Error combining trees from " + treeFiles.mkString(", "))
+                        root
+                }
             else root
         }
         (wormsConcepts, newRoot)

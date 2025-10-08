@@ -7,7 +7,7 @@
 package org.fathomnet.worms.io
 
 import scala.io.Source
-import scala.util.Try
+import scala.util.{Success, Try, Using}
 
 /*
  * This file contains code to read the 3 relevant files from the Worms
@@ -20,12 +20,14 @@ import scala.util.Try
 def taxonIDToKey(taxonID: String): Long =
     taxonID.split(":").last.toLong
 
-def readFile[A](file: String, rowMapper: String => Option[A]): List[A] =
-    Source
-        .fromFile(file)
-        .getLines
-        .flatMap(rowMapper)
-        .toList
+def readFile[A](file: String, rowMapper: String => Option[A]): List[A] = {
+    Using(Source.fromFile(file)) { source =>
+        source.getLines().flatMap(rowMapper).toList
+    } match
+        case Success(list) => list
+        case _             => List.empty[A]
+
+}
 
 final case class Taxon(
     taxonID: String,
@@ -34,9 +36,9 @@ final case class Taxon(
     rank: String,
     acceptedNameUsageID: Option[String]
 ):
-    val id         = taxonIDToKey(taxonID)
-    val parentId   = parentNameUsageID.map(taxonIDToKey)
-    val acceptedId = acceptedNameUsageID.map(taxonIDToKey)
+    val id: Long = taxonIDToKey(taxonID)
+    val parentId: Option[Long] = parentNameUsageID.map(taxonIDToKey)
+    val acceptedId: Option[Long] = acceptedNameUsageID.map(taxonIDToKey)
 
 object Taxon:
     def from(row: String): Option[Taxon] =
@@ -72,7 +74,7 @@ final case class SpeciesProfile(
     isExtinct: Option[Boolean],
     isBrackish: Option[Boolean]
 ):
-    val id = taxonIDToKey(taxonID)
+    val id: Long = taxonIDToKey(taxonID)
 
 object SpeciesProfile:
 
