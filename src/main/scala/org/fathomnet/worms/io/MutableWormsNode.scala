@@ -42,7 +42,7 @@ object MutableWormsNodeBuilder:
             parentNode  <- map.get(parentId)
         do parentNode.children.append(conceptNode)
         // In worms, the root node has an aphiaId of 1
-        val minAphiaId = wormsConcepts.map(_.id).min
+        val minAphiaId = wormsConcepts.map(_.id).minOption.getOrElse(1L)
         map(minAphiaId)
 
     /**
