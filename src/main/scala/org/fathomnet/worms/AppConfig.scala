@@ -23,3 +23,5 @@ object AppConfig:
 
     val Version: String =
         Try(getClass.getPackage.getImplementationVersion).getOrElse("0.0.0-SNAPSHOT")
+
+    val Root: String = Config.getString("worms.root")

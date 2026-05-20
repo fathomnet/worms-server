@@ -13,4 +13,4 @@ package org.fathomnet.worms
  */
 object State:
 
-    var data: Option[Data] = None
+    @volatile var data: Option[Data] = None

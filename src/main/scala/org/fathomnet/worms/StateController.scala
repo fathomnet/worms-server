@@ -55,48 +55,40 @@ object StateController:
 
     def queryNamesStartingWith(prefix: String): Either[ErrorMsg, List[String]] =
         def search(data: Data): List[String] =
-            data.names.filter(_.toLowerCase.startsWith(prefix.toLowerCase)).toList
+            val lower = prefix.toLowerCase
+            data.lowerNamesMap.rangeFrom(lower).takeWhile(_._1.startsWith(lower)).values.toList
         runSearch(search)
 
     def queryNamesContaining(glob: String): Either[ErrorMsg, List[String]] =
         def search(data: Data): List[String] =
-            data.names.filter(_.toLowerCase.contains(glob.toLowerCase)).toList
+            val lower = glob.toLowerCase
+            data.lowerNamesMap.collect { case (k, v) if k.contains(lower) => v }.toList
         runSearch(search)
 
     def findNamesByAphiaId(aphiaId: Long): Either[ErrorMsg, Names] =
         def search(data: Data): Option[Names] =
-            val allNodes  = data.namesMap.values
-            val existing  = allNodes.find(n => n.aphiaId == aphiaId)
-            val outdated  = allNodes.filter(n => n.acceptedAphiaId == aphiaId)
-            val candidate = existing match
-                case None       => None
-                case Some(node) =>
-                    val accepted =
-                        if (node.aphiaId == node.acceptedAphiaId)
-                            Some(node)
-                        else
-                            allNodes.find(n => n.aphiaId == node.acceptedAphiaId)
-                    val names    = accepted match
-                        case None        => Names(node.aphiaId, node.name, node.name, node.alternateNames)
-                        case Some(value) =>
-                            val alternateNames = (node.alternateNames ++ value.alternateNames)
-                                .toSet
-                                .toSeq
-                                .sorted
-                            Names(node.aphiaId, node.name, value.name, alternateNames)
+            val existing = data.aphiaIdMap.get(aphiaId)
+            // Nodes whose acceptedAphiaId points to this id but whose own id differs are synonyms
+            val outdated = data.aphiaIdMap.values.filter(n => n.acceptedAphiaId == aphiaId && n.aphiaId != aphiaId)
+            val candidate = existing.map: node =>
+                val accepted =
+                    if node.isAccepted then Some(node)
+                    else data.aphiaIdMap.get(node.acceptedAphiaId)
+                accepted match
+                    case None        => Names(node.aphiaId, node.name, node.name, node.alternateNames)
+                    case Some(value) =>
+                        val alternateNames = (node.alternateNames ++ value.alternateNames).toSet.toSeq.sorted
+                        Names(node.aphiaId, node.name, value.name, alternateNames)
 
-                    Option(names)
-
-            if (outdated.isEmpty) candidate
+            if outdated.isEmpty then candidate
             else
-                candidate.map(c =>
-                    val alternateNames = (outdated.flatMap(n => n.names) ++ c.alternateNames)
-                        .filter(s => s != c.acceptedName)
+                candidate.map: c =>
+                    val alternateNames = (outdated.flatMap(_.names) ++ c.alternateNames)
+                        .filter(_ != c.acceptedName)
                         .toSet
                         .toSeq
                         .sorted
                     c.copy(alternateNames = alternateNames)
-                )
 
         runNodeSearch(search, s"Unable to find a name with aphiaId: $aphiaId")
 
@@ -192,10 +184,12 @@ object StateController:
 
             val candidateNodes = parentOpt match
                 case None         =>
-                    // Fast path
-                    data
-                        .names
-                        .filter(_.toLowerCase.startsWith(prefix.toLowerCase))
+                    // Fast path: range query on pre-built lowercase map is O(log N + K)
+                    val lower = prefix.toLowerCase
+                    data.lowerNamesMap
+                        .rangeFrom(lower)
+                        .takeWhile(_._1.startsWith(lower))
+                        .values
                         .flatMap(data.findNodeByName)
                         .map(_.simple)
                         .toList
@@ -236,8 +230,8 @@ object StateController:
                     )
             names        <- synonyms(name)
             acceptedName <- names.headOption.toRight(NotFound(s"Unable to find `$name`"))
-            wormsConcept <- data.wormsConcepts
-                                .find(_.names.exists(_.name == acceptedName))
+            wormsConcept <- data.namesMap.get(acceptedName)
+                                .flatMap(node => data.wormsConceptsMap.get(node.aphiaId))
                                 .toRight(NotFound(s"Unable to find `$name` accepted name of `$acceptedName`"))
         yield WormsDetails
             .from(acceptedName, wormsConcept)

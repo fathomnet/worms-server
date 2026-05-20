@@ -41,6 +41,30 @@ final case class Data(rootNode: WormsNode, wormsConcepts: Seq[WormsConcept]):
     lazy val names: Set[String] = namesMap.keySet
 
     /**
+     * SortedMap of lowercased name → original name. Built once at startup; used to avoid
+     * per-element toLowerCase allocations on every search query.
+     */
+    lazy val lowerNamesMap: SortedMap[String, String] =
+        SortedMap.from(namesMap.keys.map(n => n.toLowerCase -> n))
+
+    /**
+     * Map of [aphiaId, WormsConcept] for O(1) concept lookup by id.
+     */
+    lazy val wormsConceptsMap: Map[Long, WormsConcept] =
+        wormsConcepts.map(c => c.id -> c).toMap
+
+    /**
+     * Map of [aphiaId, Node]. Each node appears exactly once, keyed by its own aphiaId.
+     */
+    lazy val aphiaIdMap: Map[Long, WormsNode] =
+        val map                        = Map.newBuilder[Long, WormsNode]
+        def add(node: WormsNode): Unit =
+            map += node.aphiaId -> node
+            node.children.foreach(add)
+        add(rootNode)
+        map.result()
+
+    /**
      * Map of [childNodeName: String, parentNode: WormsNode] for both the name and alternate name of the node.
      */
     lazy val parents: SortedMap[String, WormsNode] =

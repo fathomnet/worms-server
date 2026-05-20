@@ -6,6 +6,7 @@
 
 package org.fathomnet.worms.io
 
+import org.fathomnet.worms.AppConfig
 import scala.collection.mutable
 
 case class MutableWormsNode(
@@ -43,7 +44,8 @@ object MutableWormsNodeBuilder:
         do parentNode.children.append(conceptNode)
         // In worms, the root node has an aphiaId of 1
         val minAphiaId = wormsConcepts.map(_.id).minOption.getOrElse(1L)
-        map(minAphiaId)
+        // Avoid buildTree panics on missing root node by returning a dummy root node with the minimum aphiaId found in the data                                                               
+        map.getOrElse(minAphiaId, MutableWormsNode(WormsConcept(minAphiaId, minAphiaId, None, Seq(WormsConceptName("Root")), "root")))
 
     /**
      * Given the full tree, return only the animalia node
@@ -55,7 +57,7 @@ object MutableWormsNodeBuilder:
     def trimTree(rootNode: MutableWormsNode): MutableWormsNode =
         // Filter out all nodes that do not have "Animalia" as an ancestor
         def filter(children: Seq[MutableWormsNode]): Seq[MutableWormsNode] =
-            children.filter(_.concept.names.map(_.name).exists(_.contains("Animalia")))
+            children.filter(_.concept.names.map(_.name).exists(_.contains(AppConfig.Root)))
 
         // Uncomment this to keep the full tree including plankton and other non-animalia nodes
         // def filter(children: Seq[MutableWormsNode]): Seq[MutableWormsNode] = children
