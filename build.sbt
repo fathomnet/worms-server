@@ -66,6 +66,8 @@ lazy val root = project
             typesafeConfig,
             zio
         ),
+        // Test suites share State.data (global mutable state); parallel execution causes races
+        Test / parallelExecution := false,
         scalacOptions ++= Seq(
             "-deprecation", // Emit warning and location for usages of deprecated APIs.
             "-encoding",
