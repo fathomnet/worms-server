@@ -6,9 +6,13 @@
 
 package org.fathomnet.worms.etc.sdk
 
+import scala.annotation.tailrec
+
 object Maps:
 
+
     def findUniqueKey(baseKey: String, map: scala.collection.Map[String, ?]): String =
+        @tailrec
         def helper(attempt: Int): String =
             val newKey = if (attempt == 0) baseKey else s"$baseKey $attempt"
             if (!map.contains(newKey)) newKey else helper(attempt + 1)

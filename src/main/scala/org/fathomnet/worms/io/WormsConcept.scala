@@ -32,7 +32,18 @@ final case class WormsConcept(
     lazy val primaryName: String =
         names.find(_.isPrimary) match
             case Some(name) => name.name
-            case None       => names.head.name
+            case None       =>
+                names.headOption match
+                    case Some(name) =>
+                        WormsConcept.log.atWarn.log(
+                            s"No primary name found for concept id $id. Falling back to first available name '${name.name}'."
+                        )
+                        name.name
+                    case None       =>
+                        WormsConcept.log.atWarn.log(
+                            s"Concept id $id has no names. Falling back to synthesized primary name."
+                        )
+                        s"Unknown name for id $id"
 
 object WormsConcept:
 
@@ -55,21 +66,32 @@ object WormsConcept:
             concepts(t.id) = wc
 
         for v <- vernacularNames do
-            val wc    = concepts(v.id)
-            val name  = WormsConceptName(v.vernacularName, false)
-            val newWc = wc.copy(names = wc.names :+ name)
-            concepts(v.id) = newWc
+            concepts.get(v.id) match
+                case Some(wc) =>
+                    val name  = WormsConceptName(v.vernacularName, false)
+                    val newWc = wc.copy(names = wc.names :+ name)
+                    concepts(v.id) = newWc
+                case None    =>
+                    log.atWarn.log(
+                        s"Vernacular name with id ${v.id} does not have a corresponding taxon. Skipping."
+                    )
+
 
         for s <- speciesProfiles do
-            val wc    = concepts(s.id)
-            val newWc = wc.copy(
-                isMarine = s.isMarine,
-                isExtinct = s.isExtinct,
-                isBrackish = s.isBrackish,
-                isFreshwater = s.isFreshwater,
-                isTerrestrial = s.isTerrestrial
-            )
-            concepts(s.id) = newWc
+            concepts.get(s.id) match
+                case Some(wc) =>
+                    val newWc = wc.copy(
+                        isMarine = s.isMarine,
+                        isExtinct = s.isExtinct,
+                        isBrackish = s.isBrackish,
+                        isFreshwater = s.isFreshwater,
+                        isTerrestrial = s.isTerrestrial
+                    )
+                    concepts(s.id) = newWc
+                case None    =>
+                    log.atWarn.log(
+                        s"Species profile with id ${s.id} does not have a corresponding taxon. Skipping."
+                    )
 
         concepts.values.toSeq
 

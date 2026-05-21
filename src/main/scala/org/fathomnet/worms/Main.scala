@@ -74,29 +74,6 @@ object Main:
     def main(args: Array[String]): Unit =
         new CommandLine(new MainRunner()).execute(args*)
 
-    // def run(port: Int, wormsDir: Path): Unit =
-    //   log.atInfo.log(s"Starting up ${AppConfig.Name} v${AppConfig.Version}")
-
-    //   // Lood data off main thread
-    //   given executionContext: ExecutionContext =
-    //     CustomExecutors.newFixedThreadPoolExecutor(20).asScala
-    //   executionContext.execute(() => State.data = WormsLoader.load(wormsDir).map(n => Data(n)))
-
-    //   val nameEndpoints    = NameEndpoints()
-    //   val taxaEndpoints    = TaxaEndpoints()
-    //   val swaggerEndpoints = SwaggerEndpoints(nameEndpoints, taxaEndpoints)
-    //   val allEndpoints     = nameEndpoints.all ++ taxaEndpoints.all ++ swaggerEndpoints.all
-
-    //   val program = for
-    //     binding <- NettyFutureServer()
-    //                  .port(port)
-    //                  .addEndpoints(allEndpoints)
-    //                  .start()
-    //     stop    <- binding.stop()
-    //   yield stop
-
-    //   Await.result(program, Duration.Inf)
-
     def run(port: Int, wormsDir: Path, treeFiles: List[Path] = Nil): Unit =
         log.atInfo.log(s"Starting up ${AppConfig.Name} v${AppConfig.Version} on port $port")
 

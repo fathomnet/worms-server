@@ -18,7 +18,7 @@ import scala.concurrent.Future
 
 trait Endpoints:
 
-    val log = System.getLogger(getClass.getName)
+    protected val log = System.getLogger(getClass.getName)
 
     def all: List[ServerEndpoint[Any, Future]]
 
