@@ -32,7 +32,18 @@ final case class WormsConcept(
     lazy val primaryName: String =
         names.find(_.isPrimary) match
             case Some(name) => name.name
-            case None       => names.headOption.map(_.name).getOrElse(s"Unknown name for id $id")
+            case None       =>
+                names.headOption match
+                    case Some(name) =>
+                        WormsConcept.log.atWarn.log(
+                            s"No primary name found for concept id $id. Falling back to first available name '${name.name}'."
+                        )
+                        name.name
+                    case None       =>
+                        WormsConcept.log.atWarn.log(
+                            s"Concept id $id has no names. Falling back to synthesized primary name."
+                        )
+                        s"Unknown name for id $id"
 
 object WormsConcept:
 
