@@ -56,13 +56,13 @@ object StateController:
     def queryNamesStartingWith(prefix: String): Either[ErrorMsg, List[String]] =
         def search(data: Data): List[String] =
             val lower = prefix.toLowerCase
-            data.lowerNamesMap.rangeFrom(lower).takeWhile(_._1.startsWith(lower)).values.toList
+            data.lowerNamesMap.rangeFrom(lower).takeWhile(_._1.startsWith(lower)).values.flatten.toList
         runSearch(search)
 
     def queryNamesContaining(glob: String): Either[ErrorMsg, List[String]] =
         def search(data: Data): List[String] =
             val lower = glob.toLowerCase
-            data.lowerNamesMap.iterator.collect { case (k, v) if k.contains(lower) => v }.toList
+            data.lowerNamesMap.iterator.collect { case (k, v) if k.contains(lower) => v }.flatten.toList
         runSearch(search)
 
     def findNamesByAphiaId(aphiaId: Long): Either[ErrorMsg, Names] =
@@ -190,7 +190,7 @@ object StateController:
                         .rangeFrom(lower)
                         .takeWhile(_._1.startsWith(lower))
                         .values
-                        .flatMap(data.findNodeByName)
+                        .flatMap(names => names.flatMap(data.findNodeByName))
                         .map(_.simple)
                         .toList
                 case Some(parent) =>

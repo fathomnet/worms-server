@@ -41,11 +41,16 @@ final case class Data(rootNode: WormsNode, wormsConcepts: Seq[WormsConcept]):
     lazy val names: Set[String] = namesMap.keySet
 
     /**
-     * SortedMap of lowercased name → original name. Built once at startup; used to avoid
-     * per-element toLowerCase allocations on every search query.
+     * SortedMap of lowercased name → collection of original names. Built once at startup; used to
+     * avoid per-element toLowerCase allocations on every search query. A `Vector` of originals is
+     * stored per lowercase key to handle names that differ only by case (or Unicode case-folding
+     * collisions) without silently dropping entries.
      */
-    lazy val lowerNamesMap: SortedMap[String, String] =
-        SortedMap.from(namesMap.keys.map(n => n.toLowerCase -> n))
+    lazy val lowerNamesMap: SortedMap[String, Vector[String]] =
+        val builder = SortedMap.newBuilder[String, Vector[String]]
+        val grouped = namesMap.keys.groupBy(_.toLowerCase).map((k, vs) => k -> vs.toVector)
+        builder ++= grouped
+        builder.result()
 
     /**
      * Map of [aphiaId, WormsConcept] for O(1) concept lookup by id.

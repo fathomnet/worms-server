@@ -44,8 +44,10 @@ object MutableWormsNodeBuilder:
         do parentNode.children.append(conceptNode)
         // In worms, the root node has an aphiaId of 1
         val minAphiaId = wormsConcepts.map(_.id).minOption.getOrElse(1L)
-        // Avoid buildTree panics on missing root node by returning a dummy root node with the minimum aphiaId found in the data                                                               
-        map.getOrElse(minAphiaId, MutableWormsNode(WormsConcept(minAphiaId, minAphiaId, None, Seq(WormsConceptName("Root")), "root")))
+        // IMPORTANT: THis will fail with an exception if the root node is missing 
+        //from the input data, which is desirable because it means the data is 
+        // malformed and we don't want to continue with a broken tree. 
+        map(minAphiaId)
 
     /**
      * Given the full tree, return only the animalia node
