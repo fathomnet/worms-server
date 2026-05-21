@@ -57,7 +57,6 @@ object WormsConcept:
         for v <- vernacularNames do
             concepts.get(v.id) match
                 case Some(wc) =>
-                    val wc    = concepts(v.id)
                     val name  = WormsConceptName(v.vernacularName, false)
                     val newWc = wc.copy(names = wc.names :+ name)
                     concepts(v.id) = newWc
