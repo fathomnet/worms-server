@@ -62,7 +62,7 @@ object StateController:
     def queryNamesContaining(glob: String): Either[ErrorMsg, List[String]] =
         def search(data: Data): List[String] =
             val lower = glob.toLowerCase
-            data.lowerNamesMap.collect { case (k, v) if k.contains(lower) => v }.toList
+            data.lowerNamesMap.iterator.collect { case (k, v) if k.contains(lower) => v }.toList
         runSearch(search)
 
     def findNamesByAphiaId(aphiaId: Long): Either[ErrorMsg, Names] =
