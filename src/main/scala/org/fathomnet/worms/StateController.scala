@@ -94,13 +94,18 @@ object StateController:
 
     def descendantNames(name: String, acceptedOnly: Boolean = false): Either[ErrorMsg, List[String]] =
         def search(data: Data): List[String] =
-            data.findNodeByName(name) match
-                case None       => Nil
-                case Some(node) =>
-                    if (acceptedOnly && node.isAccepted)
-                        node.descendants.filter(_.isAccepted).map(_.name).sorted.toList
-                    else
-                        node.descendantNames.sorted.toList
+            val nodes = data.findNodesByName(name)
+            if nodes.isEmpty then Nil
+            else
+                nodes
+                    .flatMap: node =>
+                        if acceptedOnly then
+                            node.descendants.filter(_.isAccepted).map(_.name)
+                        else
+                            node.descendantNames
+                    .distinct
+                    .sorted
+                    .toList
         runSearch(search).fold(
             e => Left(e),
             v =>
@@ -190,7 +195,9 @@ object StateController:
                         .rangeFrom(lower)
                         .takeWhile(_._1.startsWith(lower))
                         .values
-                        .flatMap(names => names.flatMap(data.findNodeByName))
+                        .flatMap(names => names.flatMap(data.findNodesByName))
+                        .toSeq
+                        .distinctBy(_.aphiaId)
                         .map(_.simple)
                         .toList
                 case Some(parent) =>
@@ -230,7 +237,7 @@ object StateController:
                     )
             names        <- synonyms(name)
             acceptedName <- names.headOption.toRight(NotFound(s"Unable to find `$name`"))
-            wormsConcept <- data.namesMap.get(acceptedName)
+            wormsConcept <- data.findNodeByName(acceptedName)
                                 .flatMap(node => data.wormsConceptsMap.get(node.aphiaId))
                                 .toRight(NotFound(s"Unable to find `$name` accepted name of `$acceptedName`"))
         yield WormsDetails

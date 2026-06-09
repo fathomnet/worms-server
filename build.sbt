@@ -3,7 +3,7 @@ import Dependencies._
 Global / onChangedBuildSource := ReloadOnSourceChanges
 Laika / sourceDirectories     := Seq(baseDirectory.value / "docs")
 
-ThisBuild / scalaVersion     := "3.8.3"
+ThisBuild / scalaVersion     := "3.8.4"
 ThisBuild / organization     := "org.fathomnet"
 ThisBuild / organizationName := "MBARI"
 ThisBuild / startYear        := Some(2021)
@@ -68,6 +68,8 @@ lazy val root = project
         ),
         // Test suites share State.data (global mutable state); parallel execution causes races
         Test / parallelExecution := false,
+        // Fork so the Vert.x event-loop threads keep the JVM alive when running via `sbt run`
+        run / fork               := true,
         scalacOptions ++= Seq(
             "-deprecation", // Emit warning and location for usages of deprecated APIs.
             "-encoding",
