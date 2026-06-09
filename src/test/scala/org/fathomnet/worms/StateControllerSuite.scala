@@ -13,28 +13,31 @@ class StateControllerSuite extends munit.FunSuite:
     // ---- test tree --------------------------------------------------------
     //   Animalia (2, alternateNames=["animals"])
     //     Mollusca (51)
-    //       Polyplacophora (55, alternateNames=["chitons"])
+    //       Polyplacophora (55, alternateNames=["chitons", "shells"])  ← "shells" shared
     //     Arthropoda (100)
-    //       Decapoda (120, alternateNames=["decapods"])
+    //       Decapoda (120, alternateNames=["decapods", "shells"])      ← "shells" shared
     //     OldArthropoda (200, acceptedAphiaId=100)  ← synonym for Arthropoda
     // -----------------------------------------------------------------------
+    // "shells" is intentionally shared between Polyplacophora and Decapoda to verify
+    // that the namesMap multimap correctly preserves both nodes and that descendant
+    // lookups by a shared alternate name return the union of their descendants.
 
-    private val polyplacophora = WormsNode("Polyplacophora", "Class",   55,  55,  Seq("chitons"),  Nil)
-    private val mollusca       = WormsNode("Mollusca",       "Phylum",  51,  51,  Nil,             Seq(polyplacophora))
-    private val decapoda       = WormsNode("Decapoda",       "Order",   120, 120, Seq("decapods"), Nil)
-    private val arthropoda     = WormsNode("Arthropoda",     "Phylum",  100, 100, Nil,             Seq(decapoda))
-    private val oldArthropoda  = WormsNode("OldArthropoda",  "Phylum",  200, 100, Nil,             Nil)
-    private val root           = WormsNode("Animalia",       "Kingdom", 2,   2,   Seq("animals"),  Seq(mollusca, arthropoda, oldArthropoda))
+    private val polyplacophora = WormsNode("Polyplacophora", "Class",   55,  55,  Seq("chitons", "shells"),  Nil)
+    private val mollusca       = WormsNode("Mollusca",       "Phylum",  51,  51,  Nil,                       Seq(polyplacophora))
+    private val decapoda       = WormsNode("Decapoda",       "Order",   120, 120, Seq("decapods", "shells"),  Nil)
+    private val arthropoda     = WormsNode("Arthropoda",     "Phylum",  100, 100, Nil,                       Seq(decapoda))
+    private val oldArthropoda  = WormsNode("OldArthropoda",  "Phylum",  200, 100, Nil,                       Nil)
+    private val root           = WormsNode("Animalia",       "Kingdom", 2,   2,   Seq("animals"),            Seq(mollusca, arthropoda, oldArthropoda))
 
     private def cn(name: String, primary: Boolean = true) = WormsConceptName(name, primary)
 
     private val wormsConcepts = Seq(
-        WormsConcept(2,   2,   None,      Seq(cn("Animalia"), cn("animals", false)),       "Kingdom", isMarine = Some(true)),
-        WormsConcept(51,  51,  Some(2),   Seq(cn("Mollusca")),                             "Phylum",  isMarine = Some(true)),
-        WormsConcept(55,  55,  Some(51),  Seq(cn("Polyplacophora"), cn("chitons", false)), "Class",   isMarine = Some(true)),
-        WormsConcept(100, 100, Some(2),   Seq(cn("Arthropoda")),                           "Phylum"),
-        WormsConcept(120, 120, Some(100), Seq(cn("Decapoda"), cn("decapods", false)),      "Order"),
-        WormsConcept(200, 100, Some(2),   Seq(cn("OldArthropoda")),                        "Phylum"),
+        WormsConcept(2,   2,   None,      Seq(cn("Animalia"), cn("animals", false)),                               "Kingdom", isMarine = Some(true)),
+        WormsConcept(51,  51,  Some(2),   Seq(cn("Mollusca")),                                                     "Phylum",  isMarine = Some(true)),
+        WormsConcept(55,  55,  Some(51),  Seq(cn("Polyplacophora"), cn("chitons", false), cn("shells", false)),    "Class",   isMarine = Some(true)),
+        WormsConcept(100, 100, Some(2),   Seq(cn("Arthropoda")),                                                   "Phylum"),
+        WormsConcept(120, 120, Some(100), Seq(cn("Decapoda"), cn("decapods", false), cn("shells", false)),         "Order"),
+        WormsConcept(200, 100, Some(2),   Seq(cn("OldArthropoda")),                                               "Phylum"),
     )
 
     private val testData = Data(root, wormsConcepts)
@@ -55,12 +58,13 @@ class StateControllerSuite extends munit.FunSuite:
     // ---- findAllNames / countAllNames -------------------------------------
 
     test("findAllNames returns paginated results with correct total"):
-        // The tree has 9 distinct names: Animalia, animals, Arthropoda, chitons, Decapoda,
-        // decapods, Mollusca, OldArthropoda, Polyplacophora
+        // 10 distinct names: Animalia, animals, Arthropoda, chitons, Decapoda,
+        // decapods, Mollusca, OldArthropoda, Polyplacophora, shells
+        // ("shells" is shared between Polyplacophora and Decapoda but counts once)
         val page = StateController.findAllNames(3, 0).getOrElse(fail("expected Right"))
         assertEquals(page.limit, 3)
         assertEquals(page.offset, 0)
-        assertEquals(page.total, 9)
+        assertEquals(page.total, 10)
         assertEquals(page.items.size, 3)
 
     test("findAllNames honours offset"):
@@ -69,7 +73,7 @@ class StateControllerSuite extends munit.FunSuite:
         assertEquals(page.items.size, 3)
 
     test("countAllNames returns total number of distinct names"):
-        assertEquals(StateController.countAllNames().getOrElse(fail("expected Right")), 9)
+        assertEquals(StateController.countAllNames().getOrElse(fail("expected Right")), 10)
 
     // ---- queryNames -------------------------------------------------------
 
@@ -113,6 +117,23 @@ class StateControllerSuite extends munit.FunSuite:
 
     test("descendantNames returns NotFound for unknown name"):
         assert(StateController.descendantNames("Unknown").isLeft)
+
+    test("descendantNames via a shared alternate name returns union of descendants from all matching nodes"):
+        // "shells" is an alternate name for both Polyplacophora (55) and Decapoda (120).
+        // Before the multimap fix, whichever node was inserted last would silently overwrite
+        // the other; the "lost" node's descendants would be missing from the result.
+        val names = StateController.descendantNames("shells").getOrElse(fail("expected Right"))
+        assert(names.contains("Polyplacophora"), s"expected Polyplacophora in $names")
+        assert(names.contains("Decapoda"),       s"expected Decapoda in $names")
+
+    test("findNodesByName returns all nodes sharing a name"):
+        val nodes = State.data.get.findNodesByName("shells")
+        assertEquals(nodes.size, 2)
+        assert(nodes.map(_.name).toSet == Set("Polyplacophora", "Decapoda"))
+
+    test("findNodeByName on a shared alternate name prefers the accepted node"):
+        val node = State.data.get.findNodeByName("shells").getOrElse(fail("expected Some"))
+        assert(node.isAccepted, s"expected accepted node but got ${node.name} (acceptedAphiaId=${node.acceptedAphiaId})")
 
     // ---- ancestorNames ----------------------------------------------------
 

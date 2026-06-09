@@ -24,16 +24,22 @@ final case class Data(rootNode: WormsNode, wormsConcepts: Seq[WormsConcept]):
     private val log = System.getLogger(getClass.getName)
 
     /**
-     * Map of [nodeName, Node] for both the name and alternate name of the node.
+     * Multimap of [name, nodes] for both the primary name and alternate names of each node.
+     * A single name can map to multiple nodes when common/vernacular names are shared across
+     * different taxa (e.g. "limpets" appears as a vernacular name for both Patellidae and
+     * Acmaeidae). Storing all matching nodes prevents the last-writer-wins silent data loss
+     * that occurred with the previous SortedMap[String, WormsNode].
      */
-    lazy val namesMap: SortedMap[String, WormsNode] =
-        val map                        = SortedMap.newBuilder[String, WormsNode]
+    lazy val namesMap: SortedMap[String, Vector[WormsNode]] =
+        val map = scala.collection.mutable.Map.empty[String, Vector[WormsNode]]
+        def insert(name: String, node: WormsNode): Unit =
+            map.updateWith(name)(existing => Some(existing.getOrElse(Vector.empty) :+ node))
         def add(node: WormsNode): Unit =
-            map += node.name -> node
-            node.alternateNames.foreach(n => map += n -> node)
+            insert(node.name, node)
+            node.alternateNames.foreach(n => insert(n, node))
             node.children.foreach(add)
         add(rootNode)
-        map.result()
+        SortedMap.from(map)
 
     /**
      * All names used in WoRMS.
@@ -89,7 +95,23 @@ final case class Data(rootNode: WormsNode, wormsConcepts: Seq[WormsConcept]):
         add(rootNode)
         map.result()
 
-    def findNodeByName(name: String): Option[WormsNode] = namesMap.get(name)
+    /**
+     * Return all nodes associated with a name (primary or alternate).
+     * Returns an empty Seq when the name is not present in the tree.
+     */
+    def findNodesByName(name: String): Seq[WormsNode] =
+        namesMap.getOrElse(name, Vector.empty)
+
+    /**
+     * Return the single best node for a name. When multiple nodes share the same name,
+     * preference order is: (1) node whose primary name matches exactly, (2) any accepted
+     * node, (3) first in insertion order.
+     */
+    def findNodeByName(name: String): Option[WormsNode] =
+        namesMap.get(name).flatMap: nodes =>
+            nodes.find(_.name == name)
+                .orElse(nodes.find(_.isAccepted))
+                .orElse(nodes.headOption)
 
     def findNodeByChildName(name: String): Option[WormsNode] = parents.get(name)
 
