@@ -68,6 +68,8 @@ lazy val root = project
         ),
         // Test suites share State.data (global mutable state); parallel execution causes races
         Test / parallelExecution := false,
+        // Fork so the Vert.x event-loop threads keep the JVM alive when running via `sbt run`
+        run / fork               := true,
         scalacOptions ++= Seq(
             "-deprecation", // Emit warning and location for usages of deprecated APIs.
             "-encoding",
