@@ -132,6 +132,11 @@ class StateControllerSuite extends munit.FunSuite:
         assert(nodes.map(_.name).toSet == Set("Polyplacophora", "Decapoda"))
 
     test("findNodeByName on a shared alternate name returns an accepted node"):
+        val nodeOpt = State.data.get.findNodeByName("shells")
+        assert(nodeOpt.isDefined)
+        val node = nodeOpt.get
+        assert(node.name == "Polyplacophora" || node.name == "Decapoda")
+        assert(node.isAccepted)
 
     // ---- ancestorNames ----------------------------------------------------
 

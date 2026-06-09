@@ -30,7 +30,7 @@ final case class Data(rootNode: WormsNode, wormsConcepts: Seq[WormsConcept]):
      * Acmaeidae). Storing all matching nodes prevents the last-writer-wins silent data loss
      * that occurred with the previous SortedMap[String, WormsNode].
      */
-    lazy val namesMap: SortedMap[String, Vector[WormsNode]] =
+    lazy val namesMap: SortedMap[String, Seq[WormsNode]] =
         val map = scala.collection.mutable.Map.empty[String, Vector[WormsNode]]
         def insert(name: String, node: WormsNode): Unit =
             map.updateWith(name)(existing => Some(existing.getOrElse(Vector.empty) :+ node))
