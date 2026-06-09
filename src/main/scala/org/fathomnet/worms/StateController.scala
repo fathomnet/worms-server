@@ -99,7 +99,7 @@ object StateController:
             else
                 nodes
                     .flatMap: node =>
-                        if acceptedOnly && node.isAccepted then
+                        if acceptedOnly then
                             node.descendants.filter(_.isAccepted).map(_.name)
                         else
                             node.descendantNames
