@@ -54,7 +54,7 @@ final case class Taxon(
 object Taxon:
     def from(row: String): Option[Taxon] =
         Try {
-            given cols                = row.split("\t", -1).toList
+            given cols: List[String] = row.split("\t", -1).toList
             val taxonID             = get(0)
             val acceptedNameUsageID = if get(2).isBlank then None else Some(get(2))
             val parentNameUsageID   = if get(3).isBlank then None else Some(get(3))
@@ -71,7 +71,7 @@ final case class VernacularName(taxonID: String, vernacularName: String):
 object VernacularName:
     def from(row: String): Option[VernacularName] =
         Try {
-            given cols                = row.split("\t", -1).toList
+            given cols: List[String] = row.split("\t", -1).toList
             VernacularName(get(0), get(1))
         }.toOption
 
@@ -95,7 +95,7 @@ object SpeciesProfile:
 
     def from(row: String): Option[SpeciesProfile] =
         Try {
-            given cols                = row.split("\t", -1).toList
+            given cols: List[String] = row.split("\t", -1).toList
             SpeciesProfile(get(0), toBool(get(1)), toBool(get(2)), toBool(get(3)), toBool(get(4)), toBool(get(5)))
         }.toOption
 
