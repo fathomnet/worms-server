@@ -21,17 +21,18 @@ def taxonIDToKey(taxonID: String): Long =
     taxonID.split(":").last.toLong
 
 /**
-  * Helper function to get a column from a row of the Worms download, 
-  * handling quoted values and missing values.
-  *
-  * @param i THe index of the column to get
-  * @param cols The columns of the row, passed as an implicit parameter
-  * @return The value of the column, with quotes removed and empty values returned as an empty string
-  */
+ * Helper function to get a column from a row of the Worms download, handling quoted values and missing values.
+ *
+ * @param i
+ *   THe index of the column to get
+ * @param cols
+ *   The columns of the row, passed as an implicit parameter
+ * @return
+ *   The value of the column, with quotes removed and empty values returned as an empty string
+ */
 def get(i: Int)(using cols: List[String]): String =
-    val a = cols.applyOrElse(i, (_: Int) => "")
-    val b = if a.startsWith("\"") then a.substring(1, a.length - 1) else a
-    if b.endsWith("\"") then b.substring(0, b.length - 1) else b
+    val s = cols.applyOrElse(i, (_: Int) => "")
+    if s.length >= 2 && s.startsWith("\"") && s.endsWith("\"") then s.substring(1, s.length - 1) else s
 
 def readFile[A](file: String, rowMapper: String => Option[A]): List[A] =
     Using(Source.fromFile(file)) { source =>
@@ -55,11 +56,11 @@ object Taxon:
     def from(row: String): Option[Taxon] =
         Try {
             given cols: List[String] = row.split("\t", -1).toList
-            val taxonID             = get(0)
-            val acceptedNameUsageID = if get(2).isBlank then None else Some(get(2))
-            val parentNameUsageID   = if get(3).isBlank then None else Some(get(3))
-            val scientificName      = get(5)
-            val rank                = get(19)
+            val taxonID              = get(0)
+            val acceptedNameUsageID  = if get(2).isBlank then None else Some(get(2))
+            val parentNameUsageID    = if get(3).isBlank then None else Some(get(3))
+            val scientificName       = get(5)
+            val rank                 = get(19)
             Taxon(taxonID, parentNameUsageID, scientificName, rank, acceptedNameUsageID)
         }.toOption
 
