@@ -20,6 +20,19 @@ import scala.util.{Success, Try, Using}
 def taxonIDToKey(taxonID: String): Long =
     taxonID.split(":").last.toLong
 
+/**
+  * Helper function to get a column from a row of the Worms download, 
+  * handling quoted values and missing values.
+  *
+  * @param i THe index of the column to get
+  * @param cols The columns of the row, passed as an implicit parameter
+  * @return The value of the column, with quotes removed and empty values returned as an empty string
+  */
+def get(i: Int)(using cols: List[String]): String =
+    val a = cols.applyOrElse(i, (_: Int) => "")
+    val b = if a.startsWith("\"") then a.substring(1, a.length - 1) else a
+    if b.endsWith("\"") then b.substring(0, b.length - 1) else b
+
 def readFile[A](file: String, rowMapper: String => Option[A]): List[A] =
     Using(Source.fromFile(file)) { source =>
         source.getLines().flatMap(rowMapper).toList
@@ -41,8 +54,7 @@ final case class Taxon(
 object Taxon:
     def from(row: String): Option[Taxon] =
         Try {
-            val cols                = row.split("\t", -1).toList
-            def get(i: Int): String = cols.applyOrElse(i, (_: Int) => "")
+            given cols                = row.split("\t", -1).toList
             val taxonID             = get(0)
             val acceptedNameUsageID = if get(2).isBlank then None else Some(get(2))
             val parentNameUsageID   = if get(3).isBlank then None else Some(get(3))
@@ -59,8 +71,7 @@ final case class VernacularName(taxonID: String, vernacularName: String):
 object VernacularName:
     def from(row: String): Option[VernacularName] =
         Try {
-            val cols                = row.split("\t", -1).toList
-            def get(i: Int): String = cols.applyOrElse(i, (_: Int) => "")
+            given cols                = row.split("\t", -1).toList
             VernacularName(get(0), get(1))
         }.toOption
 
@@ -84,8 +95,7 @@ object SpeciesProfile:
 
     def from(row: String): Option[SpeciesProfile] =
         Try {
-            val cols                = row.split("\t", -1).toList
-            def get(i: Int): String = cols.applyOrElse(i, (_: Int) => "")
+            given cols                = row.split("\t", -1).toList
             SpeciesProfile(get(0), toBool(get(1)), toBool(get(2)), toBool(get(3)), toBool(get(4)), toBool(get(5)))
         }.toOption
 
