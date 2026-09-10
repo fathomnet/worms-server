@@ -6,14 +6,15 @@
 
 package org.fathomnet.worms.io
 
-import java.nio.file.Paths
+import org.fathomnet.worms.TestResources
+
 import scala.concurrent.ExecutionContext
 
 class WormsLoaderSuite extends munit.FunSuite:
 
     given ExecutionContext = ExecutionContext.global
 
-    private def fakeTreePath = Paths.get(getClass.getResource("/faketree").toURI)
+    private def fakeTreePath = TestResources.path("/faketree")
 
     test("load returns non-empty concepts and a root node"):
         val (concepts, root) = WormsLoader.load(fakeTreePath)

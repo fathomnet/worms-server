@@ -6,11 +6,11 @@
 
 package org.fathomnet.worms.io.extended
 
-import java.nio.file.Paths
+import org.fathomnet.worms.TestResources
 
 class ExtendedLoaderSuite extends munit.FunSuite:
 
-  private val sample = getClass.getResource("/extended_tree_sample1.csv").getPath
+  private val sample = TestResources.path("/extended_tree_sample1.csv")
   
   test("from"):
     val a = "1,2,foo;bar;baz bot"
@@ -28,11 +28,11 @@ class ExtendedLoaderSuite extends munit.FunSuite:
     assertEquals(e.names(2).isPrimary, false)
 
   test("read"):
-    val wormsConcepts = ExtendedLoader.read(sample)
+    val wormsConcepts = ExtendedLoader.read(sample.toString)
     assertEquals(wormsConcepts.size, 10)
 
   test("load"):
-    val opt = ExtendedLoader.load(Paths.get(sample))
+    val opt = ExtendedLoader.load(sample)
     assert(opt.isDefined)
     val worms = opt.get
     assertEquals(worms.aphiaId, 1000L)
