@@ -8,7 +8,7 @@ package org.fathomnet.worms.api
 
 import io.circe.Decoder
 import org.fathomnet.worms.etc.circe.CirceCodecs.given
-import org.fathomnet.worms.{Data, SimpleWormsNode, State, WormsNode}
+import org.fathomnet.worms.{Data, SimpleWormsNode, State, TestResources, WormsNode}
 import org.fathomnet.worms.io.WormsLoader
 import sttp.client3.*
 import sttp.client3.circe.*
@@ -16,7 +16,6 @@ import sttp.client3.testing.SttpBackendStub
 import sttp.model.Uri
 import sttp.tapir.server.stub.TapirStubInterpreter
 
-import java.nio.file.Paths
 import scala.concurrent.{Await, ExecutionContext}
 import scala.concurrent.duration.*
 
@@ -27,7 +26,7 @@ class TaxaEndpointsSuite extends munit.FunSuite:
     // Load the faketree once. After the pipeline the tree is rooted at "Biota"
     // with "Animalia" as its only child, then "Mollusca" (Phylum) → "Polyplacophora" (Class), etc.
     override def beforeAll(): Unit =
-        val fakeTreePath             = Paths.get(getClass.getResource("/faketree").toURI)
+        val fakeTreePath             = TestResources.path("/faketree")
         val (wormsConcepts, rootOpt) = WormsLoader.load(fakeTreePath)
         State.data = rootOpt.map(root => Data(root, wormsConcepts))
 

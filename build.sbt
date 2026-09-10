@@ -1,9 +1,8 @@
 import Dependencies._
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
-Laika / sourceDirectories     := Seq(baseDirectory.value / "docs")
 
-ThisBuild / scalaVersion     := "3.8.4"
+ThisBuild / scalaVersion     := "3.9.0"
 ThisBuild / organization     := "org.fathomnet"
 ThisBuild / organizationName := "MBARI"
 ThisBuild / startYear        := Some(2021)
@@ -16,15 +15,14 @@ Docker / maintainer := "Brian Schlining <brian@mbari.org>"
 
 lazy val root = project
     .in(file("."))
-    .enablePlugins(AutomateHeaderPlugin, DockerPlugin, GitBranchPrompt, GitVersioning, JavaAppPackaging, LaikaPlugin)
+    .enablePlugins(AutomateHeaderPlugin, DockerPlugin, GitBranchPrompt, GitVersioning, JavaAppPackaging)
     .settings(
         name                      := "worms-server",
         // Set version based on git tag. I use "0.0.0" format (no leading "v", which is the default)
         // Use `show gitCurrentTags` in sbt to update/see the tags
-        git.gitTagToVersionNumber := {
-            tag: String =>
-                if (tag matches "[0-9]+\\..*") Some(tag)
-                else None
+        git.gitTagToVersionNumber := { (gitTag: String) =>
+            if (gitTag.matches("[0-9]+\\..*")) Some(gitTag)
+            else None
         },
         git.useGitDescribe        := true,
         // sbt-header
@@ -42,11 +40,6 @@ lazy val root = project
             )
         ),
         javacOptions ++= Seq("-target", "17", "-source", "17"),
-        laikaExtensions           := Seq(
-            laika.markdown.github.GitHubFlavor,
-            laika.parse.code.SyntaxHighlighting
-        ),
-        laikaIncludeAPI           := true,
         libraryDependencies ++= Seq(
             circeCore,
             circeGeneric,

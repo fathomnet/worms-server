@@ -6,9 +6,7 @@
 
 package org.fathomnet.worms.io.extended
 
-import org.fathomnet.worms.WormsNode
-
-import java.nio.file.Paths
+import org.fathomnet.worms.{TestResources, WormsNode}
 
 class CombinedTreesSuite extends munit.FunSuite:
 
@@ -30,13 +28,13 @@ class CombinedTreesSuite extends munit.FunSuite:
     
     val root = WormsNode("object", "", 1L, 1L, Nil, Nil)
     
-    val sample1 = getClass.getResource("/extended_tree_sample1.csv").getPath
-    val opt1 = ExtendedLoader.load(Paths.get(sample1))
+    val sample1 = TestResources.path("/extended_tree_sample1.csv")
+    val opt1 = ExtendedLoader.load(sample1)
     assert(opt1.isDefined)
     val node1 = opt1.get
     
-    val sample2 = getClass.getResource("/extended_tree_sample2.csv").getPath
-    val opt2 = ExtendedLoader.load(Paths.get(sample2))
+    val sample2 = TestResources.path("/extended_tree_sample2.csv")
+    val opt2 = ExtendedLoader.load(sample2)
     assert(opt2.isDefined)
     val node2 = opt2.get
 

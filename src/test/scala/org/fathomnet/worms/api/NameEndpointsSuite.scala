@@ -8,7 +8,7 @@ package org.fathomnet.worms.api
 
 import io.circe.Decoder
 import io.circe.generic.auto.*
-import org.fathomnet.worms.{Data, Names, Page, State}
+import org.fathomnet.worms.{Data, Names, Page, State, TestResources}
 import org.fathomnet.worms.io.WormsLoader
 import sttp.client3.*
 import sttp.client3.circe.*
@@ -16,7 +16,6 @@ import sttp.client3.testing.SttpBackendStub
 import sttp.model.Uri
 import sttp.tapir.server.stub.TapirStubInterpreter
 
-import java.nio.file.Paths
 import scala.concurrent.{Await, ExecutionContext}
 import scala.concurrent.duration.*
 
@@ -28,7 +27,7 @@ class NameEndpointsSuite extends munit.FunSuite:
     // The pipeline (WormsLoader → trimTree → Animalia subtree) produces a tree
     // rooted at "Biota" with "Animalia" as its only child.
     override def beforeAll(): Unit =
-        val fakeTreePath             = Paths.get(getClass.getResource("/faketree").toURI)
+        val fakeTreePath             = TestResources.path("/faketree")
         val (wormsConcepts, rootOpt) = WormsLoader.load(fakeTreePath)
         State.data = rootOpt.map(root => Data(root, wormsConcepts))
 
