@@ -132,8 +132,13 @@ object Main:
     private def vertxBlockingExecutionContext(vertx: Vertx): ExecutionContext =
         val executor: Executor = runnable =>
             val task: Callable[Void] = () =>
-                runnable.run()
-                null
+                try
+                    runnable.run()
+                    null
+                catch
+                    case NonFatal(t) =>
+                        log.atError.withCause(t).log("A task failed on the Vert.x worker pool")
+                        throw t
             // ordered = false, otherwise tasks sharing a context are run one at a time
             vertx.executeBlocking(task, false)
         ExecutionContext.fromExecutor(
