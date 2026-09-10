@@ -28,7 +28,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           sbt 'Docker / stage'
-          cd target/docker/stage
+          cd target/out/jvm/scala-3.9.0/worms-server/docker/stage
           docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
           docker buildx create --name dockerbuilder --platform linux/amd64,linux/arm64 --use
           docker buildx build --platform linux/amd64,linux/arm64 -t mbari/worms-server:${{ github.ref_name }} -t mbari/worms-server:latest --push .
