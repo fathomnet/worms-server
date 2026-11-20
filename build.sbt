@@ -1,15 +1,15 @@
 import Dependencies._
 
-Global / onChangedBuildSource := ReloadOnSourceChanges
+onChangedBuildSource := ReloadOnSourceChanges
 
-ThisBuild / scalaVersion     := "3.9.0"
-ThisBuild / organization     := "org.fathomnet"
-ThisBuild / organizationName := "MBARI"
-ThisBuild / startYear        := Some(2021)
-ThisBuild / versionScheme    := Some("semver-spec")
+scalaVersion     := "3.10.1"
+organization     := "org.fathomnet"
+organizationName := "MBARI"
+startYear        := Some(2021)
+versionScheme    := Some("semver-spec")
 
-ThisBuild / semanticdbEnabled := true
-ThisBuild / semanticdbVersion := scalafixSemanticdb.revision
+semanticdbEnabled := true
+semanticdbVersion := scalafixSemanticdb.revision
 
 Docker / maintainer := "Brian Schlining <brian@mbari.org>"
 
@@ -26,7 +26,7 @@ lazy val root = project
         },
         git.useGitDescribe        := true,
         // sbt-header
-        dockerBaseImage           := "eclipse-temurin:21",
+        dockerBaseImage           := "eclipse-temurin:27",
         dockerEntrypoint          := Seq("/opt/docker/bin/worms-server", "/opt/worms"),
         dockerExposedPorts        := Seq(8080),
         dockerExposedVolumes      := Seq("/opt/worms"),
@@ -39,7 +39,7 @@ lazy val root = project
         |""".stripMargin
             )
         ),
-        javacOptions ++= Seq("-target", "17", "-source", "17"),
+        javacOptions ++= Seq("-target", "27", "-source", "27"),
         libraryDependencies ++= Seq(
             circeCore,
             circeGeneric,
